@@ -1,6 +1,6 @@
 # Kreatekno Website: Tech Stack
 
-_Last updated: 2026-10-14. Versions are the latest on npm as of that date; pin whatever `create-next-app` installs for React and TypeScript._
+_Last updated: 2026-10-21. Versions are the latest on npm as of 2026-10-14; the scaffold (2026-10-21) installed Next.js 16.4.2, React 19.3, next-intl 4.14.9, GSAP 3.15, Lenis 1.3.27. `site/package.json` is the source of truth._
 
 What the site says and how it behaves: `SITE-BRIEF.md`. All copy: `COPY.md`. Milestones: `PLAN.md`. Behaviour reference: the home prototype in `prototype/`.
 
@@ -45,7 +45,8 @@ site/
     opengraph-image.tsx
   components/
     layout/      Nav, MobileMenu, LangSwitch, Footer, WhatsAppButton, MobileWhatsAppBar
-    story/       StoryStage (client), beats.ts (config), ProblemCards, ProcessSteps, ProgressDots, ZonesOverlay, MediaSlot
+    story/       HomeStory (the 18 beats, server), StoryStage (client: GSAP, Lenis, fit pass, rail, zones tool),
+                 beats.ts (timing, light per keyframe, rest poses), Prop, Binder, FaqNotes, story.css
     home/        Capabilities, IndustrySwitcher, LogoMarquee, Faq, FinalCta
     workflow/    WorkflowDiagram
     mdx/         components available inside MDX (PullQuote, Callout, Figure)
@@ -58,7 +59,10 @@ site/
     en.json
   i18n/
     routing.ts                locales, default locale, translated pathnames
-    request.ts
+    request.ts                locale from next/root-params, loads messages
+    navigation.ts             Link, getPathname... bound to the routing
+  proxy.ts                    next-intl middleware (Next 16 "proxy")
+  global.d.ts                 types message keys from messages/id.json
   lib/
     wa.ts                     WhatsApp link builder (number from env, prefilled text per locale)
     analytics.ts              trackWhatsApp(section, locale)
@@ -82,7 +86,9 @@ site/
 
 ## 4. Routing and i18n
 
-- next-intl with `defaultLocale: 'id'`, `localePrefix: 'as-needed'` (Indonesian at `/`, English at `/en`).
+- next-intl with `defaultLocale: 'id'`, `localePrefix: 'as-needed'` (Indonesian at `/`, English at `/en`), `localeDetection: false` (`/` is always Indonesian, no redirect by browser language).
+- `proxy.ts` (Next 16's name for middleware) runs next-intl's middleware. `i18n/request.ts` reads the locale with `next/root-params`, so pages don't call `setRequestLocale`. `generateStaticParams` for the locales lives in `app/[locale]/layout.tsx`.
+- Cache Components is on (`cacheComponents` + `partialPrefetching` in `next.config.ts`). Avoid `new Date()`, `Math.random()` and request APIs in server components unless they sit behind `'use cache'` or `<Suspense>`, or the static shell breaks.
 - Translated pathnames: `/portofolio` ↔ `/en/portfolio`, `/artikel` ↔ `/en/articles`, `/tentang` ↔ `/en/about`, `/kebijakan-privasi` ↔ `/en/privacy-policy`.
 - `generateStaticParams` for both locales and every slug, so the whole site is static.
 - The language switch keeps the visitor on the same page in the other language.
@@ -92,7 +98,8 @@ site/
 
 **Story stage** (`components/story/StoryStage.tsx`, client component)
 - One section with a tall wrapper (~720vh desktop, ~640vh phones) and a `position: sticky` stage inside it. GSAP drives one timeline from the wrapper's scroll progress (no `pin`, so sticky and ScrollTrigger never fight).
-- `beats.ts` holds the beat list: time markers, which buttons show, and the layout class for desktop and phone. Positions per beat follow `SITE-BRIEF.md` 5.1.
+- `beats.ts` holds the 18 beats as steps of the take (camera move, hold, keyframe they end on, keyframe notes), the light per keyframe (K0 to K16 plus K5a and K9a) and each prop's rest pose. Prop positions are props on `<Prop desk={…} phone={…}>` in `HomeStory.tsx` and follow `STORY-STAGE.md` section 3.
+- `story.css` is the prototype's CSS, scoped under `.story`. The base rules are the stacked fallback; the film lives in `@media (scripting: enabled) and (prefers-reduced-motion: no-preference)`, the same query as `FILM_QUERY` in `beats.ts`.
 - `gsap.matchMedia()` builds separate timelines for desktop (≥768px) and phones, and cleans them up on resize.
 - Problem cards: two faces (problem / ✓), flipped with `rotationY`. On phones they become a chip row placed under the headline (measured after fonts load and on every `ScrollTrigger` refresh).
 - Process steps (beat 5) light up one by one inside the same timeline.

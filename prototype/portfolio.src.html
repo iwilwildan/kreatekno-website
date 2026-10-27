@@ -1,0 +1,1028 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kreatekno Portofolio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Contoh proyek Kreatekno: order dari grup chat tim tercatat otomatis ke tabel, lengkap dengan status pengiriman dan rekap malam untuk pemilik.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Plus+Jakarta+Sans:ital,wght@0,400..700;1,400..700&display=swap">
+<script>if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('film')</script>
+<style>
+/* Layout concept: one project, two modes on one page.
+   Tonton = a scroll-driven motion graphic: a sticky navy stage (the n8n canvas dot grid) with the caption on the left,
+   a fixed-size scene canvas (440 x 520 design px, scaled to fit) on the right and the workflow rail along the bottom.
+   Scrolling scrubs one GSAP timeline through 9 scenes; the rail lights the workflow step each scene shows.
+   Baca = the editorial case study (summary, problem, what we built, workflow diagram, results, quote, tools).
+   Phones stack caption / canvas / rail. Reduced motion: the stage is not pinned, scenes step with buttons. */
+:root{
+  color-scheme: light;
+  --paper:#FFFFFF;
+  --ink:#121640;
+  --muted:#565B81;
+  --navy:#131951;
+  --navy-card:#121640;
+  --navy-2:#1A2160;
+  --navy-3:#0B0F3A;
+  --purple:#9F0ED6;
+  --purple-deep:#7C07A8;
+  --violet:#8C2BFA;
+  --cyan:#35EAFE;
+  --on-night:#F3F4FF;
+  --on-night-muted:#B6BBE2;
+  --alert:#E5484D;
+  --line:rgba(19,25,81,.1);
+  --wash:#F4F4FA;          /* chat background, light sections */
+  --night-line:rgba(182,187,226,.2);
+
+  /* field colours: marker on the message text + tint of the extracted field */
+  --f-cust:rgba(140,43,250,.30);  --f-cust-bg:#F1E8FF;
+  --f-item:rgba(53,234,254,.55);  --f-item-bg:#DDF9FD;
+  --f-qty:rgba(159,14,214,.26);   --f-qty-bg:#F7E4FD;
+  --f-addr:rgba(243,206,80,.62);  --f-addr-bg:#FCF3CF;
+  --f-pay:rgba(229,72,77,.24);    --f-pay-bg:#FDE6E7;
+  --ok:#1C7A43; --ok-bg:#E1F4E8;
+
+  --display:"Bricolage Grotesque","Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --body:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+
+  --ease-out:cubic-bezier(.23,1,.32,1);
+  --nav-h:64px;
+  --nav-top:calc(env(safe-area-inset-top,0px) + 12px);
+  --maxw:1200px;
+  --gut-l:max(16px,env(safe-area-inset-left,0px));
+  --gut-r:max(16px,env(safe-area-inset-right,0px));
+}
+@media (min-width:700px){:root{--gut-l:max(32px,env(safe-area-inset-left,0px));--gut-r:max(32px,env(safe-area-inset-right,0px))}}
+@media (max-width:640px){:root{--nav-h:56px}}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:1rem;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:clip}
+img{max-width:100%;display:block}
+a{color:inherit}
+h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.02em;line-height:1.08;margin:0;text-wrap:balance;font-variation-settings:"opsz" 96}
+p{margin:0}
+ul,ol,dl,dd{margin:0;padding:0;list-style:none}
+.ic{width:1em;height:1em;fill:currentColor;flex:none}
+:focus-visible{outline:3px solid var(--violet);outline-offset:3px;border-radius:6px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{max-width:calc(var(--maxw) + 64px);margin:0 auto;padding-left:var(--gut-l);padding-right:var(--gut-r)}
+
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:10px;white-space:nowrap;font:600 var(--t-btn,1rem)/1 var(--body);text-decoration:none;border:0;cursor:pointer;border-radius:999px;padding:6px 6px 6px 20px;min-height:48px;transition:transform 160ms var(--ease-out),background-color 200ms ease,box-shadow 200ms ease}
+.btn:active{transform:scale(.97)}
+.btn .knob{width:36px;height:36px;border-radius:999px;display:grid;place-items:center;transition:transform 260ms var(--ease-out)}
+.btn .knob .ic{width:20px;height:20px}
+.btn:hover .knob{transform:translate(2px,-1px) scale(1.05)}
+.btn-main{background:var(--purple);color:#fff;box-shadow:0 10px 22px -12px rgba(124,7,168,.75),inset 0 1px 0 rgba(255,255,255,.25)}
+.btn-main .knob{background:rgba(255,255,255,.18)}
+.btn-main:hover{background:var(--purple-deep)}
+.btn-line{background:transparent;color:inherit;box-shadow:inset 0 0 0 1.5px currentColor;padding-right:20px}
+.btn-line .ic{width:18px;height:18px}
+.cta-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+/* ---------- Header (same pill as Home) ---------- */
+.nav{position:fixed;z-index:30;left:50%;transform:translateX(-50%);top:var(--nav-top);
+  width:min(var(--maxw),calc(100% - 24px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)));
+  height:var(--nav-h);display:flex;align-items:center;gap:16px;padding:0 8px 0 20px;border-radius:999px;
+  background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4);
+  box-shadow:0 0 0 1px rgba(19,25,81,.08),0 12px 32px -18px rgba(19,25,81,.35)}
+.nav .brand img{height:28px;width:auto}
+.nav-links{display:flex;gap:2px;margin:0 auto}
+.nav-links a{display:block;padding:9px 12px;border-radius:999px;text-decoration:none;font-weight:600;font-size:.9375rem;color:var(--ink);transition:background-color 200ms ease}
+.nav-links a:hover{background:rgba(19,25,81,.06)}
+.nav-links a[aria-current]{background:rgba(159,14,214,.1);color:var(--purple-deep)}
+.nav-end{margin-left:auto}
+.nav .btn{--t-btn:.9375rem;padding:6px 6px 6px 18px}
+.nav .btn .knob{width:34px;height:34px}
+@media (max-width:960px){.nav-links{display:none}}
+@media (max-width:420px){.nav{padding-left:16px}.nav .brand img{height:24px}.nav .btn{--t-btn:.875rem;padding-left:14px}}
+
+/* ---------- Project head ---------- */
+.head{padding-top:calc(var(--nav-top) + var(--nav-h) + clamp(36px,6vw,72px));padding-bottom:clamp(28px,4vw,44px)}
+.crumb{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:.875rem;color:var(--muted)}
+.crumb a{text-decoration:none;font-weight:600}
+.crumb a:hover{color:var(--purple)}
+.badge{display:inline-flex;align-items:center;gap:6px;font:700 .6875rem/1 var(--body);letter-spacing:.1em;text-transform:uppercase;padding:6px 10px;border-radius:999px;background:#FCF3CF;color:#6B5208}
+.head h1{margin-top:18px;font-size:clamp(2.4rem,6.4vw,5.25rem);color:var(--navy);max-width:14ch;letter-spacing:-.035em}
+.head-grid{display:grid;gap:24px 56px;margin-top:22px}
+@media (min-width:960px){.head-grid{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:end}}
+.lede{font-size:clamp(1.0625rem,1.5vw,1.25rem);color:var(--muted);max-width:56ch}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.chip{display:inline-flex;align-items:center;gap:7px;font-size:.875rem;font-weight:600;padding:7px 12px;border-radius:999px;background:var(--wash);color:var(--navy)}
+.chip .ic{width:16px;height:16px;color:var(--purple)}
+
+/* Mode switch: two large segments (head) and a small floating copy */
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:6px;border-radius:22px;background:var(--wash);box-shadow:inset 0 0 0 1px var(--line)}
+.mode{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:12px;text-align:left;border:0;cursor:pointer;border-radius:16px;padding:12px 14px;min-height:64px;background:transparent;color:var(--muted);font:inherit;transition:background-color 220ms ease,color 220ms ease,box-shadow 220ms ease,transform 160ms var(--ease-out)}
+.mode:active{transform:scale(.98)}
+.mode .mi{grid-row:span 2;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(19,25,81,.06);transition:background-color 220ms ease,color 220ms ease}
+.mode .mi .ic{width:20px;height:20px}
+.mode b{font:700 1.0625rem/1.1 var(--display);color:var(--ink)}
+.mode small{font-size:.8125rem}
+.mode[aria-selected="true"]{background:var(--paper);box-shadow:0 1px 2px rgba(19,25,81,.12),0 8px 20px -12px rgba(19,25,81,.35)}
+.mode[aria-selected="true"] .mi{background:var(--purple);color:#fff}
+
+.fab{position:fixed;z-index:25;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translate(-50%,160%);display:flex;gap:4px;padding:4px;border-radius:999px;background:rgba(255,255,255,.94);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:0 0 0 1px rgba(19,25,81,.1),0 14px 30px -14px rgba(11,15,58,.6);transition:transform 360ms var(--ease-out)}
+.fab.show{transform:translate(-50%,0)}
+.fab button{display:inline-flex;align-items:center;gap:8px;border:0;cursor:pointer;border-radius:999px;padding:0 16px;min-height:44px;background:transparent;color:var(--muted);font:700 .875rem/1 var(--body);transition:background-color 200ms ease,color 200ms ease}
+.fab button .ic{width:18px;height:18px}
+.fab button[aria-pressed="true"]{background:var(--navy);color:#fff}
+
+/* ---------- Tonton: the stage ---------- */
+.reel{position:relative}
+.stage{
+  position:relative;overflow:hidden;color:var(--on-night);
+  background:
+    radial-gradient(70% 60% at 78% 38%,rgba(140,43,250,.22),transparent 70%),
+    radial-gradient(50% 50% at 10% 90%,rgba(53,234,254,.08),transparent 70%),
+    var(--navy);
+  display:grid;grid-template-columns:minmax(0,38fr) minmax(0,62fr);grid-template-rows:minmax(0,1fr) auto;
+  column-gap:clamp(24px,4vw,56px);row-gap:18px;
+  padding-top:calc(var(--nav-top) + var(--nav-h) + 22px);
+  padding-bottom:calc(80px + env(safe-area-inset-bottom,0px));
+  padding-left:max(var(--gut-l),calc((100% - var(--maxw)) / 2));
+  padding-right:max(var(--gut-r),calc((100% - var(--maxw)) / 2));
+  height:clamp(680px,100svh,940px);
+}
+.stage::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(circle,rgba(182,187,226,.2) 1px,transparent 1.4px);background-size:22px 22px;
+  -webkit-mask-image:radial-gradient(90% 80% at 60% 45%,#000 40%,transparent 100%);mask-image:radial-gradient(90% 80% at 60% 45%,#000 40%,transparent 100%)}
+.film .reel{height:calc(var(--screens,11) * 100vh);height:calc(var(--screens,11) * 100svh)}
+.film .stage{position:sticky;top:0;height:100vh;height:100svh}
+
+.bar{position:absolute;left:0;right:0;top:0;height:3px;z-index:2;background:rgba(255,255,255,.06)}
+.bar i{display:block;height:100%;width:100%;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--violet),var(--cyan))}
+
+/* caption column */
+.capcol{grid-column:1;grid-row:1;align-self:center;position:relative;z-index:1;display:grid;gap:22px;min-width:0}
+.caps{display:grid;gap:28px}
+.has-tl .caps{gap:0}
+.has-tl .caps > li{grid-area:1/1}
+.has-tl .caps > li:not(:first-child){opacity:0;visibility:hidden}
+.caps > li{display:grid;gap:12px;align-content:start}
+.kick{display:inline-flex;align-items:center;gap:8px;font:700 .75rem/1.2 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--cyan)}
+.kick::before{content:"";width:18px;height:2px;border-radius:2px;background:currentColor}
+.kick.before{color:#FF9EA3}
+.caps h2{font-size:clamp(1.65rem,3.1vw,2.9rem);line-height:1.06;color:#fff;letter-spacing:-.03em}
+.caps p{color:var(--on-night-muted);font-size:clamp(.9375rem,1.15vw,1.0625rem);max-width:38ch}
+.caps .cta-row{margin-top:10px}
+.caps .btn-line{color:var(--on-night)}
+.has-tl .caps > li{pointer-events:none}
+.has-tl .caps > li.live{pointer-events:auto}
+
+.ctrl{display:none;align-items:center;gap:10px}
+.has-tl .ctrl{display:flex}
+.ctrl button{width:44px;height:44px;border-radius:999px;border:0;cursor:pointer;display:grid;place-items:center;background:rgba(255,255,255,.08);color:#fff;box-shadow:inset 0 0 0 1px var(--night-line);transition:background-color 200ms ease,transform 160ms var(--ease-out)}
+.ctrl button:hover{background:rgba(255,255,255,.16)}
+.ctrl button:active{transform:scale(.94)}
+.ctrl button:disabled{opacity:.35;cursor:default}
+.ctrl .ic{width:18px;height:18px}
+.ctrl .prev .ic{transform:rotate(180deg)}
+.ctrl span{font-size:.8125rem;color:var(--on-night-muted);font-variant-numeric:tabular-nums;margin-left:4px}
+.hint{display:none;align-items:center;gap:10px;font-size:.875rem;color:var(--on-night-muted)}
+.film .hint{display:inline-flex}
+.hint i{width:22px;height:34px;border-radius:999px;box-shadow:inset 0 0 0 1.5px var(--on-night-muted);position:relative}
+.hint i::after{content:"";position:absolute;left:50%;top:8px;width:4px;height:7px;margin-left:-2px;border-radius:4px;background:var(--cyan);animation:wheel 1.6s var(--ease-out) infinite}
+@keyframes wheel{0%{transform:translateY(0);opacity:1}70%{transform:translateY(10px);opacity:0}100%{opacity:0}}
+
+/* scene canvas: fixed design size, scaled to fit */
+.viz{grid-column:2;grid-row:1;position:relative;min-height:0;min-width:0}
+.cv{position:absolute;left:50%;top:50%;width:440px;height:520px;transform:translate(-50%,-50%) scale(var(--s,1));transform-origin:50% 50%;color:var(--ink)}
+.cv > *{position:absolute;will-change:transform,opacity}
+.cv .ic{width:18px;height:18px}
+
+/* group chat */
+.chat{left:0;top:0;width:440px;height:520px;border-radius:24px;background:var(--wash);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 40px 70px -34px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.08)}
+.chat-h{flex:none;height:64px;display:flex;align-items:center;gap:12px;padding:0 18px;background:#fff;border-bottom:1px solid var(--line)}
+.chat-h .av{width:38px;height:38px;border-radius:12px;background:var(--navy);color:#fff;display:grid;place-items:center}
+.chat-h b{display:block;font:700 15.5px/1.2 var(--display)}
+.chat-h small{display:block;font-size:12px;color:var(--muted)}
+.win{position:relative;flex:1;overflow:hidden}
+.list{position:relative;padding:14px 16px 20px;display:flex;flex-direction:column;gap:9px}
+.msg{position:relative;align-self:flex-start;max-width:340px;background:#fff;border-radius:4px 16px 16px 16px;padding:7px 12px 7px;font-size:14px;line-height:1.42;box-shadow:0 1px 0 rgba(19,25,81,.07)}
+.msg .who{display:block;font-weight:700;font-size:12px;margin-bottom:1px;color:var(--c,var(--purple))}
+.msg time{float:right;margin:5px 0 0 12px;font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.msg .att{display:flex;align-items:center;gap:8px;color:var(--muted)}
+.msg.bot{align-self:flex-end;background:#F3E6FC;border-radius:16px 4px 16px 16px}
+.msg.bot .who{display:flex;align-items:center;gap:5px;color:var(--purple-deep)}
+.msg.bot .who .ic{width:13px;height:13px}
+.tag{position:absolute;right:-10px;top:-9px;display:inline-flex;align-items:center;font:700 10px/1 var(--body);letter-spacing:.06em;text-transform:uppercase;padding:5px 8px;border-radius:999px;background:var(--alert);color:#fff;transform:scale(0);box-shadow:0 6px 14px -6px rgba(229,72,77,.8)}
+.ring{position:absolute;inset:-5px;border-radius:8px 20px 20px 20px;box-shadow:0 0 0 2.5px var(--violet),0 0 0 9px rgba(140,43,250,.16);opacity:0;pointer-events:none}
+
+/* problem props: the admin's spreadsheet and the counter */
+.xls{left:148px;top:318px;width:284px;padding:12px 12px 14px;border-radius:16px;background:#fff;opacity:0;transform:rotate(-4deg);box-shadow:0 26px 44px -20px rgba(11,15,58,.75),0 0 0 1px var(--line)}
+.xls-h{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;color:var(--alert);margin-bottom:8px}
+.xls-h::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.xls table{width:100%;border-collapse:collapse;font-size:11px;font-variant-numeric:tabular-nums}
+.xls td{border:1px solid #E3E4EF;padding:4px 6px;white-space:nowrap}
+.xls tr:first-child td{background:#F1F2F8;font-weight:700;color:var(--muted)}
+.xls td:first-child{width:22px;color:var(--muted);text-align:center;background:#F7F7FB}
+.caret{display:inline-block;width:1.5px;height:12px;background:var(--ink);vertical-align:-2px;margin-left:1px}
+.film .caret{animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.count{left:304px;top:-22px;width:128px;padding:12px 14px;border-radius:16px;background:var(--navy-3);color:#fff;opacity:0;box-shadow:0 18px 34px -16px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.12)}
+.count b{display:block;font:800 34px/1 var(--display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.count small{font-size:11.5px;color:var(--on-night-muted)}
+
+/* AI extraction card */
+.ext{left:0;top:18px;width:440px;padding:20px;border-radius:24px;background:#fff;opacity:0;box-shadow:0 40px 70px -34px rgba(0,0,0,.7)}
+.ext .msg{max-width:none;background:var(--wash);font-size:15px;line-height:1.6;padding:12px 14px}
+.hl{background-image:linear-gradient(var(--h),var(--h));background-repeat:no-repeat;background-position:0 92%;background-size:0% 52%;border-radius:2px;padding:0 1px}
+.scan{left:20px;top:22px;width:400px;height:3px;border-radius:3px;opacity:0;background:linear-gradient(90deg,transparent,var(--cyan),transparent);box-shadow:0 0 16px 2px rgba(53,234,254,.8)}
+.ai-l{display:flex;align-items:center;gap:8px;margin:16px 0 10px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--violet)}
+.flds{display:grid;gap:7px}
+.fld{display:grid;grid-template-columns:30px 88px minmax(0,1fr);align-items:center;gap:8px;padding:8px 12px;border-radius:12px;background:var(--bg);font-size:14px;opacity:0}
+.fld .ic{width:17px;height:17px;color:var(--navy)}
+.fld .k{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.fld .v{font-weight:600}
+
+/* order table */
+.tbl{left:0;top:8px;width:440px;border-radius:24px;background:#fff;overflow:hidden;opacity:0;box-shadow:0 40px 70px -34px rgba(0,0,0,.7)}
+.tbl-h{height:52px;display:flex;align-items:center;gap:10px;padding:0 18px;border-bottom:1px solid var(--line);font:700 15px/1 var(--display)}
+.tbl-h .ic{color:var(--purple)}
+.tbl-h small{margin-left:auto;font:500 12px/1 var(--body);color:var(--muted)}
+.tr{display:grid;grid-template-columns:52px 92px minmax(0,1fr) 82px;gap:8px;align-items:center;height:50px;padding:0 16px;border-bottom:1px solid var(--line);font-size:12.5px;background:#fff}
+.tr:last-child{border-bottom:0}
+.tr.th{height:32px;background:#F7F7FB;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.tr .no{font-weight:700;font-variant-numeric:tabular-nums;color:var(--muted)}
+.tr .it{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rows{position:relative}
+.tr.new{background:#FBF6FF;opacity:0}
+.tr.new .no{color:var(--purple-deep)}
+.st{position:relative;height:26px}
+.st span{position:absolute;inset:0;display:inline-flex;align-items:center;justify-content:center;gap:4px;border-radius:999px;font-size:11px;font-weight:700}
+.st .ic{width:12px;height:12px}
+.s-new{background:var(--f-item-bg);color:#06606C}
+.s-go{background:#EDE3FF;color:#5B1BB5}
+.s-done{background:var(--ok-bg);color:var(--ok)}
+.st.live .s-go,.st.live .s-done{opacity:0}
+
+/* the same group, small, under the table */
+.mini{left:0;top:314px;width:440px;height:206px;border-radius:24px;background:var(--wash);overflow:hidden;opacity:0;display:flex;flex-direction:column;box-shadow:0 40px 70px -34px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.08)}
+.mini .chat-h{height:46px}
+.mini .chat-h .av{width:28px;height:28px;border-radius:9px}
+.mini .chat-h .av .ic{width:15px;height:15px}
+.mini .msg{opacity:0}
+
+/* the owner's phone at 21.00 */
+.phone{left:96px;top:6px;width:248px;height:508px;border-radius:40px;padding:58px 14px 20px;opacity:0;color:#fff;
+  background:radial-gradient(90% 60% at 30% 10%,rgba(140,43,250,.55),transparent 70%),linear-gradient(170deg,#262E7A,var(--navy-3));
+  box-shadow:inset 0 0 0 7px #05072A,inset 0 0 0 8px rgba(255,255,255,.14),0 40px 70px -30px rgba(0,0,0,.85)}
+.phone::before{content:"";position:absolute;left:50%;top:16px;width:78px;height:22px;margin-left:-39px;border-radius:999px;background:#05072A}
+.clock{text-align:center;font:600 62px/1 var(--display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.date{text-align:center;font-size:12.5px;color:var(--on-night-muted);margin-top:6px}
+.ntf{margin-top:26px;padding:12px 13px;border-radius:18px;background:rgba(255,255,255,.94);color:var(--ink);opacity:0}
+.ntf-h{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--muted)}
+.ntf-h img{width:20px;height:20px;border-radius:6px;background:var(--navy);padding:2px}
+.ntf-h b{color:var(--ink);font-size:11.5px}
+.ntf-h span{margin-left:auto}
+.ntf h3{font-size:14.5px;margin:8px 0 6px;letter-spacing:-.01em}
+.ntf li{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:4px 0;border-top:1px solid var(--line);font-variant-numeric:tabular-nums;opacity:0}
+.ntf li b{font-weight:700}
+
+/* results */
+.mx{left:0;top:30px;width:440px;display:grid;gap:12px}
+.m{padding:18px 22px;border-radius:22px;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px var(--night-line);color:var(--on-night);opacity:0}
+.m b{display:block;font:800 52px/1 var(--display);letter-spacing:-.04em;color:#fff;font-variant-numeric:tabular-nums}
+.m b small{font-size:22px;font-weight:700;color:var(--cyan);letter-spacing:-.01em;margin-left:6px}
+.m p{margin-top:6px;font-size:14px;color:var(--on-night-muted)}
+.mx-note{justify-self:start;opacity:0;font:700 10.5px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;padding:6px 10px;border-radius:999px;background:#FCF3CF;color:#6B5208}
+
+/* workflow rail */
+.flow{grid-column:1/-1;grid-row:2;position:relative;z-index:1;display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:28px;padding:14px 22px 12px;border-radius:22px;background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px rgba(182,187,226,.14);transition:opacity 400ms ease}
+.flow.pre{opacity:.4}
+.flow-l b{display:block;font:700 15px/1.2 var(--display);color:#fff}
+.flow-l small{font-size:12px;color:var(--on-night-muted)}
+.track{--nw:108px;position:relative;display:flex;justify-content:space-between}
+.track::before{content:"";position:absolute;left:calc(var(--nw) / 2);right:calc(var(--nw) / 2);top:20px;height:0;border-top:2px dashed rgba(182,187,226,.28)}
+.node{position:relative;z-index:1;width:var(--nw);display:grid;justify-items:center;gap:7px;text-align:center}
+.nb{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--navy-2);color:var(--on-night-muted);box-shadow:inset 0 0 0 1.5px rgba(182,187,226,.3);transition:background-color 300ms ease,color 300ms ease,box-shadow 300ms ease,transform 300ms var(--ease-out)}
+.nb .ic{width:19px;height:19px}
+.node.ai .nb{box-shadow:inset 0 0 0 1.5px rgba(140,43,250,.75)}
+.nl{font-size:12px;line-height:1.25;color:var(--on-night-muted);transition:color 300ms ease}
+.node[data-s="on"] .nb{background:#22297A;color:#fff;transform:scale(1.08);box-shadow:inset 0 0 0 2px var(--cyan),0 0 0 5px rgba(53,234,254,.14),0 0 26px rgba(53,234,254,.4)}
+.node[data-s="on"] .nl{color:#fff;font-weight:600}
+.node[data-s="done"] .nb{background:var(--violet);color:#fff;box-shadow:none}
+.node[data-s="done"] .nl{color:var(--on-night)}
+.pk{position:absolute;z-index:2;top:20px;left:calc(var(--nw) / 2 + (100% - var(--nw)) * var(--p,0) / 5);width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px 3px rgba(53,234,254,.75);opacity:0}
+.flow-now{display:none}
+
+/* phones and portrait tablets: caption / canvas / rail */
+@media (max-width:899px),(orientation:portrait) and (max-width:1100px){
+  .stage{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;row-gap:12px;padding-top:calc(var(--nav-top) + var(--nav-h) + 16px);padding-bottom:calc(72px + env(safe-area-inset-bottom,0px));height:clamp(640px,100svh,1000px)}
+  .capcol{grid-row:1;align-self:start;gap:10px}
+  .caps > li{gap:8px}
+  .caps h2{font-size:clamp(1.35rem,5.6vw,2rem)}
+  .caps p{display:none}
+  .caps .cta-row{margin-top:4px}
+  .viz{grid-column:1;grid-row:2}
+  .flow{grid-row:3;grid-template-columns:minmax(0,1fr);gap:6px;padding:10px 12px 8px;border-radius:18px}
+  .flow-l,.nl{display:none}
+  .track{--nw:36px}
+  .track::before{top:18px}
+  .nb{width:36px;height:36px;border-radius:11px}
+  .nb .ic{width:17px;height:17px}
+  .pk{top:18px}
+  .flow-now{display:block;text-align:center;font-size:12px;color:var(--on-night);min-height:1.3em}
+  .ctrl{order:3}
+  .film .ctrl{display:none}
+  .hint{display:none!important}
+}
+@media (max-width:420px){
+  .mode{padding:10px;column-gap:10px}
+  .mode .mi{width:36px;height:36px}
+  .mode b{font-size:1rem;white-space:nowrap}
+}
+@media (max-width:899px) and (max-height:700px){.caps .kick{display:none}}
+
+/* ---------- Baca: the case study ---------- */
+.read{padding-top:clamp(28px,4vw,48px)}
+.case{display:grid;gap:40px;padding-bottom:clamp(56px,8vw,96px)}
+@media (min-width:1000px){.case{grid-template-columns:300px minmax(0,1fr);gap:72px;align-items:start}}
+.facts{border-radius:24px;background:var(--wash);padding:22px 22px 8px}
+@media (min-width:1000px){.facts{position:sticky;top:calc(var(--nav-top) + var(--nav-h) + 24px)}}
+.facts h2{font-size:1.125rem;margin-bottom:8px}
+.facts dl > div{padding:12px 0;border-top:1px solid var(--line)}
+.facts dt{font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.facts dd{margin-top:3px;font-weight:600;color:var(--navy)}
+.toc{display:none}
+@media (min-width:1000px){.toc{display:grid;gap:2px;margin:6px 0 14px}.toc a{font-size:.875rem;color:var(--muted);text-decoration:none;padding:5px 0}.toc a:hover{color:var(--purple)}}
+.body{min-width:0;display:grid;gap:clamp(48px,6vw,72px)}
+.sec{display:grid;gap:16px;max-width:68ch;scroll-margin-top:calc(var(--nav-top) + var(--nav-h) + 24px)}
+.sec h2{font-size:clamp(1.75rem,3.2vw,2.5rem);color:var(--navy)}
+.sec .eb{font:700 .75rem/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--purple)}
+.sec p{font-size:1.0625rem;line-height:1.7}
+.sec p.first::first-letter{float:left;font:800 4.1em/.82 var(--display);color:var(--purple);margin:.08em .1em 0 0}
+.pull{margin:8px 0;padding-left:20px;border-left:3px solid var(--violet);font:600 clamp(1.25rem,2.2vw,1.6rem)/1.3 var(--display);color:var(--navy);letter-spacing:-.01em}
+.ticks{display:grid;gap:10px}
+.ticks li{display:grid;grid-template-columns:24px minmax(0,1fr);gap:10px;font-size:1.0625rem;line-height:1.6}
+.ticks .ic{width:20px;height:20px;color:var(--purple);margin-top:4px}
+
+/* workflow diagram band */
+.wf{max-width:none;border-radius:28px;background:var(--navy);color:var(--on-night);padding:clamp(22px,3vw,36px);position:relative;overflow:hidden}
+.wf::before{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(circle,rgba(182,187,226,.18) 1px,transparent 1.4px);background-size:20px 20px}
+.wf > *{position:relative}
+.wf h2{color:#fff}
+.wf .eb{color:var(--cyan)}
+.wf-scroll{overflow-x:auto;margin:6px calc(-1 * clamp(22px,3vw,36px));padding:6px clamp(22px,3vw,36px) 12px;scrollbar-width:thin}
+.lanes{display:grid;gap:22px;width:max-content}
+.lane{display:grid;gap:10px}
+.lane > small{font:700 .6875rem/1 var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--on-night-muted)}
+.row{display:flex;align-items:center}
+.wn{position:relative;display:flex;align-items:center;gap:8px;padding:9px 12px 9px 9px;border-radius:14px;background:var(--navy-2);box-shadow:inset 0 0 0 1px rgba(182,187,226,.28);font-size:.875rem;font-weight:600;color:#fff;white-space:nowrap}
+.wn .nb{width:30px;height:30px;border-radius:9px;background:rgba(255,255,255,.08);box-shadow:none;color:var(--cyan)}
+.wn .nb .ic{width:16px;height:16px}
+.wn.trg{border-radius:26px 14px 14px 26px}
+.wn.ai{box-shadow:inset 0 0 0 1.5px var(--violet),0 0 24px -6px rgba(140,43,250,.8)}
+.wn.ai .nb{color:#D7B8FF}
+.wn.if .nb{color:#F3DC78}
+.link{width:22px;height:2px;background:rgba(182,187,226,.45);flex:none;position:relative}
+.link::after{content:"";position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left:6px solid rgba(182,187,226,.6);border-right:0}
+.drop{justify-content:flex-end;position:relative;padding-top:14px}
+.drop::before{content:"";position:absolute;right:70px;top:0;height:14px;border-left:2px solid rgba(182,187,226,.45)}
+.branch{display:grid;gap:10px;padding:10px 0 0 16px;border-left:2px solid rgba(182,187,226,.45);border-top:2px solid rgba(182,187,226,.45);border-top-left-radius:12px}
+.branch .row > em{font-style:normal;font-size:.75rem;font-weight:700;color:var(--on-night-muted);width:40px;flex:none}
+.wf-note{font-size:.8125rem;color:var(--on-night-muted);margin-top:4px}
+.steps{display:grid;gap:18px 32px;counter-reset:s}
+@media (min-width:760px){.steps{grid-template-columns:1fr 1fr}}
+.steps li{display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px 14px;counter-increment:s}
+.steps li::before{content:counter(s);grid-row:span 2;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--wash);font:800 1.125rem/1 var(--display);color:var(--purple)}
+.steps b{font:700 1.0625rem/1.3 var(--display);color:var(--navy)}
+.steps p{font-size:.9688rem;line-height:1.6;color:var(--muted)}
+.steps .sec{max-width:none}
+
+.tiles{display:grid;gap:12px}
+@media (min-width:640px){.tiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.tile{padding:20px;border-radius:22px;background:var(--wash)}
+.tile b{display:block;font:800 2.6rem/1 var(--display);letter-spacing:-.04em;color:var(--navy);font-variant-numeric:tabular-nums}
+.tile b small{font-size:1.1rem;color:var(--purple);margin-left:4px}
+.tile p{margin-top:8px;font-size:.9375rem;line-height:1.5;color:var(--muted)}
+.note{font-size:.875rem;color:var(--muted)}
+.quote{margin:0;padding:28px;border-radius:24px;background:var(--navy);color:var(--on-night);display:grid;gap:16px}
+.quote .ic{width:34px;height:34px;color:var(--cyan)}
+.quote p{font:600 clamp(1.25rem,2.4vw,1.65rem)/1.35 var(--display);color:#fff;letter-spacing:-.01em}
+.quote footer{font-size:.875rem;color:var(--on-night-muted)}
+.tools{display:grid;gap:10px}
+@media (min-width:640px){.tools{grid-template-columns:1fr 1fr}}
+.tools li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 12px;padding:14px 16px;border-radius:18px;box-shadow:inset 0 0 0 1px var(--line)}
+.tools .ic{grid-row:span 2;width:22px;height:22px;color:var(--purple);margin-top:2px}
+.tools b{font-weight:700}
+.tools span{font-size:.875rem;color:var(--muted)}
+
+/* ---------- Shared end: other projects, CTA, footer ---------- */
+.more{padding-block:clamp(56px,8vw,96px);background:var(--wash)}
+.more h2{font-size:clamp(1.75rem,3.4vw,2.6rem);color:var(--navy)}
+.cards{display:grid;gap:14px;margin-top:24px}
+@media (min-width:760px){.cards{grid-template-columns:1fr 1fr}}
+.card{display:grid;gap:10px;padding:24px;border-radius:24px;background:#fff;box-shadow:0 0 0 1px var(--line);text-decoration:none}
+.card .chips{margin-top:0}
+.card h3{font-size:1.5rem;color:var(--navy)}
+.card p{color:var(--muted)}
+.card .soon{justify-self:start;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.end{background:var(--navy);color:var(--on-night);padding-block:clamp(64px,9vw,112px) 28px}
+.end h2{font-size:clamp(2rem,5vw,3.75rem);color:#fff;max-width:18ch;letter-spacing:-.03em}
+.end > .wrap > p{margin-top:16px;color:var(--on-night-muted);font-size:1.125rem;max-width:52ch}
+.end .cta-row{margin-top:28px}
+.end .btn-line{color:var(--on-night)}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;margin-top:clamp(56px,8vw,96px);padding-top:20px;padding-bottom:calc(64px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(182,187,226,.18);font-size:.8125rem;color:var(--on-night-muted)}
+.foot img{height:24px;width:auto}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:1ms!important;animation:none!important}
+}
+</style>
+
+{{SPRITE}}
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-play" viewBox="0 0 256 256"><path d="M232.4 114.5 88.3 26.4a16 16 0 0 0-24.3 13.6v176a16 16 0 0 0 24.3 13.6l144.1-88.1a15.9 15.9 0 0 0 0-27Z"/></symbol>
+</svg>
+
+<header class="nav">
+  <a class="brand" href="https://claude.ai/artifact/Ruu3y62oZoj8Jhtd4Nqqm8" aria-label="Kreatekno, ke Beranda"><img src="{{LOGO}}" alt="Kreatekno" width="280" height="48"></a>
+  <ul class="nav-links">
+    <li><a href="https://claude.ai/artifact/Ruu3y62oZoj8Jhtd4Nqqm8">Layanan</a></li>
+    <li><a href="https://claude.ai/artifact/Ruu3y62oZoj8Jhtd4Nqqm8">Cara kerja</a></li>
+    <li><a href="#" aria-current="page">Portofolio</a></li>
+    <li><a href="https://claude.ai/artifact/Ruu3y62oZoj8Jhtd4Nqqm8">Artikel</a></li>
+    <li><a href="https://claude.ai/artifact/Ruu3y62oZoj8Jhtd4Nqqm8">Tentang</a></li>
+  </ul>
+  <div class="nav-end">
+    <a class="btn btn-main" data-wa="chat" href="#" target="_blank" rel="noopener">Konsultasi gratis<span class="knob"><svg class="ic"><use href="#i-chat-circle-dots"/></svg></span></a>
+  </div>
+</header>
+
+<main id="main">
+  <section class="head wrap" aria-labelledby="judul">
+    <nav class="crumb" aria-label="Breadcrumb"><a href="#">Portofolio</a><span aria-hidden="true">/</span><span>Logistik</span><span class="badge">Contoh proyek</span></nav>
+    <h1 id="judul">Order otomatis dari grup chat</h1>
+    <div class="head-grid">
+      <div>
+        <p class="lede">Distributor air minum di Pekanbaru menerima sekitar 120 order sehari lewat grup chat tim. Sekarang setiap order tercatat ke tabel tanpa diketik ulang, lengkap dengan status pengiriman dan rekap malam untuk pemilik.</p>
+        <ul class="chips">
+          <li class="chip"><svg class="ic"><use href="#i-truck"/></svg>Logistik</li>
+          <li class="chip"><svg class="ic"><use href="#i-table"/></svg>Otomasi admin</li>
+          <li class="chip"><svg class="ic"><use href="#i-sparkle"/></svg>Agen AI</li>
+        </ul>
+      </div>
+      <div class="modes" role="tablist" aria-label="Cara melihat proyek">
+        <button class="mode" type="button" role="tab" id="tab-tonton" data-mode="tonton" aria-controls="panel-tonton" aria-selected="true"><span class="mi"><svg class="ic"><use href="#i-play"/></svg></span><b>Tonton</b><small>Gulir, sekitar 1 menit</small></button>
+        <button class="mode" type="button" role="tab" id="tab-baca" data-mode="baca" aria-controls="panel-baca" aria-selected="false" tabindex="-1"><span class="mi"><svg class="ic"><use href="#i-book-open-text"/></svg></span><b>Baca detail</b><small>Sekitar 4 menit</small></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TONTON ===================== -->
+  <section id="panel-tonton" role="tabpanel" aria-labelledby="tab-tonton">
+    <div class="reel">
+      <div class="stage">
+        <div class="bar" aria-hidden="true"><i></i></div>
+
+        <div class="capcol">
+          <ol class="caps">
+            <li><span class="kick before">Sebelum</span><h2>Order masuk acak di grup. Admin mengetik ulang satu per satu.</h2><p>Sekitar 120 order sehari. Revisi tertimbun obrolan, dan beberapa order terlewat.</p></li>
+            <li><span class="kick">Langkah 1 · Pesan masuk</span><h2>Tim tetap mengirim order seperti biasa.</h2><p>Tidak ada format khusus dan tidak ada aplikasi baru untuk dipelajari.</p></li>
+            <li><span class="kick">Langkah 2 · AI membaca</span><h2>AI membaca pesan dan memisahkan data ordernya.</h2><p>Pelanggan, barang, jumlah, alamat, dan cara bayar diambil dari bahasa sehari-hari.</p></li>
+            <li><span class="kick">Langkah 3 · Tersimpan</span><h2>Data order masuk ke tabel dengan nomor sendiri.</h2><p>Revisi seperti "jadi 12 dus ya" mengubah baris yang sama.</p></li>
+            <li><span class="kick">Langkah 4 · Konfirmasi</span><h2>Sistem membalas di grup dengan nomor order.</h2><p>Sales tahu ordernya sudah tercatat tanpa bertanya ke admin.</p></li>
+            <li><span class="kick">Langkah 5 · Status</span><h2>Balasan singkat dari kurir mengubah status order.</h2><p>Cukup ketik "kirim 0412" atau "selesai 0412" di grup.</p></li>
+            <li><span class="kick">Langkah 6 · Rekap</span><h2>Setiap pukul 21.00, pemilik menerima rekap hari itu.</h2><p>Jumlah order, yang selesai, yang menunggu, dan total nilainya dalam satu pesan.</p></li>
+            <li><span class="kick">Hasil · angka contoh</span><h2>Admin berhenti mengetik ulang dan punya waktu untuk pelanggan.</h2><p>Angka di samping adalah contoh sampai data klien boleh ditampilkan.</p></li>
+            <li><span class="kick">Untuk bisnis Anda</span><h2>Mau sistem seperti ini untuk bisnis Anda?</h2><p>Ceritakan alur order Anda. Kami bantu petakan solusinya, gratis.</p>
+              <div class="cta-row">
+                <a class="btn btn-main" data-wa="chat" href="#" target="_blank" rel="noopener">Konsultasi gratis<span class="knob"><svg class="ic"><use href="#i-chat-circle-dots"/></svg></span></a>
+                <button class="btn btn-line" type="button" data-go="baca"><svg class="ic"><use href="#i-book-open-text"/></svg>Baca detail</button>
+              </div>
+            </li>
+          </ol>
+          <div class="hint" aria-hidden="true"><i></i>Gulir untuk melihat sistemnya bekerja</div>
+          <div class="ctrl">
+            <button class="prev" type="button" aria-label="Adegan sebelumnya"><svg class="ic"><use href="#i-arrow-right"/></svg></button>
+            <button class="next" type="button" aria-label="Adegan berikutnya"><svg class="ic"><use href="#i-arrow-right"/></svg></button>
+            <span aria-live="polite">Adegan <b class="sc-n">1</b> dari 9</span>
+          </div>
+        </div>
+
+        <div class="viz" aria-hidden="true">
+          <div class="cv">
+            <!-- group chat -->
+            <div class="chat">
+              <div class="chat-h"><span class="av"><svg class="ic"><use href="#i-users"/></svg></span><div><b>Order Gudang Pekanbaru</b><small>Andi, Dina, Rudi, Sari, Bayu, dan 9 lainnya</small></div></div>
+              <div class="win"><div class="list">
+                <div class="msg" style="--c:#0E7C8A"><span class="who">Rudi · sales</span>order toko berkah 10 dus gelas 220ml, cod<time>08.12</time></div>
+                <div class="msg" style="--c:#A15C07"><span class="who">Sari · gudang</span>kak yg pak joko kemarin udh dikirim blm?<time>08.14</time></div>
+                <div class="msg" style="--c:#5B1BB5"><span class="who">Andi · sales</span>pak joko 5 galon isi ulang, arifin ahmad gg mawar 3<time>08.15</time><span class="tag">Belum dicatat</span></div>
+                <div class="msg" style="--c:#B4236B"><span class="who">Dina · CS</span><span class="att"><svg class="ic"><use href="#i-image"/></svg>Foto bukti transfer</span><time>08.17</time></div>
+                <div class="msg" style="--c:#0E7C8A"><span class="who">Rudi · sales</span>yg toko berkah jadi 12 dus ya, revisi<time>08.20</time><span class="tag">Terlewat</span></div>
+                <div class="msg" style="--c:#A15C07"><span class="who">Sari · gudang</span>ok<time>08.21</time></div>
+                <div class="msg" style="--c:#B4236B"><span class="who">Dina · CS</span>warung bu tini minta 2 dus 1500ml, besok pagi aja<time>08.24</time></div>
+                <div class="msg" style="--c:#2A3BB0"><span class="who">Bayu · kurir</span>otw sudirman<time>08.26</time></div>
+                <div class="msg target" style="--c:#5B1BB5"><span class="ring"></span><span class="who">Andi · sales</span>Bu Rina pesan 3 dus air mineral 600ml, antar ke Jl. Sudirman No. 12, bayar transfer<time>08.31</time></div>
+                <div class="msg" style="--c:#A15C07"><span class="who">Sari · gudang</span>siap<time>08.32</time></div>
+                <div class="msg" style="--c:#0E7C8A"><span class="who">Rudi · sales</span>stok gelas 220 tinggal brp?<time>08.33</time></div>
+              </div></div>
+            </div>
+            <div class="xls">
+              <div class="xls-h">Admin · mengetik ulang ke Excel</div>
+              <table><tr><td></td><td>Pelanggan</td><td>Barang</td><td>Jml</td></tr><tr><td>1</td><td>Toko Berkah</td><td>Gelas 220ml</td><td>10</td></tr><tr><td>2</td><td>Pak Joko</td><td>Galon</td><td>5</td></tr><tr><td>3</td><td>Bu Ri<span class="caret"></span></td><td></td><td></td></tr></table>
+            </div>
+            <div class="count"><b class="cnt">0</b><small>order hari ini, semua dibaca manual</small></div>
+
+            <!-- AI extraction -->
+            <div class="ext">
+              <div class="msg" style="--c:#5B1BB5"><span class="who">Andi · sales</span><span class="hl" style="--h:var(--f-cust)">Bu Rina</span> pesan <span class="hl" style="--h:var(--f-qty)">3 dus</span> <span class="hl" style="--h:var(--f-item)">air mineral 600ml</span>, antar ke <span class="hl" style="--h:var(--f-addr)">Jl. Sudirman No. 12</span>, bayar <span class="hl" style="--h:var(--f-pay)">transfer</span></div>
+              <div class="ai-l"><svg class="ic"><use href="#i-sparkle"/></svg>AI memisahkan data</div>
+              <ul class="flds">
+                <li class="fld" style="--bg:var(--f-cust-bg)"><svg class="ic"><use href="#i-user-circle"/></svg><span class="k">Pelanggan</span><span class="v">Bu Rina</span></li>
+                <li class="fld" style="--bg:var(--f-item-bg)"><svg class="ic"><use href="#i-package"/></svg><span class="k">Barang</span><span class="v">Air mineral 600ml</span></li>
+                <li class="fld" style="--bg:var(--f-qty-bg)"><svg class="ic"><use href="#i-plus"/></svg><span class="k">Jumlah</span><span class="v">3 dus</span></li>
+                <li class="fld" style="--bg:var(--f-addr-bg)"><svg class="ic"><use href="#i-map-pin"/></svg><span class="k">Alamat</span><span class="v">Jl. Sudirman No. 12</span></li>
+                <li class="fld" style="--bg:var(--f-pay-bg)"><svg class="ic"><use href="#i-receipt"/></svg><span class="k">Bayar</span><span class="v">Transfer</span></li>
+              </ul>
+            </div>
+            <div class="scan"></div>
+
+            <!-- order table -->
+            <div class="tbl">
+              <div class="tbl-h"><svg class="ic"><use href="#i-table"/></svg>Tabel order<small>Selasa, 25 Okt</small></div>
+              <div class="tr th"><span>No</span><span>Pelanggan</span><span>Barang</span><span>Status</span></div>
+              <div class="rows">
+                <div class="tr new"><span class="no">0412</span><span>Bu Rina</span><span class="it">3 dus air mineral 600ml</span><span class="st live"><span class="s-new">Baru</span><span class="s-go"><svg class="ic"><use href="#i-truck"/></svg>Dikirim</span><span class="s-done"><svg class="ic"><use href="#i-check"/></svg>Selesai</span></span></div>
+                <div class="tr old"><span class="no">0411</span><span>Bu Tini</span><span class="it">2 dus air 1500ml</span><span class="st"><span class="s-new">Baru</span></span></div>
+                <div class="tr old"><span class="no">0410</span><span>Pak Joko</span><span class="it">5 galon isi ulang</span><span class="st"><span class="s-go"><svg class="ic"><use href="#i-truck"/></svg>Dikirim</span></span></div>
+                <div class="tr old"><span class="no">0409</span><span>Toko Berkah</span><span class="it">12 dus gelas 220ml</span><span class="st"><span class="s-done"><svg class="ic"><use href="#i-check"/></svg>Selesai</span></span></div>
+              </div>
+            </div>
+
+            <!-- the same group, small -->
+            <div class="mini">
+              <div class="chat-h"><span class="av"><svg class="ic"><use href="#i-users"/></svg></span><div><b>Order Gudang Pekanbaru</b></div></div>
+              <div class="win"><div class="list">
+                <div class="msg bot m1"><span class="who"><svg class="ic"><use href="#i-sparkle"/></svg>Asisten Order</span>Order #0412 tercatat: Bu Rina, 3 dus air mineral 600ml, transfer.<time>08.31</time></div>
+                <div class="msg m2" style="--c:#2A3BB0"><span class="who">Bayu · kurir</span>kirim 0412<time>10.05</time></div>
+                <div class="msg bot m3"><span class="who"><svg class="ic"><use href="#i-sparkle"/></svg>Asisten Order</span>#0412 sekarang Dikirim.<time>10.05</time></div>
+                <div class="msg m4" style="--c:#2A3BB0"><span class="who">Bayu · kurir</span>selesai 0412<time>10.41</time></div>
+                <div class="msg bot m5"><span class="who"><svg class="ic"><use href="#i-sparkle"/></svg>Asisten Order</span>#0412 Selesai. Terima kasih, Bayu.<time>10.41</time></div>
+              </div></div>
+            </div>
+
+            <!-- the owner's phone -->
+            <div class="phone">
+              <div class="clock">21.00</div>
+              <div class="date">Selasa, 25 Oktober</div>
+              <div class="ntf">
+                <div class="ntf-h"><img src="{{MARK}}" alt=""><b>Asisten Order</b><span>sekarang</span></div>
+                <h3>Rekap order hari ini</h3>
+                <ul>
+                  <li><span>Order masuk</span><b>118</b></li>
+                  <li><span>Selesai dikirim</span><b>112</b></li>
+                  <li><span>Menunggu dikirim</span><b>6</b></li>
+                  <li><span>Total nilai</span><b>Rp 14,2 jt</b></li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- results -->
+            <div class="mx">
+              <div class="m"><b><span class="num" data-to="3">0</span><small>jam</small></b><p>waktu admin kembali setiap hari</p></div>
+              <div class="m"><b><span class="num" data-to="120">0</span><small>order</small></b><p>tercatat sehari tanpa diketik ulang</p></div>
+              <div class="m"><b>1<small>pesan</small></b><p>rekap untuk pemilik setiap malam</p></div>
+              <span class="mx-note">Angka contoh</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flow pre" aria-hidden="true">
+          <div class="flow-l"><b>Alur kerja</b><small>6 langkah otomatis</small></div>
+          <div class="track">
+            <div class="node"><span class="nb"><svg class="ic"><use href="#i-chat-circle-dots"/></svg></span><span class="nl">Pesan grup masuk</span></div>
+            <div class="node ai"><span class="nb"><svg class="ic"><use href="#i-sparkle"/></svg></span><span class="nl">AI memisahkan data</span></div>
+            <div class="node"><span class="nb"><svg class="ic"><use href="#i-table"/></svg></span><span class="nl">Simpan ke tabel</span></div>
+            <div class="node"><span class="nb"><svg class="ic"><use href="#i-check-circle"/></svg></span><span class="nl">Konfirmasi di grup</span></div>
+            <div class="node"><span class="nb"><svg class="ic"><use href="#i-truck"/></svg></span><span class="nl">Update status</span></div>
+            <div class="node"><span class="nb"><svg class="ic"><use href="#i-bell"/></svg></span><span class="nl">Rekap malam</span></div>
+            <span class="pk"></span>
+          </div>
+          <p class="flow-now">Sebelum sistem berjalan</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== BACA ===================== -->
+  <section id="panel-baca" class="read" role="tabpanel" aria-labelledby="tab-baca" hidden>
+    <div class="wrap case">
+      <aside class="facts" aria-labelledby="ringkasan">
+        <h2 id="ringkasan">Ringkasan</h2>
+        <dl>
+          <div><dt>Klien</dt><dd>Distributor air minum, Pekanbaru (contoh)</dd></div>
+          <div><dt>Industri</dt><dd>Logistik dan distribusi</dd></div>
+          <div><dt>Solusi</dt><dd>Otomasi admin, Agen AI</dd></div>
+          <div><dt>Pengguna</dt><dd>14 orang di grup: sales, gudang, kurir</dd></div>
+          <div><dt>Hasil utama</dt><dd>Order tercatat tanpa diketik ulang</dd></div>
+        </dl>
+        <nav class="toc" aria-label="Isi">
+          <a href="#masalah">Masalah</a><a href="#dibangun">Yang kami bangun</a><a href="#alur">Alur kerja</a><a href="#hasil">Hasil</a><a href="#alat">Alat yang dipakai</a>
+        </nav>
+      </aside>
+
+      <div class="body">
+        <section class="sec" id="masalah">
+          <span class="eb">Masalah</span>
+          <h2>Seratus pesan sehari, satu admin yang mengetik ulang</h2>
+          <p class="first">Setiap hari sekitar 120 order masuk lewat grup chat tim. Sales menulis order dengan gaya masing-masing. Ada yang lengkap, ada yang hanya menulis nama toko dan jumlah. Admin membaca grup dari atas ke bawah, lalu mengetik ulang setiap order ke Excel.</p>
+          <p>Di jam sibuk pesan bertumpuk. Revisi order tertimbun di antara obrolan, beberapa order terlewat, dan pemilik baru tahu angka penjualan keesokan paginya.</p>
+          <blockquote class="pull">Grupnya sudah berjalan baik. Yang melelahkan adalah memindahkan isinya ke tabel.</blockquote>
+        </section>
+
+        <section class="sec" id="dibangun">
+          <span class="eb">Yang kami bangun</span>
+          <h2>Grup tetap sama, pencatatannya otomatis</h2>
+          <p>Tim tidak perlu belajar aplikasi baru. Mereka tetap mengirim order ke grup yang sama. Di belakang grup itu, sistem membaca setiap pesan, mengenali pesan yang berisi order, lalu mencatatnya ke tabel order.</p>
+          <ul class="ticks">
+            <li><svg class="ic"><use href="#i-check-circle"/></svg><span>Membaca bahasa sehari-hari, termasuk singkatan dan revisi seperti "jadi 12 dus ya".</span></li>
+            <li><svg class="ic"><use href="#i-check-circle"/></svg><span>Memberi nomor order dan membalas di grup, supaya sales tahu ordernya sudah tercatat.</span></li>
+            <li><svg class="ic"><use href="#i-check-circle"/></svg><span>Menanyakan balik di grup kalau ada data yang kurang, misalnya alamat belum ditulis.</span></li>
+            <li><svg class="ic"><use href="#i-check-circle"/></svg><span>Mengubah status order dari balasan pendek kurir, lalu mengirim rekap ke pemilik setiap malam.</span></li>
+          </ul>
+        </section>
+
+        <section class="sec wf" id="alur">
+          <span class="eb">Alur kerja</span>
+          <h2>Tiga alur kecil yang bekerja bersama</h2>
+          <div class="wf-scroll">
+            <div class="lanes">
+              <div class="lane"><small>Order baru</small>
+                <div class="row">
+                  <span class="wn trg"><span class="nb"><svg class="ic"><use href="#i-chat-circle-dots"/></svg></span>Pesan grup masuk</span><span class="link"></span>
+                  <span class="wn"><span class="nb"><svg class="ic"><use href="#i-list"/></svg></span>Saring obrolan</span><span class="link"></span>
+                  <span class="wn ai"><span class="nb"><svg class="ic"><use href="#i-sparkle"/></svg></span>AI memisahkan data</span><span class="link"></span>
+                  <span class="wn if"><span class="nb"><svg class="ic"><use href="#i-seal-check"/></svg></span>Data lengkap?</span>
+                </div>
+                <div class="row drop">
+                  <div class="branch">
+                    <div class="row"><em>ya</em><span class="wn"><span class="nb"><svg class="ic"><use href="#i-table"/></svg></span>Simpan ke tabel</span><span class="link"></span><span class="wn"><span class="nb"><svg class="ic"><use href="#i-check-circle"/></svg></span>Balas nomor order</span></div>
+                    <div class="row"><em>tidak</em><span class="wn"><span class="nb"><svg class="ic"><use href="#i-chat-circle-dots"/></svg></span>Tanya balik di grup</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="lane"><small>Status pengiriman</small>
+                <div class="row">
+                  <span class="wn trg"><span class="nb"><svg class="ic"><use href="#i-truck"/></svg></span>Balasan kurir</span><span class="link"></span>
+                  <span class="wn"><span class="nb"><svg class="ic"><use href="#i-table"/></svg></span>Cari nomor order</span><span class="link"></span>
+                  <span class="wn"><span class="nb"><svg class="ic"><use href="#i-check"/></svg></span>Ubah status</span>
+                </div>
+              </div>
+              <div class="lane"><small>Rekap harian</small>
+                <div class="row">
+                  <span class="wn trg"><span class="nb"><svg class="ic"><use href="#i-calendar-dots"/></svg></span>Setiap pukul 21.00</span><span class="link"></span>
+                  <span class="wn"><span class="nb"><svg class="ic"><use href="#i-receipt"/></svg></span>Hitung rekap</span><span class="link"></span>
+                  <span class="wn"><span class="nb"><svg class="ic"><use href="#i-bell"/></svg></span>Kirim ke pemilik</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="wf-note">Diagram disederhanakan dari alur kerja aslinya. Kredensial, alamat server, dan isi perintah AI tidak ditampilkan.</p>
+        </section>
+
+        <section class="sec" aria-label="Langkah demi langkah">
+          <ol class="steps">
+            <li><b>Pesan grup masuk</b><p>Setiap pesan baru di grup diteruskan ke sistem. Obrolan biasa seperti "ok" atau "siap" disaring dan diabaikan.</p></li>
+            <li><b>AI memisahkan data</b><p>Model AI membaca pesan dan mengisi kolom order: pelanggan, barang, jumlah, alamat, dan cara bayar.</p></li>
+            <li><b>Simpan ke tabel</b><p>Order disimpan dengan nomor urut. Revisi order mengubah baris yang sama dan tidak membuat baris baru.</p></li>
+            <li><b>Konfirmasi di grup</b><p>Asisten membalas di grup dengan nomor order dan ringkasannya. Kalau data kurang, asisten bertanya balik.</p></li>
+            <li><b>Update status</b><p>Kurir cukup membalas "kirim 0412" atau "selesai 0412". Status di tabel berubah mengikuti balasan itu.</p></li>
+            <li><b>Rekap malam</b><p>Pukul 21.00 pemilik menerima satu pesan: jumlah order, yang selesai, yang menunggu, dan total nilai.</p></li>
+          </ol>
+        </section>
+
+        <section class="sec" id="hasil">
+          <span class="eb">Hasil</span>
+          <h2>Admin kembali mengurus pelanggan</h2>
+          <div class="tiles">
+            <div class="tile"><b>3<small>jam</small></b><p>waktu admin kembali setiap hari</p></div>
+            <div class="tile"><b>120<small>order</small></b><p>tercatat sehari tanpa diketik ulang</p></div>
+            <div class="tile"><b>1<small>pesan</small></b><p>rekap untuk pemilik setiap malam</p></div>
+          </div>
+          <p class="note">Angka contoh. Angka asli diganti setelah klien memberi izin.</p>
+          <figure class="quote">
+            <svg class="ic"><use href="#i-quotes"/></svg>
+            <p>Dulu saya baru tahu penjualan besok paginya. Sekarang setiap malam rekapnya sudah ada di HP saya.</p>
+            <footer>Pemilik distributor air minum, Pekanbaru · kutipan contoh</footer>
+          </figure>
+        </section>
+
+        <section class="sec" id="alat">
+          <span class="eb">Alat yang dipakai</span>
+          <h2>Dibangun dengan alat yang sudah teruji</h2>
+          <ul class="tools">
+            <li><svg class="ic"><use href="#i-compass"/></svg><b>n8n</b><span>Menjalankan ketiga alur kerja</span></li>
+            <li><svg class="ic"><use href="#i-whatsapp-logo"/></svg><b>WhatsApp</b><span>Grup order tim, lewat gateway untuk grup</span></li>
+            <li><svg class="ic"><use href="#i-sparkle"/></svg><b>Model AI</b><span>Membaca pesan dan memisahkan data order</span></li>
+            <li><svg class="ic"><use href="#i-table"/></svg><b>Google Sheets</b><span>Tabel order yang dibuka tim setiap hari</span></li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <section class="more" aria-labelledby="lain">
+    <div class="wrap">
+      <h2 id="lain">Proyek lain</h2>
+      <div class="cards">
+        <a class="card" href="#">
+          <ul class="chips"><li class="chip"><svg class="ic"><use href="#i-first-aid"/></svg>Klinik</li><li class="chip"><svg class="ic"><use href="#i-chat-circle-dots"/></svg>Agen AI chat</li></ul>
+          <h3>Asisten CS untuk chat pelanggan</h3>
+          <p>Menjawab dari daftar harga klinik, mencatat booking, dan meneruskan pertanyaan sulit ke admin.</p>
+          <span class="soon">Segera</span>
+        </a>
+        <a class="card" href="#">
+          <ul class="chips"><li class="chip"><svg class="ic"><use href="#i-storefront"/></svg>Retail &amp; F&amp;B</li><li class="chip"><svg class="ic"><use href="#i-image"/></svg>Otomasi konten</li></ul>
+          <h3>Generator carousel media sosial</h3>
+          <p>Dari satu topik menjadi carousel dengan gaya brand Anda, siap Anda setujui dan jadwalkan.</p>
+          <span class="soon">Segera</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="end" aria-labelledby="ajak">
+    <div class="wrap">
+      <h2 id="ajak">Yuk, ceritakan satu pekerjaan yang paling ingin Anda otomatiskan.</h2>
+      <p>Kami bantu petakan solusinya, gratis. Lewat chat, atau ketemu langsung di Pekanbaru.</p>
+      <div class="cta-row">
+        <a class="btn btn-main" data-wa="chat" href="#" target="_blank" rel="noopener">Konsultasi gratis<span class="knob"><svg class="ic"><use href="#i-chat-circle-dots"/></svg></span></a>
+        <a class="btn btn-line" data-wa="meet" href="#" target="_blank" rel="noopener"><svg class="ic"><use href="#i-handshake"/></svg>Ketemu langsung</a>
+      </div>
+      <div class="foot"><img src="{{LOGO_WHITE}}" alt="Kreatekno" width="240" height="41"><span>Prototipe halaman portofolio. Proyek, nama, dan angka di halaman ini adalah contoh.</span></div>
+    </div>
+  </section>
+</main>
+
+<div class="fab" aria-label="Cara melihat proyek" role="group">
+  <button type="button" data-mode="tonton" aria-pressed="true"><svg class="ic"><use href="#i-play"/></svg>Tonton</button>
+  <button type="button" data-mode="baca" aria-pressed="false"><svg class="ic"><use href="#i-book-open-text"/></svg>Baca</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const root = document.documentElement;
+  const hasGsap = !!(window.gsap && window.ScrollTrigger);
+  if (!hasGsap) root.classList.remove('film');
+  const film = () => root.classList.contains('film');
+
+  /* ---------- WhatsApp links (prototype: no number yet, wa.me opens the contact picker) ---------- */
+  const WA = {
+    chat: 'Halo Kreatekno, saya lihat proyek "Order otomatis dari grup chat". Saya mau konsultasi sistem serupa untuk bisnis saya.',
+    meet: 'Halo Kreatekno, saya mau ketemu langsung di Pekanbaru untuk membahas otomasi di bisnis saya.'
+  };
+  $$('[data-wa]').forEach(a => { a.href = 'https://wa.me/?text=' + encodeURIComponent(WA[a.dataset.wa]); });
+
+  /* ---------- Scene canvas: 440 x 520 design px, scaled to the space it has ---------- */
+  const viz = $('.viz'), cv = $('.cv');
+  const fit = () => {
+    const w = viz.clientWidth, h = viz.clientHeight;
+    if (!w || !h) return;
+    cv.style.setProperty('--s', Math.min(w / 440, h / 520, 1.45).toFixed(3));
+  };
+  if (window.ResizeObserver) new ResizeObserver(fit).observe(viz);
+  fit();
+
+  /* ---------- Scenes: in = transition from the previous scene, hold = time to read. Units = timeline seconds ---------- */
+  const SC = [
+    { in: 0,   hold: 1.5, now: 'Sebelum sistem berjalan' },
+    { in: .9,  hold: .6,  now: 'Langkah 1: Pesan grup masuk' },
+    { in: 1.3, hold: .7,  now: 'Langkah 2: AI memisahkan data' },
+    { in: 1.0, hold: .6,  now: 'Langkah 3: Simpan ke tabel' },
+    { in: .8,  hold: .6,  now: 'Langkah 4: Konfirmasi di grup' },
+    { in: 1.4, hold: .6,  now: 'Langkah 5: Update status' },
+    { in: 1.1, hold: .7,  now: 'Langkah 6: Rekap malam' },
+    { in: .9,  hold: .6,  now: 'Semua langkah berjalan otomatis' },
+    { in: .6,  hold: .9,  now: 'Semua langkah berjalan otomatis' }
+  ];
+  let T = 0;
+  SC.forEach(s => { s.t0 = T; s.t1 = T + s.in; s.t2 = s.t1 + s.hold; T = s.t2; });
+
+  const caps = $$('.caps > li'), nodes = $$('.node'), flow = $('.flow'), flowNow = $('.flow-now');
+  const scN = $('.sc-n'), barI = $('.bar i'), hint = $('.hint');
+  const prevB = $('.ctrl .prev'), nextB = $('.ctrl .next');
+  let cur = -1, tl = null, st = null, lenis = null;
+
+  function ui(t) {
+    let i = 0;
+    SC.forEach((s, k) => { if (t >= s.t0 + s.in * .5 - 1e-4) i = k; });
+    if (barI) barI.style.transform = 'scaleX(' + (t / T).toFixed(4) + ')';
+    if (hint) hint.style.opacity = t < .08 ? 1 : 0;
+    if (i === cur) return;
+    cur = i;
+    caps.forEach((li, k) => li.classList.toggle('live', k === i));
+    nodes.forEach((n, k) => { n.dataset.s = i >= 7 || i > k + 1 ? 'done' : i === k + 1 ? 'on' : ''; });
+    flow.classList.toggle('pre', i === 0);
+    flowNow.textContent = SC[i].now;
+    scN.textContent = i + 1;
+    prevB.disabled = i === 0;
+    nextB.disabled = i === SC.length - 1;
+  }
+
+  function build() {
+    const chat = $('.chat'), list = $('.chat .list'), win = $('.chat .win'), target = $('.msg.target');
+    const others = $$('.chat .msg:not(.target)'), tags = $$('.chat .tag');
+    const xls = $('.xls'), count = $('.count'), cnt = $('.cnt');
+    const ext = $('.ext'), scan = $('.scan'), hls = $$('.ext .hl'), flds = $$('.fld');
+    const tbl = $('.tbl'), oldRows = $$('.tr.old'), newRow = $('.tr.new');
+    const sNew = $('.st.live .s-new'), sGo = $('.st.live .s-go'), sDone = $('.st.live .s-done');
+    const mini = $('.mini'), mList = $('.mini .list'), mWin = $('.mini .win');
+    const mm = [1, 2, 3, 4, 5].map(n => $('.mini .m' + n));
+    const phone = $('.phone'), ntf = $('.ntf'), ntfLi = $$('.ntf li');
+    const ms = $$('.m'), note = $('.mx-note'), nums = $$('.num');
+    const pk = $('.pk');
+
+    // measurements in design px (independent of the canvas scale)
+    const mid = -(target.offsetTop + target.offsetHeight / 2 - win.clientHeight * .5);
+    const mess = mid * .62;
+    const rowH = newRow.offsetHeight;
+    const mY = b => Math.min(0, -(b.offsetTop + b.offsetHeight - mWin.clientHeight + 12));
+
+    gsap.set(caps.slice(1), { autoAlpha: 0, y: 16 });
+    gsap.set(oldRows, { y: -rowH });
+
+    const t = gsap.timeline({ paused: true, defaults: { ease: 'power2.out', duration: .4 }, onUpdate: () => ui(t.time()) });
+    const cap = i => {
+      const s = SC[i];
+      t.to(caps[i - 1], { autoAlpha: 0, y: -14, duration: .3, ease: 'power2.in' }, s.t0);
+      t.to(caps[i], { autoAlpha: 1, y: 0, duration: .35 }, s.t0 + Math.min(.28, s.in * .45));
+    };
+    const count2 = (el, to, at, dur) => {
+      const o = { v: 0 };
+      t.to(o, { v: to, duration: dur, ease: 'power1.out', onUpdate: () => { el.textContent = Math.round(o.v); } }, at);
+    };
+
+    /* S1 · before: the group keeps scrolling, the counter climbs, the admin retypes */
+    t.to(list, { y: mess, duration: 1.3, ease: 'power1.inOut' }, .1);
+    t.fromTo(count, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: .3 }, .1);
+    count2(cnt, 120, .15, 1.1);
+    t.fromTo(xls, { autoAlpha: 0, y: 40, rotation: -9 }, { autoAlpha: 1, y: 0, rotation: -4, duration: .45 }, .45);
+    t.fromTo(tags[0], { scale: 0 }, { scale: 1, duration: .25, ease: 'back.out(2)' }, .55);
+    t.fromTo(tags[1], { scale: 0 }, { scale: 1, duration: .25, ease: 'back.out(2)' }, .9);
+
+    /* S2 · one message: the chat settles on Andi's order */
+    let s = SC[1]; cap(1);
+    t.to([xls, count], { autoAlpha: 0, y: 30, duration: .35, ease: 'power2.in' }, s.t0);
+    t.to(tags, { autoAlpha: 0, duration: .25 }, s.t0);
+    t.to(list, { y: mid, duration: .8, ease: 'power2.inOut' }, s.t0);
+    t.to(others, { opacity: .32, duration: .4 }, s.t0 + .35);
+    t.fromTo(target.querySelector('.ring'), { opacity: 0, scale: 1.06 }, { opacity: 1, scale: 1, duration: .35 }, s.t0 + .5);
+
+    /* S3 · AI reads: the message lifts into the extraction card, fields fill in */
+    s = SC[2]; cap(2);
+    t.to(chat, { autoAlpha: 0, x: -36, scale: .96, duration: .45, ease: 'power2.in' }, s.t0);
+    t.fromTo(ext, { autoAlpha: 0, x: 36 }, { autoAlpha: 1, x: 0, duration: .45 }, s.t0 + .25);
+    t.fromTo(scan, { autoAlpha: 0, y: 0 }, { autoAlpha: 1, y: 64, duration: .45, ease: 'none' }, s.t0 + .55);
+    t.to(scan, { autoAlpha: 0, duration: .12 }, s.t0 + .95);
+    t.to(hls, { backgroundSize: '100% 52%', duration: .2, stagger: .07, ease: 'none' }, s.t0 + .6);
+    t.fromTo(flds, { autoAlpha: 0, x: -16 }, { autoAlpha: 1, x: 0, duration: .25, stagger: .08 }, s.t0 + .8);
+
+    /* S4 · saved: the fields fold into a new row of the order table */
+    s = SC[3]; cap(3);
+    t.to(ext, { autoAlpha: 0, scale: .55, y: 40, duration: .45, ease: 'power2.in' }, s.t0);
+    t.fromTo(tbl, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: .4 }, s.t0 + .25);
+    t.to(oldRows, { y: 0, duration: .35, ease: 'power2.inOut' }, s.t0 + .55);
+    t.fromTo(newRow, { autoAlpha: 0, x: -14 }, { autoAlpha: 1, x: 0, duration: .3 }, s.t0 + .7);
+
+    /* S5 · confirmed: the group gets the order number */
+    s = SC[4]; cap(4);
+    t.fromTo(mini, { autoAlpha: 0, y: 60 }, { autoAlpha: 1, y: 0, duration: .45 }, s.t0);
+    t.fromTo(mm[0], { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: .3 }, s.t0 + .4);
+
+    /* S6 · status: the courier's short replies move the status chip */
+    s = SC[5]; cap(5);
+    t.to(mList, { y: mY(mm[1]), duration: .3, ease: 'power2.inOut' }, s.t0 + .05);
+    t.fromTo(mm[1], { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: .25 }, s.t0 + .1);
+    t.to(mList, { y: mY(mm[2]), duration: .3, ease: 'power2.inOut' }, s.t0 + .35);
+    t.fromTo(mm[2], { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: .25 }, s.t0 + .4);
+    t.to(sNew, { autoAlpha: 0, y: -8, duration: .2 }, s.t0 + .5);
+    t.fromTo(sGo, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: .2 }, s.t0 + .55);
+    t.to(mList, { y: mY(mm[3]), duration: .3, ease: 'power2.inOut' }, s.t0 + .8);
+    t.fromTo(mm[3], { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: .25 }, s.t0 + .85);
+    t.to(mList, { y: mY(mm[4]), duration: .3, ease: 'power2.inOut' }, s.t0 + 1.05);
+    t.fromTo(mm[4], { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: .25 }, s.t0 + 1.1);
+    t.to(sGo, { autoAlpha: 0, y: -8, duration: .2 }, s.t0 + 1.15);
+    t.fromTo(sDone, { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: .2 }, s.t0 + 1.2);
+
+    /* S7 · recap: the owner's phone at 21.00 */
+    s = SC[6]; cap(6);
+    t.to([tbl, mini], { autoAlpha: 0, y: -28, scale: .96, duration: .45, stagger: .05, ease: 'power2.in' }, s.t0);
+    t.fromTo(phone, { autoAlpha: 0, y: 50 }, { autoAlpha: 1, y: 0, duration: .5 }, s.t0 + .3);
+    t.fromTo(ntf, { autoAlpha: 0, y: -14, scale: .96 }, { autoAlpha: 1, y: 0, scale: 1, duration: .3, ease: 'back.out(1.6)' }, s.t0 + .7);
+    t.fromTo(ntfLi, { autoAlpha: 0, x: -8 }, { autoAlpha: 1, x: 0, duration: .2, stagger: .07 }, s.t0 + .85);
+
+    /* S8 · results */
+    s = SC[7]; cap(7);
+    t.to(phone, { autoAlpha: 0, scale: .92, duration: .4, ease: 'power2.in' }, s.t0);
+    t.fromTo(ms, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: .35, stagger: .1 }, s.t0 + .3);
+    t.fromTo(note, { autoAlpha: 0 }, { autoAlpha: 1, duration: .2 }, s.t0 + .65);
+    nums.forEach((n, k) => count2(n, +n.dataset.to, s.t0 + .35 + k * .1, .6));
+
+    /* S9 · end card */
+    s = SC[8]; cap(8);
+    t.to(ms, { opacity: .55, duration: .4 }, s.t0);
+
+    /* the data packet travels the workflow rail, one node per step */
+    t.fromTo(pk, { autoAlpha: 0, '--p': 0 }, { autoAlpha: 1, '--p': 0, duration: .3 }, SC[1].t0 + .2);
+    for (let k = 2; k <= 6; k++) t.to(pk, { '--p': k - 1, duration: SC[k].in * .7, ease: 'power2.inOut' }, SC[k].t0);
+    t.to(pk, { autoAlpha: 0, duration: .3 }, SC[7].t0);
+
+    t.set({}, {}, T);
+    return t;
+  }
+
+  /* ---------- Scroll (film) or step buttons (reduced motion) ---------- */
+  function scrollY4(i) {
+    const time = SC[i].t1 + SC[i].hold * .5;
+    return st.start + (time / T) * (st.end - st.start);
+  }
+  function go(i) {
+    i = Math.max(0, Math.min(SC.length - 1, i));
+    if (film() && st) {
+      const y = scrollY4(i);
+      lenis ? lenis.scrollTo(y, { duration: 1.1 }) : window.scrollTo({ top: y, behavior: 'smooth' });
+    } else if (tl) {
+      tl.seek(SC[i].t2); ui(tl.time());
+    }
+  }
+  prevB.addEventListener('click', () => go(cur - 1));
+  nextB.addEventListener('click', () => go(cur + 1));
+
+  if (hasGsap) {
+    gsap.registerPlugin(ScrollTrigger);
+    if (film() && window.Lenis) {
+      lenis = new Lenis({ lerp: .11 });
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add(time => lenis.raf(time * 1000));
+      gsap.ticker.lagSmoothing(0);
+    }
+  }
+
+  // the timeline measures the chat, so it is built once fonts are in and the Tonton panel is visible
+  let fontsReady = false;
+  function start() {
+    if (!hasGsap || tl || !fontsReady || $('#panel-tonton').hidden) return;
+    tl = build();
+    root.classList.add('has-tl');
+    if (film()) {
+      $('.reel').style.setProperty('--screens', (T * .72 + 1).toFixed(2));
+      st = ScrollTrigger.create({ trigger: '.reel', start: 'top top', end: 'bottom bottom', scrub: true, animation: tl });
+      ScrollTrigger.addEventListener('refresh', fit);
+    } else {
+      tl.seek(SC[0].t2);
+    }
+    ui(tl.time());
+  }
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(() => { fontsReady = true; start(); });
+
+  /* ---------- Modes: Tonton / Baca (hash #tonton or #baca, remembered per visitor) ---------- */
+  const panels = { tonton: $('#panel-tonton'), baca: $('#panel-baca') };
+  const tabs = $$('.modes [data-mode]'), fabBtns = $$('.fab [data-mode]'), modesEl = $('.modes');
+  function setMode(m, scroll) {
+    if (!panels[m]) m = 'tonton';
+    Object.keys(panels).forEach(k => { panels[k].hidden = k !== m; });
+    tabs.forEach(b => { const on = b.dataset.mode === m; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; });
+    fabBtns.forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === m));
+    try { localStorage.setItem('kt-portfolio-mode', m); } catch (e) {}
+    try { history.replaceState(null, '', '#' + m); } catch (e) {}
+    fit();
+    start();
+    if (hasGsap) ScrollTrigger.refresh();
+    if (scroll) {
+      const y = modesEl.getBoundingClientRect().top + window.scrollY - 120;
+      // native jump: Lenis keeps its old target right after the page height changes
+      if (window.scrollY > y) window.scrollTo(0, y);
+    }
+  }
+  [...tabs, ...fabBtns].forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode, true)));
+  $$('[data-go]').forEach(b => b.addEventListener('click', () => setMode(b.dataset.go, true)));
+  modesEl.addEventListener('keydown', e => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    const i = tabs.indexOf(document.activeElement); if (i < 0) return;
+    const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+    n.focus(); setMode(n.dataset.mode);
+  });
+  let saved = null;
+  try { saved = localStorage.getItem('kt-portfolio-mode'); } catch (e) {}
+  const fromHash = location.hash.slice(1);
+  setMode(panels[fromHash] ? fromHash : saved || (film() ? 'tonton' : 'baca'));
+
+  /* floating mode switch once the big one has scrolled away */
+  const fab = $('.fab');
+  if (window.IntersectionObserver) {
+    new IntersectionObserver(([e]) => fab.classList.toggle('show', !e.isIntersecting && e.boundingClientRect.top < 0)).observe(modesEl);
+  }
+})();
+</script>
