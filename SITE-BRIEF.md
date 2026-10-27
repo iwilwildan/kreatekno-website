@@ -4,6 +4,11 @@ _Last updated: 2026-10-14. Source: Q&A and review rounds with the Kreatekno team
 
 This is the source of truth for **what the site says and how it behaves**. `COPY.md` holds every line of copy (ID/EN), `STACK.md` the tech, `PLAN.md` the milestones. Old video and AI-asset material is in `archive/` and is not part of this brief. Working prototype: https://claude.ai/artifact/Ruu3y62oZoj8Jhtd4Nqqm8 (source `prototype/home.src.html`, built with `prototype/build.py`).
 
+> **Changed on 2026-10-16/17, rewrite pending.** Home now follows the team's one-take document (revised 2026-10-25: 18 beats, 19 keyframes). The stage, prop positions and the web/video split are in `STORY-STAGE.md`. Until this brief is rewritten, `STORY-STAGE.md` and the Next.js stage win over these older parts:
+> - section 2 "Story", "Layout" and "Mobile" (6 beats, problem-first opening, text zones vs video zones)
+> - section 4: the CTA label is now "Konsultasi gratis", visible text names no platform, and there is no sticky phone bar
+> - section 5: the separate Capabilities, logo, FAQ and CTA sections are now beats of the story
+
 ---
 
 ## 1. References

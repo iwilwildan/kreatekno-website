@@ -1,1019 +1,1018 @@
 <title>Kreatekno Home</title>
-<meta name="description" content="Kreatekno membangun asisten AI dan otomasi WhatsApp untuk UMKM: balas chat, rekap penjualan, pengingat tagihan, dan jadwal konten dibuat otomatis. Berbasis di Pekanbaru, melayani seluruh Indonesia.">
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Asisten AI dan otomasi WhatsApp untuk UMKM: balas chat, rekap penjualan, dan pengingat tagihan otomatis. Berbasis di Pekanbaru, melayani seluruh Indonesia.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Plus+Jakarta+Sans:ital,wght@0,400..700;1,400..700&display=swap">
-<script>document.documentElement.classList.add('js')</script>
+<script>if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('film')</script>
 <style>
-/* Layout concept: a pinned "story stage" (text left / video right on desktop, text top / video bottom on phone)
-   followed by alternating white and navy bands, each section using a different layout family. */
+/* Layout concept: one take. A sticky stage holds a cover-scaled video frame (16:9 landscape, 9:16 portrait).
+   Every piece of copy is a physical prop in the scene (a sidewalk chalkboard on legs, a leaflet on the counter,
+   a ring binder, a street sign and bamboo banners...). Props sit in frame percentages (--dx/--dy/--dw desktop,
+   --mx/--my/--mw phone), take the light of the keyframe, and move with the camera: each beat's camera move
+   (crane, dolly, truck, arc, through-object) carries its props into and out of the frame, in step with the footage.
+   Without motion (reduced motion or no GSAP) the same elements stack as ordinary sections. */
 :root{
   color-scheme: light;
   --paper:#FFFFFF;
-  --mist:#F2F3FA;
   --ink:#121640;
   --muted:#565B81;
-  --line:rgba(19,25,81,.13);
   --navy:#131951;
-  --navy-2:#1B2263;
   --navy-3:#0B0F3A;
   --purple:#9F0ED6;
   --purple-deep:#7C07A8;
   --violet:#8C2BFA;
   --cyan:#35EAFE;
-  --cool:#E7EBF8;
-  --warm:#FFEFD9;
-  --on-navy:#F3F4FF;
-  --on-navy-muted:#B0B5DD;
+  --on-night:#F3F4FF;
+  --on-night-muted:#B6BBE2;
   --alert:#E5484D;
+
+  /* materials */
+  --slate:#1B2724;
+  --chalk:#F4F2EA;
+  --chalk-dim:#D3D9D0;
+  --chalk-yellow:#F3DC78;
+  --wood-dark:#3B2B1F;
+  --cream:#FBF6EA;
+  --sign:#14633E;
+  --cork:#C59767;
+
+  --noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --chalk-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 3.4 -.8'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 
   --display:"Bricolage Grotesque","Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --body:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
 
-  --fs-hero:clamp(2.2rem,1.1rem + 3vw,3.4rem);
-  --fs-h2:clamp(1.9rem,1.2rem + 2.4vw,3.25rem);
-  --fs-h3:clamp(1.15rem,1.05rem + .4vw,1.4rem);
-  --fs-body:1.0625rem;
-  --fs-small:.875rem;
-
   --ease-out:cubic-bezier(.23,1,.32,1);
-  --ease-io:cubic-bezier(.77,0,.175,1);
-  --ease-drawer:cubic-bezier(.32,.72,0,1);
-
-  /* Shape rule: cards 24px (inner 18px), story cards 16px, buttons and chips full pill */
-  --r-card:24px;
-  --r-in:18px;
-  --r-story:16px;
-
-  --gut:clamp(16px,4vw,56px);
-  --maxw:1200px;
   --nav-h:64px;
-  --text-zone:42%;
+  --maxw:1200px;
 }
 
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
 body{
   margin:0;background:var(--paper);color:var(--ink);
-  font-family:var(--body);font-size:var(--fs-body);line-height:1.6;
-  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
-  overflow-x:clip;
+  font-family:var(--body);font-size:1rem;line-height:1.55;
+  -webkit-font-smoothing:antialiased;overflow-x:clip;
 }
 img{max-width:100%;display:block}
 a{color:inherit}
-h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.025em;line-height:1.05;margin:0;text-wrap:balance;font-variation-settings:"opsz" 96}
+h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.02em;line-height:1.08;margin:0;text-wrap:balance;font-variation-settings:"opsz" 96}
 p{margin:0}
+ul,ol{margin:0;padding:0;list-style:none}
 .ic{width:1em;height:1em;fill:currentColor;flex:none}
 :focus-visible{outline:3px solid var(--violet);outline-offset:3px;border-radius:6px}
-.wrap{width:100%;max-width:var(--maxw);margin-inline:auto;padding-inline:var(--gut)}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.deco,.deco *{pointer-events:none}
 
 /* ---------- Buttons ---------- */
 .btn{
-  display:inline-flex;align-items:center;gap:12px;white-space:nowrap;
-  font:600 1rem/1 var(--body);text-decoration:none;border:0;cursor:pointer;
-  border-radius:999px;padding:8px 8px 8px 22px;min-height:52px;
-  transition:transform 160ms var(--ease-out),background-color 200ms ease,color 200ms ease,box-shadow 200ms ease;
+  display:inline-flex;align-items:center;gap:10px;white-space:nowrap;
+  font:600 var(--t-btn,1rem)/1 var(--body);text-decoration:none;border:0;cursor:pointer;
+  border-radius:999px;padding:6px 6px 6px 20px;min-height:48px;
+  transition:transform 160ms var(--ease-out),background-color 200ms ease,box-shadow 200ms ease;
 }
 .btn:active{transform:scale(.97)}
-.btn .knob{
-  width:36px;height:36px;border-radius:999px;display:grid;place-items:center;
-  transition:transform 260ms var(--ease-out);
-}
+.btn .knob{width:36px;height:36px;border-radius:999px;display:grid;place-items:center;transition:transform 260ms var(--ease-out)}
 .btn .knob .ic{width:20px;height:20px}
 .btn:hover .knob{transform:translate(2px,-1px) scale(1.05)}
-.btn-wa{background:var(--purple);color:#fff;box-shadow:0 10px 24px -12px rgba(124,7,168,.7)}
-.btn-wa .knob{background:rgba(255,255,255,.18)}
-.btn-wa:hover{background:var(--purple-deep)}
-.btn-ghost{background:transparent;color:var(--navy);box-shadow:inset 0 0 0 1.5px rgba(19,25,81,.35);padding-right:22px}
-.btn-ghost .ic{width:20px;height:20px}
-.btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--navy);background:rgba(19,25,81,.04)}
-.on-navy .btn-ghost{color:var(--on-navy);box-shadow:inset 0 0 0 1.5px rgba(243,244,255,.35)}
-.on-navy .btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--on-navy);background:rgba(255,255,255,.06)}
-.cta-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn-main{background:var(--purple);color:#fff;box-shadow:0 10px 22px -12px rgba(124,7,168,.75),inset 0 1px 0 rgba(255,255,255,.25)}
+.btn-main .knob{background:rgba(255,255,255,.18)}
+.btn-main:hover{background:var(--purple-deep)}
+.btn-line{background:transparent;color:inherit;box-shadow:inset 0 0 0 1.5px currentColor;padding-right:20px}
+.btn-line .ic{width:18px;height:18px}
+.btn-paper{background:var(--paper);color:var(--navy);padding-right:20px;box-shadow:0 12px 24px -14px rgba(19,25,81,.55),inset 0 0 0 1px rgba(19,25,81,.08)}
+.btn-paper .ic{width:18px;height:18px;color:var(--purple)}
+.cta-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 
-/* ---------- Floating nav ---------- */
+/* ---------- Header ---------- */
 .nav{
   position:fixed;z-index:30;left:50%;transform:translateX(-50%);
   top:calc(env(safe-area-inset-top,0px) + 12px);
-  width:min(var(--maxw),calc(100% - 24px));
-  height:var(--nav-h);
-  display:flex;align-items:center;gap:20px;
+  width:min(var(--maxw),calc(100% - 24px - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px)));
+  height:var(--nav-h);display:flex;align-items:center;gap:16px;
   padding:0 8px 0 20px;border-radius:999px;
-  background:rgba(255,255,255,.82);
+  background:rgba(255,255,255,.86);
   -webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4);
   box-shadow:0 0 0 1px rgba(19,25,81,.08),0 12px 32px -18px rgba(19,25,81,.35);
 }
-.nav .brand{display:block;flex:none}
-.nav .brand img{height:30px;width:auto}
-.nav-links{display:flex;gap:4px;margin:0 auto;padding:0;list-style:none}
-.nav-links a{display:block;padding:8px 12px;border-radius:999px;text-decoration:none;font-weight:600;font-size:.9375rem;color:var(--ink);transition:background-color 200ms ease}
+.nav .brand{flex:none}
+.nav .brand img{height:28px;width:auto}
+.nav-links{display:flex;gap:2px;margin:0 auto}
+.nav-links a{display:block;padding:9px 12px;border-radius:999px;text-decoration:none;font-weight:600;font-size:.9375rem;color:var(--ink);transition:background-color 200ms ease}
 .nav-links a:hover{background:rgba(19,25,81,.06)}
 .nav-end{display:flex;align-items:center;gap:8px;margin-left:auto}
 .lang{display:inline-flex;padding:3px;border-radius:999px;background:rgba(19,25,81,.07)}
-.lang button{font:700 .75rem/1 var(--body);letter-spacing:.06em;border:0;background:transparent;color:var(--muted);padding:8px 10px;border-radius:999px;cursor:pointer;min-width:40px;min-height:32px;transition:background-color 200ms ease,color 200ms ease}
+.lang button{font:700 .75rem/1 var(--body);letter-spacing:.06em;border:0;background:transparent;color:var(--muted);padding:8px 10px;border-radius:999px;cursor:pointer;min-width:40px;min-height:32px}
 .lang button[aria-pressed="true"]{background:var(--paper);color:var(--navy);box-shadow:0 1px 3px rgba(19,25,81,.18)}
-.nav .btn{min-height:48px;padding:6px 6px 6px 18px;font-size:.9375rem}
+.nav .btn{--t-btn:.9375rem;min-height:48px;padding:6px 6px 6px 18px}
 .nav .btn .knob{width:34px;height:34px}
-.burger{display:none;width:48px;height:48px;border:0;border-radius:999px;background:var(--navy);color:#fff;cursor:pointer;place-items:center}
+.burger{display:none;width:44px;height:44px;border:0;border-radius:999px;background:var(--navy);color:#fff;cursor:pointer;place-items:center;flex:none}
 .burger .ic{width:22px;height:22px}
 
 .menu{
   position:fixed;inset:0;z-index:40;background:rgba(11,15,58,.96);
-  -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
-  color:var(--on-navy);display:flex;flex-direction:column;
-  padding:calc(env(safe-area-inset-top,0px) + 24px) var(--gut) calc(env(safe-area-inset-bottom,0px) + 24px);
+  -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);color:var(--on-night);
+  display:flex;flex-direction:column;
+  padding:calc(env(safe-area-inset-top,0px) + 24px) max(20px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 24px) max(20px,env(safe-area-inset-left,0px));
   opacity:0;visibility:hidden;transition:opacity 260ms var(--ease-out),visibility 0s linear 260ms;
 }
 .menu.open{opacity:1;visibility:visible;transition:opacity 260ms var(--ease-out)}
 .menu-top{display:flex;align-items:center;justify-content:space-between}
-.menu-top img{height:28px;width:auto}
+.menu-top img{height:26px;width:auto}
 .menu-close{width:48px;height:48px;border-radius:999px;border:0;background:rgba(255,255,255,.1);color:#fff;display:grid;place-items:center;cursor:pointer}
 .menu-close .ic{width:22px;height:22px}
-.menu ul{list-style:none;padding:0;margin:48px 0 auto;display:grid;gap:4px}
-.menu li{opacity:0;transform:translateY(24px);transition:opacity 400ms var(--ease-out),transform 500ms var(--ease-out)}
+.menu ul{margin:44px 0 auto;display:grid;gap:4px}
+.menu li{opacity:0;transform:translateY(20px);transition:opacity 400ms var(--ease-out),transform 500ms var(--ease-out)}
 .menu.open li{opacity:1;transform:none}
 .menu.open li:nth-child(2){transition-delay:50ms}
 .menu.open li:nth-child(3){transition-delay:100ms}
 .menu.open li:nth-child(4){transition-delay:150ms}
-.menu.open li:nth-child(5){transition-delay:200ms}
 .menu ul a{display:block;font:700 2.25rem/1.15 var(--display);letter-spacing:-.02em;text-decoration:none;padding:8px 0}
-.menu .lang{background:rgba(255,255,255,.1);align-self:flex-start;margin-bottom:20px}
-.menu .lang button{color:var(--on-navy-muted)}
-.menu .lang button[aria-pressed="true"]{background:var(--on-navy);color:var(--navy)}
+.menu .lang{background:rgba(255,255,255,.1);align-self:flex-start;margin-bottom:16px}
+.menu .lang button{color:var(--on-night-muted)}
+.menu .lang button[aria-pressed="true"]{background:var(--on-night);color:var(--navy)}
+.menu .btn{align-self:flex-start}
 
-/* ---------- Story stage ---------- */
-.story{position:relative;height:720vh}
-.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
-.stage-bg{position:absolute;inset:0;background:var(--cool)}
-.beats{
-  position:absolute;left:var(--gut);top:0;bottom:0;
-  width:calc(var(--text-zone) - var(--gut) - 28px);
-  display:grid;align-items:center;padding-top:calc(var(--nav-h) + 12px);
+/* ---------- Type + light inside the frame ---------- */
+.frame{
+  --t-h1:clamp(30px,2.55cqw,54px);
+  --t-h2:clamp(23px,1.95cqw,40px);
+  --t-h3:clamp(16px,1.12cqw,21px);
+  --t-body:clamp(14.5px,1cqw,18px);
+  --t-small:clamp(13.5px,.88cqw,16px);
+  --t-kick:clamp(11px,.7cqw,13px);
+  --t-btn:clamp(14.5px,.95cqw,17px);
+  --pad:clamp(16px,1.6cqw,32px);
+  /* keyframe light, tweened along the take (K0 values) */
+  --sky-a:#F4B58A;--sky-b:#FBDDC2;--gr-a:#B7A08E;--gr-b:#8E7766;--hz:70%;
+  --lt-hi:rgba(255,214,170,.55);--lt-lo:rgba(60,40,70,.35);--sun:120deg;
 }
-.beats.is-right{left:auto;right:var(--gut)}
-/* The beat containers overlap; let clicks through to whichever beat is visible */
-.beats{pointer-events:none}
-.beat{pointer-events:auto}
-.beat{grid-area:1/1;display:grid;gap:20px;align-content:center}
-.beat h1{font-size:var(--fs-hero);font-weight:750;color:var(--navy);display:grid;gap:16px}
-.beat h1 .kick{font:700 .8125rem/1.4 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--purple)}
-.beat h1 .big{display:block}
-.beat h2{font-size:clamp(1.9rem,1.1rem + 2.3vw,3rem);color:var(--navy)}
-.beat p{font-size:1.125rem;color:var(--muted);max-width:44ch}
-.beat .cta-row{margin-top:8px}
-.js .beat:not(.beat-1){opacity:0;visibility:hidden}
-.beat h2 em{font-style:normal;color:var(--purple)}
-.z-text2{display:none}
-/* beat 4 reads like a documentary caption card */
-/* Only the card fill is 50% transparent: it sits on its own layer (::before). The text is never given opacity */
-.pos-bl .beat{position:relative;isolation:isolate;background:none;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-radius:var(--r-card);padding:18px;box-shadow:0 24px 48px -24px rgba(11,15,58,.45)}
-.pos-bl .beat::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background:#121640;opacity:.5;pointer-events:none}
-.pos-bl .beat h2,.pos-bl .beat p,.pos-bl .btn-ghost{color:#fff;text-shadow:0 1px 3px rgba(11,15,58,.5)}
-@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.pos-bl .beat::before{opacity:.85}.pos-split .mini{background:rgba(255,255,255,.9)!important}}
-.pos-bl .beat p{color:#fff!important;font-weight:500}
-.pos-bl .beat h2{color:#fff;font-size:clamp(1.45rem,1rem + 1.6vw,2.4rem)}
-.pos-bl .btn-ghost{box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.7)}
-.pos-bl .btn-ghost:hover{box-shadow:inset 0 0 0 1.5px var(--on-navy);background:rgba(255,255,255,.06)}
 
-.rail{
-  position:absolute;left:var(--gut);bottom:28px;margin:0;padding:0;list-style:none;
-  display:flex;gap:0;font-size:.8125rem;font-weight:600;color:var(--muted);
+/* ---------- Film stage (motion on) ---------- */
+.film .reel{position:relative;height:calc(var(--screens,27) * 100vh);height:calc(var(--screens,27) * 100svh)}
+.film .stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;container-type:size}
+.film .frame{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:max(100cqw,calc(100cqh * 16 / 9));height:max(100cqh,calc(100cqw * 9 / 16));
+  container-type:size;
 }
-.rail li{display:flex;align-items:center;gap:8px;padding-right:18px;position:relative}
-.rail li:not(:last-child)::after{content:"";width:28px;height:2px;border-radius:2px;background:rgba(19,25,81,.15);margin-left:10px;transition:background-color 300ms ease}
-.rail .node{width:12px;height:12px;border-radius:999px;box-shadow:inset 0 0 0 2px rgba(19,25,81,.3);transition:box-shadow 300ms ease,background-color 300ms ease}
-.rail li.on{color:var(--navy)}
-.rail li.on .node{box-shadow:inset 0 0 0 3px var(--purple);background:var(--paper)}
-.rail li.done .node{background:var(--purple);box-shadow:none}
-.rail li.done::after{background:var(--purple)}
-.rail .lbl{display:none}
-.rail li.on .lbl{display:inline}
-/* Vertical progress dots on the right edge, clear of every text position */
-.rail{left:auto;right:clamp(10px,1.4vw,22px);bottom:auto;top:50%;transform:translateY(-50%);flex-direction:column;gap:10px}
-.rail li{padding:0}
-.rail li::after{display:none!important}
-.rail .lbl{display:none!important}
-.rail .node{width:10px;height:10px;transition:height 300ms var(--ease-out),box-shadow 300ms ease,background-color 300ms ease}
-.rail li.on .node{height:30px;background:var(--purple);box-shadow:none}
-
-.mini{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:10px}
-.mini li{display:flex;align-items:center;gap:14px}
-.mini .n{width:34px;height:34px;flex:none;border-radius:999px;display:grid;place-items:center;font:700 .875rem/1 var(--display);color:var(--muted);background:var(--paper);box-shadow:inset 0 0 0 2px rgba(19,25,81,.18)}
-.mini b{display:block;font:700 1.0625rem/1.25 var(--display);color:var(--navy)}
-.mini small{display:block;font-size:.875rem;color:#3F4470;line-height:1.35}
-
-.cards{position:absolute;left:50%;top:57%;width:0;height:0}
-.pcard{position:absolute;width:290px;height:96px;left:-145px;top:-48px;perspective:900px}
-.js .pcard{visibility:hidden}
-.pcard-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d}
-.face{
-  position:absolute;inset:0;border-radius:var(--r-story);backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  display:flex;align-items:center;gap:14px;padding:14px 16px;
+/* Placeholder for the footage: sky, a ground plane at the keyframe's horizon, sun and vignette */
+.scene{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(80% 60% at 20% 0%,rgba(255,255,255,.28),transparent 60%),
+    linear-gradient(180deg,var(--sky-a) 0%,var(--sky-b) calc(var(--hz) - .6%),var(--gr-a) var(--hz),var(--gr-b) 100%);
 }
-.face .tile{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex:none}
-.face .tile .ic{width:24px;height:24px}
-.face b{display:block;font:700 1rem/1.2 var(--display);letter-spacing:-.01em}
-.face small{display:block;font-size:.8125rem;line-height:1.35;margin-top:3px}
-.front{background:var(--paper);color:var(--ink);box-shadow:0 0 0 2px var(--navy),6px 6px 0 0 var(--navy)}
-.front .tile{background:#FDECEC;color:var(--alert)}
-.front small{color:var(--muted)}
-.back{background:var(--navy);color:var(--on-navy);transform:rotateY(180deg);box-shadow:0 0 0 2px var(--navy),6px 6px 0 0 var(--purple)}
-.back .tile{background:rgba(53,234,254,.14);color:var(--cyan)}
-.back small{color:var(--on-navy-muted)}
-.face .ts{display:none}
+.scene::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(10,8,30,.28) 100%)}
+.film .layer{position:absolute;inset:0}
+.film .sf{position:absolute;inset:0;pointer-events:none;perspective:1500px;perspective-origin:50% 45%}
+.film .sf.live .pc{pointer-events:auto}
+.pc{position:relative}
+.film .pc{
+  --x:var(--dx);--y:var(--dy);--w:var(--dw);--b:var(--db);
+  position:absolute;left:calc(var(--x) * 1% + var(--cx,0px));top:calc(var(--y) * 1% + var(--cy,0px));width:calc(var(--w) * 1%);max-width:var(--wmax,none);
+  opacity:0;will-change:transform,opacity;
+}
+.film .pc.b{top:auto;bottom:calc(var(--b) * 1% - var(--cy,0px))}
 
-/* Video safe-zone overlay (prototype tool) */
-.zones{position:absolute;inset:0;pointer-events:none;display:none;z-index:5}
+/* starting poses of the small in-shot actions (the timeline takes them from here) */
+.film .panel{transform:scaleX(.06);transform-origin:0 50%}
+.film .page{transform:perspective(1400px) rotateY(-100deg);transform-origin:0 50%}
+.film .unroll{--u:100%;--roll:1}
+
+/* light of the keyframe on every surface (soft-light, so the text keeps its contrast) */
+.lit{position:absolute;inset:0;border-radius:inherit;pointer-events:none;mix-blend-mode:soft-light;background:linear-gradient(var(--sun),var(--lt-hi),rgba(255,255,255,0) 48%,var(--lt-lo));z-index:5}
+
+.rail{display:none}
+.film .rail{position:absolute;z-index:8;right:max(14px,calc(env(safe-area-inset-right,0px) + 8px));top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:9px;pointer-events:none}
+.rail i{display:block;width:8px;height:8px;border-radius:999px;background:rgba(255,255,255,.75);box-shadow:0 0 0 1.5px rgba(19,25,81,.4);transition:height 300ms var(--ease-out),background-color 300ms ease}
+.rail .done i{background:rgba(159,14,214,.55)}
+.rail .on i{height:26px;background:var(--purple);box-shadow:0 0 0 1.5px rgba(255,255,255,.7)}
+
+/* ---------- Props ---------- */
+.wood-tex{background:
+  repeating-linear-gradient(91deg,rgba(60,30,10,.13) 0 1px,transparent 1px 6px),
+  repeating-linear-gradient(89deg,rgba(255,230,190,.07) 0 2px,transparent 2px 13px),
+  linear-gradient(180deg,#A46E40,#7A4D2A)}
+
+/* Beat 1 · sidewalk A-frame chalkboard standing on wooden legs (also the small one on the till, beat 13) */
+.aframe{--leg:clamp(54px,10cqh,130px);--rail:clamp(10px,.9cqw,16px);isolation:isolate}
+.af-wood{position:relative;border-radius:12px;padding:var(--rail);
+  box-shadow:inset 0 2px 0 rgba(255,230,200,.35),inset 0 -3px 0 rgba(0,0,0,.28),inset 2px 0 0 rgba(255,230,200,.15),0 34px 40px -26px rgba(30,15,5,.65)}
+.af-slate{
+  position:relative;border-radius:4px;padding:var(--pad) var(--pad) calc(var(--pad) * 1.15);display:grid;gap:calc(var(--pad) * .7);justify-items:start;color:var(--chalk);
+  background:var(--noise),radial-gradient(55% 40% at 28% 22%,rgba(255,255,255,.08),transparent 70%),radial-gradient(45% 35% at 78% 78%,rgba(255,255,255,.06),transparent 70%),linear-gradient(180deg,#22302C,var(--slate));
+  background-size:260px,auto,auto,auto;background-blend-mode:soft-light,normal,normal,normal;
+  box-shadow:inset 0 0 0 2px rgba(0,0,0,.4),inset 0 8px 16px rgba(0,0,0,.5);
+}
+.chalk{-webkit-mask-image:var(--chalk-mask);mask-image:var(--chalk-mask);-webkit-mask-size:220px;mask-size:220px;text-shadow:0 0 .6px rgba(255,255,255,.7),0 0 10px rgba(255,255,255,.1)}
+.af-slate h1{display:grid;gap:.4em;font-size:var(--t-h1);font-weight:750;color:#FBFAF4}
+.af-slate .kick{font:700 var(--t-kick)/1.35 var(--body);letter-spacing:.09em;text-transform:uppercase;color:var(--chalk-yellow)}
+.af-slate p{font-size:var(--t-body);color:var(--chalk-dim);max-width:44ch}
+.af-slate .doodle{display:block;width:62%;height:auto;margin-top:-.2em;color:var(--chalk-yellow);opacity:.9}
+.af-slate .btn-line{color:var(--chalk);box-shadow:inset 0 0 0 2px rgba(244,242,234,.9)}
+.af-ledge{position:absolute;left:var(--rail);right:var(--rail);bottom:calc(var(--rail) * -.15);height:calc(var(--rail) * .9);border-radius:2px;background:linear-gradient(180deg,#B47A49,#6E4426);box-shadow:0 3px 4px rgba(0,0,0,.35)}
+.af-ledge i{position:absolute;bottom:70%;height:6px;border-radius:3px;background:#F2F0E6;box-shadow:inset 0 -1px 0 rgba(0,0,0,.15)}
+.af-ledge i:nth-child(1){left:12%;width:26px}
+.af-ledge i:nth-child(2){left:calc(12% + 34px);width:18px;background:#F3DC78}
+.af-hinge{position:absolute;top:-3px;width:calc(var(--rail) * 1.6);height:calc(var(--rail) * .8);border-radius:2px;background:linear-gradient(180deg,#D7DBE2,#868D99);box-shadow:0 1px 2px rgba(0,0,0,.4)}
+.af-hinge.l{left:12%}.af-hinge.r{right:12%}
+.af-stand{position:absolute;inset:0}
+.af-leg{position:absolute;top:calc(100% - 6px);width:var(--rail);height:var(--leg);border-radius:0 0 3px 3px;transform-origin:50% 0}
+.af-leg.l{left:0;transform:rotate(3.5deg)}
+.af-leg.r{right:0;transform:rotate(-3.5deg)}
+.af-leg.bl,.af-leg.br{height:calc(var(--leg) * .8);filter:brightness(.5);z-index:-1}
+.af-leg.bl{left:9%;transform:rotate(-2deg)}
+.af-leg.br{right:9%;transform:rotate(2deg)}
+.af-shadow{position:absolute;left:-6%;right:-18%;top:calc(100% + var(--leg) - 16px);height:30px;background:radial-gradient(closest-side,rgba(25,14,6,.5),transparent);transform:skewX(-35deg) translateX(8%);z-index:-2}
+.easel{--leg:clamp(14px,2.2cqh,28px)}
+.easel .af-slate{justify-items:center;text-align:center;padding:calc(var(--pad) * .8)}
+.easel .af-slate p{font:600 var(--t-h3)/1.35 var(--display);color:var(--chalk);max-width:30ch}
+.easel .af-shadow{height:20px;top:calc(100% + var(--leg) - 12px)}
+
+/* Beat 3 · four-panel leaflet lying on the till */
+.lf-paper{position:relative;border-radius:3px;padding:var(--pad);display:grid;gap:calc(var(--pad) * .7);
+  background:var(--grain),linear-gradient(180deg,#FFFEFA,#F7F3EA);background-size:200px,auto;
+  box-shadow:0 1px 0 rgba(0,0,0,.06),0 3px 6px rgba(60,35,10,.12),0 34px 36px -22px rgba(50,25,5,.6)}
+.lf-paper h2{font-size:var(--t-h2);color:var(--navy)}
+.panels{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.panel{position:relative;min-width:0;padding:calc(var(--pad) * .7);display:flex;flex-direction:column;gap:.55em}
+.panel:nth-child(odd){background:linear-gradient(90deg,rgba(255,255,255,.6),rgba(60,40,20,.045))}
+.panel:nth-child(even){background:linear-gradient(90deg,rgba(60,40,20,.09),rgba(60,40,20,0) 55%)}
+.panel + .panel{box-shadow:inset 1px 0 0 rgba(60,40,20,.12)}
+.panel > .ic{width:calc(var(--t-h3) * 1.7);height:calc(var(--t-h3) * 1.7);color:var(--purple);padding:.3em;border-radius:10px;background:#F6EAFC;box-sizing:content-box}
+.panel h3{font-size:var(--t-h3);color:var(--navy)}
+.panel p{font-size:var(--t-small);color:var(--muted);line-height:1.5}
+.panel .soon{align-self:flex-start;margin-top:auto;font:700 var(--t-kick)/1.2 var(--body);letter-spacing:.03em;background:#DDF9FD;color:#0A5462;padding:.5em .8em;border-radius:999px}
+
+/* Beat 4 · open ring binder with plastic index tabs */
+.binder{display:flex;flex-direction:column;--atc:#F4CF4F}
+.binder[data-ind="clinic"]{--atc:#6EE0EF}
+.binder[data-ind="property"]{--atc:#F5A3C8}
+.binder[data-ind="logistics"]{--atc:#C6B2F4}
+.bd-cover{position:absolute;left:-7%;right:-2.5%;top:calc(var(--t-small) * 2.6);bottom:-4.5%;border-radius:14px;z-index:-1;
+  background:var(--grain),linear-gradient(160deg,#2A3170,#141A4A);background-size:160px,auto;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -4px 0 rgba(0,0,0,.35),0 36px 40px -24px rgba(10,10,40,.7)}
+.binder{isolation:isolate}
+.tabs{display:flex;gap:4px;padding-left:calc(var(--pad) * 1.6);position:relative;z-index:1}
+.tab{
+  border:0;cursor:pointer;font:700 var(--t-small)/1.1 var(--body);color:#2A2440;
+  background:linear-gradient(180deg,rgba(255,255,255,.45),rgba(255,255,255,0) 55%),var(--tc);
+  padding:.8em 1.05em .7em;min-height:44px;border-radius:10px 10px 0 0;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7),inset 0 -2px 0 rgba(0,0,0,.06);
+  transform:translateY(5px);filter:saturate(.7) brightness(.96);
+  transition:transform 200ms var(--ease-out),filter 200ms ease;
+}
+.tab:hover{transform:translateY(2px)}
+.tab[aria-selected="true"]{transform:none;filter:none}
+.t-y{--tc:#F4CF4F}.t-c{--tc:#6EE0EF}.t-p{--tc:#F5A3C8}.t-l{--tc:#C6B2F4}
+.page{
+  position:relative;border-top:6px solid var(--atc);border-radius:4px 12px 12px 12px;
+  padding:var(--pad) var(--pad) var(--pad) calc(var(--pad) * 2.1);display:grid;gap:calc(var(--pad) * .6);
+  background:var(--grain),linear-gradient(90deg,#EFE6D0,var(--cream) 9%);background-size:200px,auto;
+  box-shadow:2px 3px 0 #EEE4CD,4px 6px 0 #E2D6BB,6px 9px 0 #D5C7A8,0 30px 34px -24px rgba(40,25,5,.6);
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+}
+.bd-rings{position:absolute;left:calc(var(--pad) * .35);top:var(--pad);bottom:var(--pad);width:calc(var(--pad) * 1.3);display:flex;flex-direction:column;justify-content:space-around}
+.bd-rings i{display:block;height:clamp(14px,1.2cqw,22px);border-radius:50%;border:3px solid #B7BDC8;border-left-color:#E9ECF1;border-bottom-color:#7D8492;box-shadow:0 2px 2px rgba(0,0,0,.25)}
+.page h2{font-size:var(--t-h2);color:var(--navy)}
+.page .intro{font-size:var(--t-body);color:var(--muted)}
+.uses{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:calc(var(--pad) * .6) var(--pad)}
+.uses li{min-width:0;display:grid;gap:.35em;padding-top:.7em;border-top:1px solid rgba(70,50,25,.16)}
+.uses .lbl{display:flex;align-items:center;gap:.45em;font:700 var(--t-kick)/1.2 var(--body);letter-spacing:.07em;text-transform:uppercase;color:var(--purple-deep)}
+.uses .lbl .ic{width:1.35em;height:1.35em}
+.uses p{font-size:var(--t-small);color:var(--ink);line-height:1.5}
+.uses.swap{transition:opacity 220ms var(--ease-out),transform 320ms var(--ease-out)}
+.uses.out{opacity:0;transform:translateY(6px)}
+.page-cta{display:flex;flex-wrap:wrap;align-items:center;gap:.6em 1em}
+.page-cta small{font-size:var(--t-small);color:var(--muted)}
+
+/* Beat 5 · green street sign on its arm + bamboo banners on the pavement */
+.sign{position:relative;color:#fff;border-radius:10px;padding:calc(var(--pad) * .7) var(--pad);text-align:center;display:grid;gap:.35em;
+  background:radial-gradient(70% 120% at 25% 0%,rgba(255,255,255,.16),transparent 60%),linear-gradient(180deg,#187448,var(--sign));
+  box-shadow:inset 0 0 0 4px var(--sign),inset 0 0 0 6px rgba(255,255,255,.95),inset 0 0 0 8px var(--sign),0 18px 28px -16px rgba(0,0,0,.5),4px 4px 0 #0C3E27}
+.sign-arm{position:absolute;left:18%;right:-140%;top:-30px;height:9px;border-radius:5px;background:linear-gradient(180deg,#D5DAE2,#7F8795);box-shadow:0 3px 4px rgba(0,0,0,.3)}
+.sign-clip{position:absolute;top:-22px;width:7px;height:24px;border-radius:2px;background:linear-gradient(90deg,#8C93A0,#D6DBE3,#8C93A0)}
+.sign-clip.l{left:22%}.sign-clip.r{right:22%}
+.sign .kick{font:700 var(--t-kick)/1.2 var(--body);letter-spacing:.12em;text-transform:uppercase;color:#BFF1D3}
+.sign h2{font-size:var(--t-h2);color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.2)}
+.flags{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(14px,1.8cqw,34px)}
+.flag{position:relative;min-width:0;padding-left:12px}
+.flag::before{content:"";position:absolute;left:0;top:-14%;bottom:-38%;width:9px;border-radius:5px;
+  background:repeating-linear-gradient(180deg,transparent 0 46px,rgba(80,50,15,.55) 46px 49px),linear-gradient(90deg,#9C7841,#E3C58C 45%,#A8834A);box-shadow:2px 3px 4px rgba(0,0,0,.3)}
+.flag::after{content:"";position:absolute;left:2px;top:-14%;width:42%;height:22px;border-top:5px solid #B89055;border-right:5px solid transparent;border-radius:60% 60% 0 0/90% 90% 0 0}
+/* the cloth is rolled at the top of its pole and unrolls down when its step is reached */
+.unroll{position:relative;height:100%;--u:0%;--roll:0;clip-path:inset(0 0 max(0px,calc(var(--u) - 18px)) 0)}
+.unroll::after{content:"";position:absolute;left:-2px;right:-2px;top:calc(100% - var(--u));height:18px;border-radius:9px;opacity:var(--roll);
+  background:linear-gradient(180deg,rgba(255,255,255,.45),rgba(255,255,255,0) 40%,rgba(0,0,0,.35)),var(--fc);box-shadow:0 4px 5px rgba(0,0,0,.3)}
+.cloth{
+  position:relative;height:100%;color:#fff;
+  padding:var(--pad) calc(var(--pad) * .8) calc(var(--pad) * 1.7);display:flex;flex-direction:column;gap:.5em;
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.07) 0 14%,rgba(0,0,0,.08) 14% 30%,rgba(255,255,255,0) 30% 44%),var(--fc);
+  clip-path:polygon(0 0,100% 0,100% 100%,50% calc(100% - 22px),0 100%);
+  transform-origin:0 0;animation:wave 5.5s ease-in-out infinite;
+}
+.flag:nth-child(2) .cloth{animation-delay:-1.4s}.flag:nth-child(3) .cloth{animation-delay:-2.8s}.flag:nth-child(4) .cloth{animation-delay:-4.1s}
+@keyframes wave{0%,100%{transform:skewY(0deg)}50%{transform:skewY(.7deg)}}
+.cloth .no{font:800 calc(var(--t-h2) * 1.15)/1 var(--display);color:rgba(255,255,255,.55)}
+.cloth h3{font-size:var(--t-h3)}
+.cloth p{font-size:var(--t-small);line-height:1.5;color:rgba(255,255,255,.9)}
+.f1{--fc:#7C07A8}.f2{--fc:#8C2BFA}.f3{--fc:var(--navy)}
+.flag.arrow{--fc:var(--cyan)}
+.flag.arrow .cloth{color:var(--navy-3);padding-right:22%;padding-bottom:var(--pad);clip-path:polygon(0 0,82% 0,100% 50%,82% 100%,0 100%)}
+.flag.arrow .no{color:rgba(11,15,58,.4)}
+.flag.arrow p{color:#16204F}
+.flag.arrow .btn{margin-top:auto;align-self:flex-start}
+
+/* Beat 6 · paper strip + polaroids pinned to the lobby corkboard */
+.pin3d{position:absolute;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0 8%,var(--pc,#C792FF) 22%,var(--pd,#5A0D99) 100%);box-shadow:2px 4px 3px rgba(0,0,0,.35);z-index:2}
+.strip{position:relative;padding:calc(var(--pad) * .6) calc(var(--pad) * 1.3);text-align:center;
+  background:var(--grain),linear-gradient(180deg,#FFFDF5,#F4EFE2);background-size:180px,auto;box-shadow:0 2px 3px rgba(0,0,0,.12),0 14px 20px -14px rgba(0,0,0,.5)}
+.strip .pin3d{top:8px;--pc:#F08AAE;--pd:#9E1B47}
+.strip .pin3d.l{left:12px}.strip .pin3d.r{right:12px}
+.strip h2{font-size:var(--t-h2);color:var(--navy)}
+.polas{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:calc(var(--pad) * 1.2);padding:calc(var(--pad) * 1.1);border-radius:8px;
+  background-color:var(--cork);
+  background-image:radial-gradient(rgba(90,52,20,.3) 1px,transparent 1.6px),radial-gradient(rgba(255,238,205,.22) 1px,transparent 1.6px),var(--grain);
+  background-size:9px 9px,13px 13px,180px;background-position:0 0,4px 6px,0 0;
+  box-shadow:inset 0 0 0 clamp(7px,.65cqw,12px) #7E5435,inset 0 0 0 calc(clamp(7px,.65cqw,12px) + 2px) rgba(255,220,180,.25),inset 0 0 34px rgba(60,30,5,.35),0 26px 40px -24px rgba(0,0,0,.6);
+}
+.pola{position:relative;min-width:0;margin:0;padding:10px 10px 14px;display:flex;flex-direction:column;gap:.6em;
+  background:linear-gradient(180deg,#FFFFFF,#F4F1EA);box-shadow:0 2px 2px rgba(0,0,0,.15),6px 14px 18px -10px rgba(40,20,0,.55)}
+.pola:nth-child(1){--ph:#E9E4F8;rotate:-2.5deg}.pola:nth-child(2){--ph:#DDF1F5;rotate:1.6deg}.pola:nth-child(3){--ph:#F6E7DA;rotate:-1.2deg}
+.pola .pin3d{top:-6px;left:50%;margin-left:-7px}
+.pola .photo{aspect-ratio:4/3;max-width:100%;background:var(--ph);display:grid;place-content:center;justify-items:center;gap:.3em;color:#6B6F92;font:600 var(--t-small)/1 var(--body);box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+.pola .photo .ic{width:1.8em;height:1.8em;opacity:.6}
+.pola blockquote{margin:0;font-size:var(--t-small);font-style:italic;color:var(--ink);line-height:1.5}
+.pola figcaption{display:grid;gap:.15em;font-size:var(--t-kick);color:var(--muted)}
+.pola figcaption b{font:700 var(--t-small)/1.3 var(--display);color:var(--navy)}
+.pola .stamp{position:absolute;top:18px;right:16px;font:800 var(--t-kick)/1 var(--body);letter-spacing:.14em;color:#B0204F;border:2px solid currentColor;padding:.35em .55em;border-radius:4px;transform:rotate(7deg);background:rgba(255,255,255,.88)}
+
+/* Beat 7 · small wooden sign on the shelf + three magazines standing on it */
+.woodboard{position:relative;border-radius:6px;padding:calc(var(--pad) * .55) var(--pad);text-align:center;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3),inset 0 -3px 0 rgba(0,0,0,.25),0 14px 20px -12px rgba(0,0,0,.5)}
+.woodboard h2{font-size:calc(var(--t-h2) * .82);color:#FFF4DE;text-shadow:0 1px 0 rgba(40,20,5,.6)}
+/* Magazine rack: a dark wooden back board and a front rail, one segment per magazine,
+   so the same rack works as a row on desktop and as a swipe row on phones */
+.mags{--lip:clamp(18px,1.7cqw,30px);position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));isolation:isolate}
+.mags li{position:relative;min-width:0;padding:calc(var(--pad) * .9) calc(var(--pad) * .55) 0}
+.mags li::before{content:"";position:absolute;left:0;right:0;top:0;bottom:calc(var(--lip) * -.6);z-index:-1;
+  background:repeating-linear-gradient(91deg,rgba(0,0,0,.12) 0 1px,transparent 1px 7px),linear-gradient(180deg,#6E4527,#4A2D18);
+  box-shadow:inset 0 12px 18px rgba(0,0,0,.35)}
+.mags li:first-child::before{border-radius:8px 0 0 8px}
+.mags li:last-child::before{border-radius:0 8px 8px 0}
+.mags li::after{content:"";position:absolute;left:0;right:0;bottom:calc(var(--lip) * -.6);height:var(--lip);z-index:2;pointer-events:none;
+  background:repeating-linear-gradient(91deg,rgba(60,30,10,.13) 0 1px,transparent 1px 6px),linear-gradient(180deg,#B9814F,#7E512D);
+  box-shadow:inset 0 2px 0 rgba(255,230,200,.4),0 12px 14px -8px rgba(0,0,0,.5)}
+/* A magazine cover: masthead, cover art, cover line, link. Its foot rests behind the rail */
+.mag{position:relative;display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;gap:.55em;aspect-ratio:3/4;max-width:100%;
+  padding:calc(var(--pad) * .75) calc(var(--pad) * .75) calc(var(--lip) * .4 + var(--pad) * .55);color:#fff;text-decoration:none;border-radius:2px 4px 4px 2px;
+  background:radial-gradient(120% 70% at 15% 0%,rgba(255,255,255,.2),rgba(255,255,255,0) 55%),var(--grain),var(--mc);background-size:auto,160px,auto;
+  box-shadow:inset 3px 0 0 rgba(0,0,0,.18),inset -2px 0 0 rgba(255,255,255,.18),0 16px 18px -12px rgba(0,0,0,.6);
+  transform-origin:50% 100%;transition:transform 260ms var(--ease-out)}
+.mag:hover{transform:translateY(-10px) rotate(-1deg)}
+.mag .mast{display:block;font:800 calc(var(--t-h2) * 1.02)/.92 var(--display);letter-spacing:-.035em;text-transform:uppercase;color:var(--mast);padding-bottom:.2em;border-bottom:2px solid rgba(255,255,255,.35)}
+.mag .art{align-self:center;justify-self:center;width:50%;max-height:100%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle at 34% 30%,rgba(255,255,255,.38),rgba(255,255,255,.07) 62%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),0 10px 18px -10px rgba(0,0,0,.5)}
+.mag .art .ic{width:46%;height:46%;color:var(--mast)}
+.mag h3{font-size:calc(var(--t-h3) * 1.12);line-height:1.15;letter-spacing:-.02em}
+.mag .read{display:inline-flex;align-items:center;gap:.45em;font:600 var(--t-small)/1 var(--body);color:var(--mast)}
+.mag .read .ic{width:1.1em;height:1.1em}
+.m1{--mc:#7C07A8;--mast:#F3DC78}.m2{--mc:var(--navy);--mast:var(--cyan)}.m3{--mc:#0E6A7A;--mast:#FFFFFF}
+.more{display:flex;justify-content:center}
+
+/* Beat 8 · vinyl title on the meeting-room glass + sticky notes */
+.glass-title{position:relative;padding:var(--pad);border-radius:4px;background:linear-gradient(120deg,rgba(255,255,255,.72),rgba(255,255,255,.5));box-shadow:inset 0 0 0 1px rgba(255,255,255,.8),0 10px 24px -18px rgba(20,40,80,.5)}
+.glass-title::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(105deg,transparent 20%,rgba(255,255,255,.55) 26%,transparent 31%,transparent 60%,rgba(255,255,255,.35) 64%,transparent 67%);pointer-events:none}
+.glass-title h2{font-size:var(--t-h2);color:var(--navy)}
+.notes-wrap{display:grid;gap:calc(var(--pad) * .75)}
+.notes{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:calc(var(--pad) * .55)}
+.note{position:relative;min-width:0;rotate:var(--nr,0deg);background:linear-gradient(180deg,rgba(0,0,0,.05) 0 14%,rgba(0,0,0,0) 14%),linear-gradient(160deg,rgba(255,255,255,.35),rgba(255,255,255,0) 60%),var(--nc);
+  box-shadow:0 1px 1px rgba(0,0,0,.12),0 12px 14px -10px rgba(40,30,70,.55);transition:opacity 200ms ease}
+.note::after{content:"";position:absolute;right:0;bottom:0;width:22px;height:22px;background:linear-gradient(135deg,rgba(0,0,0,0) 50%,rgba(0,0,0,.12) 50%,rgba(255,255,255,.5) 100%);pointer-events:none}
+.note:nth-child(4n+1){--nc:#FFE27A}.note:nth-child(4n+2){--nc:#FFC2DA}.note:nth-child(4n+3){--nc:#B3F0F8}.note:nth-child(4n+4){--nc:#DACCFF}
+.note:nth-child(1){--nr:-1.2deg}.note:nth-child(2){--nr:.9deg}.note:nth-child(3){--nr:.6deg}.note:nth-child(4){--nr:-1deg}.note:nth-child(5){--nr:1.1deg}.note:nth-child(6){--nr:-.5deg}.note:nth-child(7){--nr:-1deg}.note:nth-child(8){--nr:.8deg}
+.note-q{appearance:none;border:0;background:none;width:100%;text-align:left;cursor:pointer;display:block;padding:1.1em 1.05em 1.6em;min-height:4.6em;font:650 var(--t-small)/1.35 var(--body);color:#221B3A}
+.note-a{padding:0 1.15em 1.15em;font-size:var(--t-body);color:#2E2748;line-height:1.55}
+.note-x{position:absolute;top:8px;right:8px;width:44px;height:44px;border-radius:999px;border:0;background:rgba(0,0,0,.08);color:#221B3A;display:grid;place-items:center;cursor:pointer}
+.note-x .ic{width:20px;height:20px}
+.note.open{position:absolute;inset:0;z-index:3;overflow:auto;rotate:0deg;box-shadow:0 30px 50px -20px rgba(30,20,60,.6);animation:lift 240ms var(--ease-out)}
+.note.open::after{display:none}
+.note.open .note-q{font:700 var(--t-h3)/1.25 var(--display);padding:1em 3.4em .6em 1.15em;cursor:default}
+.notes.has-open .note:not(.open){opacity:.25}
+@keyframes lift{from{opacity:.4;transform:scale(.97)}to{opacity:1;transform:none}}
+.notes-help{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.6em 1em;padding:8px 8px 8px calc(var(--pad) * .9);border-radius:999px;background:rgba(255,255,255,.66);box-shadow:inset 0 0 0 1px rgba(255,255,255,.8)}
+.notes-help p{font:600 var(--t-body)/1.3 var(--body);color:var(--navy)}
+
+/* Beat 9 · wooden plaque beside the office door, lit by the brass lamp */
+.plaque{
+  position:relative;color:#3A2A1E;border:clamp(8px,.75cqw,13px) solid var(--wood-dark);border-radius:6px;
+  padding:var(--pad) calc(var(--pad) * 1.15);display:grid;gap:calc(var(--pad) * .6);
+  background:radial-gradient(circle at 14px 14px,#D8B979 0 3px,#6E5631 3.5px,transparent 4.5px),radial-gradient(circle at calc(100% - 14px) 14px,#D8B979 0 3px,#6E5631 3.5px,transparent 4.5px),radial-gradient(circle at 14px calc(100% - 14px),#D8B979 0 3px,#6E5631 3.5px,transparent 4.5px),radial-gradient(circle at calc(100% - 14px) calc(100% - 14px),#D8B979 0 3px,#6E5631 3.5px,transparent 4.5px),
+    radial-gradient(60% 50% at 100% 0%,rgba(255,214,140,.45),transparent 70%),var(--grain),linear-gradient(180deg,#F5EAD3,#E4D2AE);
+  background-size:auto,auto,auto,auto,auto,200px,auto;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.5),inset 0 0 34px rgba(120,80,30,.16),5px 6px 0 #22180F,-14px 22px 34px -18px rgba(40,15,5,.6);
+}
+.plaque h2{font-size:var(--t-h2);color:#2B1D12;text-shadow:0 1px 0 rgba(255,255,255,.55)}
+.plaque p{font-size:var(--t-body);color:#4A3A2C;max-width:60ch}
+.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6em 1.2em}
+.facts li{min-width:0;display:flex;gap:.5em;align-items:flex-start;font:600 var(--t-small)/1.4 var(--body);color:#3A2A1E}
+.facts .ic{width:1.3em;height:1.3em;color:var(--purple-deep);margin-top:.05em}
+.plaque .link{justify-self:start;display:inline-flex;align-items:center;gap:.45em;min-height:44px;font:700 var(--t-body)/1 var(--body);color:var(--purple-deep);text-decoration:none;border-bottom:2px solid rgba(124,7,168,.3)}
+.plaque .link .ic{width:1.1em;height:1.1em}
+.lamp-glow{position:absolute;right:-12%;top:-30%;width:46%;aspect-ratio:1;border-radius:50%;background:radial-gradient(closest-side,rgba(255,206,120,.55),rgba(255,206,120,0));mix-blend-mode:screen;z-index:6}
+
+/* Beat 14 · open purple folder on Bu Dewi's desk, seen from the empty chair */
+.folder{position:relative;padding:clamp(10px,1.1cqw,18px);border-radius:10px 10px 14px 14px;
+  background:var(--grain),linear-gradient(160deg,var(--purple),var(--purple-deep));background-size:160px,auto;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3),inset 0 -4px 0 rgba(0,0,0,.25),0 40px 46px -26px rgba(50,0,70,.7)}
+.folder::before{content:"";position:absolute;left:7%;top:-14px;width:24%;height:16px;background:var(--purple);border-radius:8px 8px 0 0;box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.clip{position:absolute;top:-10px;right:14%;width:16px;height:40px;border-radius:8px;border:3px solid #C4CAD4;border-bottom-color:#7D8492;z-index:2}
+.sheet{position:relative;border-radius:3px;padding:var(--pad) calc(var(--pad) * 1.2);display:grid;gap:calc(var(--pad) * .55);justify-items:center;text-align:center;
+  background:var(--grain),linear-gradient(180deg,#FFFFFF,#F6F3EC);background-size:200px,auto;box-shadow:0 2px 4px rgba(0,0,0,.18)}
+.sheet h2{font-size:var(--t-h2);color:var(--navy);max-width:22ch}
+.sheet p{font-size:var(--t-body);color:var(--muted);max-width:50ch}
+.sheet .cta-row{justify-content:center}
+.sheet .btn-line{color:var(--navy);box-shadow:inset 0 0 0 1.5px rgba(19,25,81,.35)}
+
+/* Beat 16 · footer on the dark road */
+.road{display:grid;gap:calc(var(--pad) * .9);color:var(--on-night-muted);text-shadow:0 1px 8px rgba(0,0,10,.6)}
+.foot{display:grid;grid-template-columns:minmax(0,1.7fr) repeat(3,minmax(0,1fr));gap:calc(var(--pad) * 1.2)}
+.foot > *{min-width:0}
+.f-brand{display:grid;gap:.7em;align-content:start}
+.f-brand img{height:clamp(24px,1.9cqw,32px);width:auto}
+.epi{font:500 var(--t-h3)/1.35 var(--display);color:#fff;max-width:34ch}
+.f-tag{font-size:var(--t-small)}
+.f-col h3{font:700 var(--t-kick)/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--cyan);margin-bottom:.7em}
+.f-col li{font-size:var(--t-small)}
+.f-col a{display:inline-block;padding:.32em 0;text-decoration:none}
+.f-col a:hover{color:#fff}
+.social{display:flex;gap:8px;margin-bottom:12px}
+.social a{width:44px;height:44px;padding:0;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.09);color:#fff}
+.social a:hover{background:rgba(255,255,255,.16)}
+.social .ic{width:20px;height:20px}
+.road .lang{background:rgba(255,255,255,.08)}
+.road .lang button{color:var(--on-night-muted)}
+.road .lang button[aria-pressed="true"]{background:var(--on-night);color:var(--navy)}
+.copy{padding-top:.9em;border-top:1px solid rgba(255,255,255,.14);font-size:var(--t-kick);letter-spacing:.02em}
+
+/* ---------- Prototype tools: video zones + beat readout ---------- */
+.zones{position:absolute;inset:0;pointer-events:none;display:none;z-index:6}
 .show-zones .zones{display:block}
-.zone{position:absolute;border:2px dashed;display:flex;align-items:flex-end;padding:12px}
-.zone span{font:700 .75rem/1.3 var(--body);letter-spacing:.04em;padding:6px 10px;border-radius:999px;color:#fff}
-.z-text{left:0;top:0;bottom:0;width:var(--text-zone);border-color:rgba(19,25,81,.55);background:rgba(19,25,81,.04)}
-.z-text span{background:var(--navy)}
-.z-video{left:var(--text-zone);right:0;top:0;bottom:0;border-color:rgba(159,14,214,.7);background:rgba(159,14,214,.06)}
-.z-video span{background:var(--purple)}
-.z-cards{left:calc(50% - 190px);top:calc(57% - 190px);width:380px;height:380px;border-color:rgba(14,124,144,.8);background:rgba(53,234,254,.08);border-radius:24px;align-items:flex-start}
-.z-cards span{background:#0E7C90}
-/* Beat 2 ("Kenalkan asisten AI") mirrors the composition on desktop: action left, text right */
-@media (min-width:768px){
-  .stage[data-beat="1"] .z-text{left:auto;right:0}
-  .stage[data-beat="1"] .z-video{left:0;right:var(--text-zone)}
-  .stage[data-beat="1"] .z-cards{left:calc(50% - 240px)}
-  .stage:not([data-beat="0"]):not([data-beat="1"]) .z-cards{display:none}
-  /* beat 3: headline top-centre, action in the lower part */
-  .stage[data-beat="2"] .z-text{width:auto;right:0;bottom:auto;height:46%}
-  .stage[data-beat="2"] .z-video{left:0;top:46%}
-  /* beat 4: navy caption card bottom-left, action upper right */
-  .stage[data-beat="3"] .z-text{top:auto;bottom:0;width:48%;height:48%}
-  .stage[data-beat="3"] .z-video{left:48%}
-  /* beat 5: headline top, steps band along the bottom, action in the middle */
-  .stage[data-beat="4"] .z-text{width:auto;right:0;bottom:auto;height:30%}
-  .stage[data-beat="4"] .z-text2{display:flex;top:auto;bottom:0;height:30%}
-  .stage[data-beat="4"] .z-video{left:0;top:30%;bottom:30%}
-  /* beat 6: big statement bottom-centre, wide shot above */
-  .stage[data-beat="5"] .z-text{top:auto;bottom:0;width:auto;right:0;height:42%}
-  .stage[data-beat="5"] .z-video{left:0;top:0;bottom:42%}
-
-  .beats.pos-top{left:var(--gut);right:var(--gut);width:auto;bottom:auto;height:46%;align-items:end;padding-top:calc(var(--nav-h) + 24px)}
-  .pos-top .beat{justify-items:center;text-align:center;max-width:880px;margin-inline:auto}
-  .pos-top .beat h2{font-size:clamp(2.2rem,1.2rem + 2.8vw,3.6rem)}
-  .pos-top .beat p{max-width:54ch}
-  .pos-top .beat .cta-row{justify-content:center}
-
-  .beats.pos-bl{top:auto;bottom:40px;height:auto;width:min(46%,580px);padding-top:0;align-items:end}
-  .pos-bl .beat{padding:clamp(24px,2.4vw,36px)}
-
-  .beats.pos-split{left:var(--gut);right:var(--gut);width:auto;padding-top:calc(var(--nav-h) + 40px);padding-bottom:40px;align-items:stretch}
-  .pos-split .beat{align-content:space-between}
-  .pos-split .beat h2{max-width:17ch}
-  .pos-split .mini{grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;background:rgba(255,255,255,.5);-webkit-backdrop-filter:blur(18px) brightness(1.08) saturate(1.2);backdrop-filter:blur(18px) brightness(1.08) saturate(1.2);padding:22px;border-radius:var(--r-card);box-shadow:inset 0 0 0 1px rgba(255,255,255,.6),0 20px 40px -28px rgba(19,25,81,.35)}
-  .pos-split .mini li{flex-direction:column;align-items:flex-start;gap:10px}
-
-  .beats.pos-bottom{left:var(--gut);right:var(--gut);width:auto;top:auto;bottom:48px;height:auto;padding-top:0}
-  .pos-bottom .beat{justify-items:center;text-align:center;max-width:980px;margin-inline:auto}
-  .pos-bottom .beat h2{font-size:clamp(2.4rem,1.2rem + 3.2vw,4.2rem);letter-spacing:-.035em}
-  .pos-bottom .beat p{max-width:52ch}
-  .pos-bottom .beat .cta-row{justify-content:center}
+.z-safe{position:absolute;left:9%;right:9%;top:8%;bottom:8%;border:2px dashed rgba(14,124,144,.9)}
+.z-safe span,.z-box span{position:absolute;font:700 11px/1.3 var(--body);color:#fff;padding:4px 8px;border-radius:6px;white-space:nowrap}
+.z-safe span{left:50%;bottom:6px;transform:translateX(-50%);background:#0E7C90}
+.z-box{position:absolute;display:none;border:2px dashed rgba(159,14,214,.95);background:rgba(159,14,214,.07)}
+.z-box.on{display:block}
+.z-box span{left:-2px;bottom:100%;margin-bottom:4px;background:var(--purple)}
+.z-box.shifted{border-color:var(--alert)}
+.z-box.shifted span{background:var(--alert)}
+.hud{display:none}
+.film.show-zones .hud{
+  display:grid;gap:4px;position:absolute;z-index:9;left:max(16px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 12px);
+  width:min(440px,calc(100% - 32px));padding:12px 14px;border-radius:14px;background:rgba(11,15,58,.9);color:#fff;font:500 12.5px/1.45 var(--body);
 }
-.zone-menu{display:none}
+.hud b{font:700 14px/1.3 var(--display)}
+.hud .dim{color:var(--on-night-muted)}
+.hud .bar{height:4px;border-radius:4px;background:rgba(255,255,255,.15);overflow:hidden;margin:4px 0}
+.hud .bar i{display:block;height:100%;width:0;background:var(--cyan)}
 .zone-toggle{
-  position:fixed;z-index:25;left:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);
-  display:inline-flex;align-items:center;gap:8px;border:0;cursor:pointer;
-  font:600 .8125rem/1 var(--body);padding:10px 14px;border-radius:999px;min-height:40px;
-  background:var(--navy-3);color:var(--on-navy);box-shadow:0 8px 24px -10px rgba(11,15,58,.6);
-  transition:transform 160ms var(--ease-out),background-color 200ms ease;
+  position:fixed;z-index:25;right:max(12px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 12px);
+  display:inline-flex;align-items:center;gap:10px;border:0;cursor:pointer;
+  font:600 .8125rem/1 var(--body);padding:8px 14px 8px 10px;border-radius:999px;min-height:40px;
+  background:var(--navy-3);color:var(--on-night);box-shadow:0 8px 24px -10px rgba(11,15,58,.6);
 }
-.zone-toggle:active{transform:scale(.97)}
-.zone-toggle i{width:28px;height:16px;border-radius:999px;background:rgba(255,255,255,.2);position:relative;transition:background-color 200ms ease}
+.zone-toggle i{width:28px;height:16px;border-radius:999px;background:rgba(255,255,255,.22);position:relative;flex:none}
 .zone-toggle i::after{content:"";position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:999px;background:#fff;transition:transform 220ms var(--ease-out)}
 .zone-toggle[aria-pressed="true"] i{background:var(--purple)}
 .zone-toggle[aria-pressed="true"] i::after{transform:translateX(12px)}
-.zone-toggle small{font-size:.6875rem;opacity:.65;font-weight:600}
-
-/* ---------- Capabilities (navy) ---------- */
-.on-navy{background:var(--navy);color:var(--on-navy)}
-.on-navy h2,.on-navy h3{color:#fff}
-.caps{padding-block:clamp(88px,10vw,140px)}
-.caps h2{font-size:var(--fs-h2);max-width:16ch}
-.caps .lede{color:var(--on-navy-muted);margin-top:16px;font-size:1.125rem}
-.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:32px}
-.tab{
-  display:inline-flex;align-items:center;gap:8px;border:0;cursor:pointer;
-  font:600 .9375rem/1 var(--body);color:var(--on-navy);background:rgba(255,255,255,.07);
-  padding:12px 18px;border-radius:999px;min-height:46px;
-  transition:background-color 200ms ease,color 200ms ease,transform 160ms var(--ease-out);
-}
-.tab .ic{width:20px;height:20px}
-.tab:hover{background:rgba(255,255,255,.12)}
-.tab:active{transform:scale(.97)}
-.tab[aria-selected="true"]{background:var(--cyan);color:var(--navy-3)}
-
-.bento{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;margin-top:28px}
-.shell{padding:6px;border-radius:var(--r-card);background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);min-width:0}
-.core{height:100%;border-radius:var(--r-in);padding:clamp(20px,2.4vw,32px);display:flex;flex-direction:column;gap:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.08);min-width:0}
-.core h3{font-size:var(--fs-h3);display:flex;align-items:center;gap:10px}
-.core h3 .ic{width:24px;height:24px;color:var(--cyan)}
-.core .desc{color:var(--on-navy-muted);font-size:.9875rem;max-width:46ch}
-.core .ex{font-size:.9375rem;font-weight:600;color:#fff;display:flex;gap:8px;align-items:flex-start;margin-top:auto;padding-top:8px}
-.core .ex .ic{width:18px;height:18px;margin-top:3px;color:var(--cyan)}
-.c-wa{grid-column:1/8;grid-row:1/3}
-.c-wa .core{background:var(--navy-2)}
-.c-admin{grid-column:8/13}
-.c-admin .core{background:linear-gradient(150deg,#8C2BFA 0%,#9F0ED6 100%)}
-.c-admin .core h3 .ic,.c-admin .core .ex .ic{color:#fff}
-.c-admin .core .desc{color:rgba(255,255,255,.82)}
-.c-content{grid-column:8/13}
-.c-content .core{background:#EAFBFE;color:var(--ink)}
-.c-content .core h3{color:var(--navy)}
-.c-content .core h3 .ic,.c-content .core .ex .ic{color:var(--purple)}
-.c-content .core .desc{color:var(--muted)}
-.c-content .core .ex{color:var(--navy)}
-.c-know{grid-column:1/13}
-.c-know .core{background:var(--navy-3);display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:24px 40px;align-items:center}
-
-.chat{display:flex;flex-direction:column;gap:10px;margin-block:12px 4px}
-.bub{max-width:min(380px,88%);padding:12px 14px;border-radius:18px;font-size:.9375rem;line-height:1.45}
-.bub.in{background:#fff;color:var(--ink);border-bottom-left-radius:6px;align-self:flex-start}
-.bub.out{background:#1F6F86;background:linear-gradient(160deg,rgba(53,234,254,.22),rgba(53,234,254,.12));color:#fff;border-bottom-right-radius:6px;align-self:flex-end;box-shadow:inset 0 0 0 1px rgba(53,234,254,.3)}
-.bub-meta{align-self:flex-end;font-size:.75rem;color:var(--on-navy-muted);display:flex;align-items:center;gap:6px}
-.bub-meta .ic{width:14px;height:14px;color:var(--cyan)}
-.typing{align-self:flex-end;display:none;gap:4px;padding:12px 14px;border-radius:18px;background:rgba(53,234,254,.12)}
-.typing i{width:6px;height:6px;border-radius:999px;background:var(--cyan);animation:dot 1s infinite var(--ease-io)}
-.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
-@keyframes dot{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
-.swap{transition:opacity 260ms var(--ease-out),transform 360ms var(--ease-out)}
-.swap.out{opacity:0;transform:translateY(8px)}
-
-.flow{display:flex;align-items:center;gap:0;margin-block:14px 6px;position:relative}
-.flow .n{flex:none;width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.16);display:grid;place-items:center;position:relative;z-index:1}
-.flow .n .ic{width:22px;height:22px;color:#fff}
-.flow .n.ai{background:#fff}
-.flow .n.ai .ic{color:var(--purple)}
-.flow .wire{flex:1;height:2px;background:rgba(255,255,255,.35);position:relative;overflow:hidden;border-radius:2px}
-.flow .wire::after{content:"";position:absolute;top:-2px;left:0;width:40%;height:6px;border-radius:6px;background:linear-gradient(90deg,transparent,#fff,transparent);opacity:0;transform:translateX(-100%)}
-.is-live .flow .wire::after{animation:packet 2.4s var(--ease-io) infinite}
-.is-live .flow .wire:nth-of-type(4)::after{animation-delay:.8s}
-.is-live .flow .wire:nth-of-type(6)::after{animation-delay:1.6s}
-@keyframes packet{0%{transform:translateX(-100%);opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translateX(250%);opacity:0}}
-.flow-labels{display:flex;justify-content:space-between;font-size:.75rem;color:rgba(255,255,255,.8);font-weight:600}
-
-.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-block:12px 4px}
-.day{border-radius:10px;background:#fff;box-shadow:inset 0 0 0 1px rgba(19,25,81,.08);padding:8px 6px;min-height:78px;display:flex;flex-direction:column;gap:6px;min-width:0}
-.day > span{font-size:.6875rem;font-weight:700;color:var(--muted);letter-spacing:.04em}
-.post{font-size:.6875rem;font-weight:700;line-height:1.2;padding:5px 6px;border-radius:6px;background:var(--navy);color:#fff;overflow-wrap:anywhere;transform-origin:left center}
-.post.p2{background:var(--purple)}
-.post.p3{background:#0E7C90}
-
-.qa{display:grid;gap:10px}
-.qa .q{justify-self:start;background:#fff;color:var(--ink);padding:12px 14px;border-radius:18px;border-bottom-left-radius:6px;font-size:.9375rem;max-width:46ch}
-.qa .a{justify-self:end;background:rgba(53,234,254,.14);box-shadow:inset 0 0 0 1px rgba(53,234,254,.3);color:#fff;padding:12px 14px;border-radius:18px;border-bottom-right-radius:6px;font-size:.9375rem;max-width:52ch}
-.qa .src{justify-self:end;display:inline-flex;align-items:center;gap:6px;font-size:.75rem;color:var(--on-navy-muted)}
-.qa .src .ic{width:14px;height:14px;color:var(--cyan)}
-
-/* ---------- Process (sticky head + drawn line) ---------- */
-.process{padding-block:clamp(96px,11vw,160px)}
-.process-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(32px,6vw,96px);align-items:start}
-.process-head{position:sticky;top:calc(var(--nav-h) + 48px);display:grid;gap:20px}
-.process-head h2{font-size:var(--fs-h2);color:var(--navy)}
-.process-head p{color:var(--muted);max-width:40ch}
-.steps-wrap{position:relative;--x:23px}
-.steps{list-style:none;margin:0;padding:0;position:relative;display:grid;gap:clamp(40px,6vw,72px)}
-.steps-wrap::before,.steps-wrap .fill{content:"";position:absolute;left:var(--x);top:24px;bottom:24px;width:2px;border-radius:2px;background:var(--line)}
-.steps-wrap .fill{background:linear-gradient(var(--purple),var(--violet));transform-origin:top;transform:scaleY(0)}
-.step{display:grid;grid-template-columns:48px minmax(0,1fr);gap:20px;position:relative}
-.step .num{
-  width:48px;height:48px;border-radius:999px;display:grid;place-items:center;
-  font:700 1rem/1 var(--display);color:var(--muted);background:var(--paper);
-  box-shadow:inset 0 0 0 2px var(--line);position:relative;z-index:1;
-  transition:box-shadow 300ms ease,color 300ms ease,background-color 300ms ease;
-}
-.step.on .num{color:#fff;background:var(--purple);box-shadow:0 0 0 6px rgba(159,14,214,.12)}
-.step h3{font-size:clamp(1.4rem,1.2rem + .8vw,1.85rem);color:var(--navy);padding-top:6px}
-.step p{color:var(--muted);margin-top:8px;max-width:48ch}
-.chip{display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-size:.8125rem;font-weight:700;color:var(--navy);background:var(--mist);padding:6px 12px;border-radius:999px}
-.chip .ic{width:16px;height:16px;color:var(--purple)}
-
-/* ---------- Statement band (purple) ---------- */
-.band{background:var(--purple);color:#fff;padding-block:clamp(80px,9vw,128px);position:relative;overflow:hidden}
-.band .wrap{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px;align-items:end}
-.band h2{font-size:clamp(2.2rem,1.2rem + 4vw,4.6rem);color:#fff;max-width:14ch;letter-spacing:-.035em}
-.band p{color:rgba(255,255,255,.86);font-size:1.125rem;max-width:46ch;margin-top:24px}
-.pin{display:inline-flex;align-items:center;gap:10px;font-weight:700;background:rgba(255,255,255,.14);padding:12px 18px;border-radius:999px;white-space:nowrap}
-.pin .ic{width:22px;height:22px}
-
-/* ---------- Comparison ---------- */
-.compare{padding-block:clamp(96px,11vw,160px)}
-.compare h2{font-size:var(--fs-h2);color:var(--navy);max-width:18ch}
-.compare .sub{color:var(--muted);margin-top:16px;max-width:56ch;font-size:1.125rem}
-.tbl-wrap{margin-top:40px;overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--r-card)}
-table{width:100%;min-width:720px;border-collapse:separate;border-spacing:0;font-size:.9875rem}
-th,td{text-align:left;vertical-align:top;padding:18px 20px}
-thead th{font:700 1rem/1.2 var(--display);color:var(--muted);padding-top:22px}
-tbody th{font-weight:700;color:var(--navy);width:28%}
-tbody tr + tr > *{border-top:1px solid var(--line)}
-td.k{background:var(--navy);color:var(--on-navy);font-weight:600}
-thead th.k{background:var(--navy);color:#fff;border-radius:var(--r-in) var(--r-in) 0 0}
-tbody tr:last-child td.k{border-radius:0 0 var(--r-in) var(--r-in)}
-td.k .ic{width:18px;height:18px;color:var(--cyan);vertical-align:-3px;margin-right:6px}
-td.o{color:var(--muted)}
-tbody tr + tr > td.k{border-top-color:rgba(255,255,255,.1)}
-
-/* ---------- Clients ---------- */
-.clients{background:var(--mist);padding-block:64px;overflow:hidden}
-.clients h2{font:700 1.125rem/1.3 var(--body);letter-spacing:0;color:var(--muted);text-align:left}
-.marquee{margin-top:28px;display:flex;width:max-content;animation:marq 42s linear infinite}
-.clients:hover .marquee{animation-play-state:paused}
-.logos{display:flex;gap:16px;padding-right:16px}
-.logo-ph{width:180px;height:84px;border-radius:var(--r-in);display:grid;place-items:center;font-size:.8125rem;font-weight:700;color:#8C90B3;box-shadow:inset 0 0 0 2px #D8DAEB;background:var(--paper);background-image:repeating-linear-gradient(135deg,transparent 0 10px,rgba(19,25,81,.025) 10px 20px)}
-@keyframes marq{to{transform:translateX(-50%)}}
-
-/* ---------- FAQ ---------- */
-.faq{padding-block:clamp(96px,11vw,160px)}
-.faq-grid{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:clamp(32px,6vw,96px);align-items:start}
-.faq-head{position:sticky;top:calc(var(--nav-h) + 48px);display:grid;gap:20px}
-.faq-head h2{font-size:var(--fs-h2);color:var(--navy)}
-.faq-head p{color:var(--muted)}
-.qs{display:grid;gap:10px}
-details{border-radius:var(--r-in);background:var(--mist);transition:background-color 200ms ease}
-details[open]{background:#ECEEF8}
-summary{list-style:none;cursor:pointer;display:flex;gap:16px;align-items:center;justify-content:space-between;padding:20px 22px;font:700 1.0625rem/1.35 var(--body);color:var(--navy);min-height:56px}
-summary::-webkit-details-marker{display:none}
-summary .ic{width:22px;height:22px;flex:none;color:var(--purple);transition:transform 260ms var(--ease-out)}
-details[open] summary .ic{transform:rotate(45deg)}
-details .ans{padding:0 22px 22px;color:var(--muted);max-width:62ch}
-
-/* ---------- Final CTA + footer ---------- */
-.final{padding-block:clamp(96px,12vw,176px) clamp(64px,8vw,112px);position:relative;overflow:hidden}
-.final h2{font-size:clamp(2.2rem,1.2rem + 3.6vw,4.4rem);max-width:18ch;letter-spacing:-.035em}
-.final p{color:var(--on-navy-muted);font-size:1.1875rem;max-width:48ch;margin-top:24px}
-.final .cta-row{margin-top:40px}
-.final .mark{position:absolute;right:calc(var(--gut) * -1);bottom:-40px;width:min(420px,48vw);opacity:.16;pointer-events:none}
-.final .wrap{position:relative;z-index:1}
-footer{background:var(--navy-3);color:var(--on-navy-muted);padding-block:64px calc(env(safe-area-inset-bottom,0px) + 96px);font-size:.9375rem}
-.foot{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,3fr) minmax(0,4fr);gap:40px}
-.foot img{height:30px;width:auto}
-.foot h3{font:700 .8125rem/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:#fff;margin-bottom:16px}
-.foot ul{list-style:none;padding:0;margin:0;display:grid;gap:10px}
-.foot a{text-decoration:none}
-.foot a:hover{color:#fff}
-.foot .tag{margin-top:16px;max-width:32ch}
-.addr{display:flex;gap:8px}
-.addr .ic{width:18px;height:18px;margin-top:3px;color:var(--cyan)}
-.foot-bottom{margin-top:48px;padding-top:24px;border-top:1px solid rgba(255,255,255,.1);display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;font-size:.8125rem}
-.foot .lang{background:rgba(255,255,255,.08)}
-.foot .lang button{color:var(--on-navy-muted)}
-.foot .lang button[aria-pressed="true"]{background:var(--on-navy);color:var(--navy)}
-
-/* Mobile WhatsApp bar */
-.wa-bar{
-  position:fixed;z-index:20;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);
-  display:none;align-items:center;justify-content:space-between;gap:12px;
-  padding:8px 8px 8px 18px;border-radius:999px;background:var(--navy-3);color:#fff;
-  box-shadow:0 16px 32px -12px rgba(11,15,58,.6);
-  transform:translateY(140%);transition:transform 420ms var(--ease-drawer);
-}
-.wa-bar.on{transform:none}
-.wa-bar span{font-weight:600;font-size:.9375rem;line-height:1.25}
-.wa-bar .btn{min-height:44px;padding:4px 4px 4px 16px}
-.wa-bar .btn .knob{width:36px;height:36px}
+.zone-toggle .bt{color:var(--on-night-muted);font-variant-numeric:tabular-nums}
+.zone-menu{display:none;position:static;align-self:flex-start;margin-bottom:16px;background:rgba(255,255,255,.1)}
 
 .toast{
-  position:fixed;z-index:50;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 84px);
+  position:fixed;z-index:50;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 72px);
   transform:translate(-50%,16px);opacity:0;pointer-events:none;
   background:var(--ink);color:#fff;font-weight:600;font-size:.9375rem;padding:12px 18px;border-radius:999px;
   transition:opacity 200ms var(--ease-out),transform 260ms var(--ease-out);max-width:calc(100% - 32px);text-align:center;
 }
 .toast.on{opacity:1;transform:translate(-50%,0)}
+.probe{position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
 
-/* Scroll reveal (only applied by JS to content below the first screen) */
-.pre{opacity:0;transform:translateY(28px)}
-.rv{transition:opacity 700ms var(--ease-out),transform 900ms var(--ease-out)}
-
-/* ---------- Responsive ---------- */
-@media (max-width:1080px){
-  .nav-links li.opt{display:none}
-}
+/* ---------- Header on smaller screens ---------- */
 @media (max-width:960px){
-  .nav-links,.nav-end .lang,.nav-end .btn-wa .lbl{display:none}
-  .nav-end .btn-wa{padding:6px}
+  .nav-links,.nav-end .lang{display:none}
   .burger{display:grid}
-  .c-wa{grid-column:1/13;grid-row:auto}
-  .c-admin,.c-content{grid-column:span 6}
-  .c-know .core{grid-template-columns:minmax(0,1fr)}
-  .foot{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
-  .foot > div:first-child{grid-column:1/-1}
 }
 @media (max-width:767px){
-  :root{--nav-h:58px;--text-zone:50%}
-  .nav{padding-left:16px;gap:12px}
-  .nav .brand img{height:26px}
-  .story{height:640vh}
-  .beats{left:var(--gut);right:var(--gut);width:auto;top:0;bottom:auto;height:var(--text-zone);align-items:start;padding-top:calc(var(--nav-h) + 22px)}
-  .beats.is-right{left:var(--gut)}
-  .beat{gap:14px;align-content:start}
-  .beat h1{font-size:clamp(1.9rem,1.2rem + 4vw,2.4rem)}
-  .beat h2{font-size:clamp(1.55rem,1.1rem + 3vw,2rem)}
-  .beat p{font-size:.975rem;line-height:1.5}
-  .beat-6 .cta-row .btn-ghost{display:none}
-  .beat .cta-row .btn-ghost{min-height:44px}
-  /* Process becomes a 5-node stepper */
-  .mini{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;margin-top:4px}
-  .mini li{flex-direction:column;gap:6px;text-align:center}
-  .mini small{display:none}
-  .mini b{font-size:.6875rem;line-height:1.2}
-  .mini .n{width:30px;height:30px}
-  .beat .btn{min-height:48px}
-  .rail{display:none}
-  /* Phone: cards become a chip row inside the text half, under the headline (JS sets the top) */
-  .beat-1 p,.beat-1 .cta-row,.beat-2 p{display:none}
-  .beat h1{gap:10px}
-  .beat h1 .kick{font-size:.6875rem}
-  .cards{top:62%}
-  .pcard{width:104px;height:58px;left:-52px;top:-29px;perspective:600px}
-  .face{flex-direction:column;align-items:flex-start;justify-content:center;gap:4px;padding:8px 10px;border-radius:12px}
-  .face .tile{width:auto;height:auto;background:none!important;border-radius:0}
-  .face .tile .ic{width:16px;height:16px}
-  .face b{font-size:.75rem;line-height:1.2}
-  .face small,.face .tl{display:none}
-  .face .ts{display:block}
-  .front{box-shadow:0 0 0 1.5px var(--navy),3px 3px 0 0 var(--navy)}
-  .back{box-shadow:0 0 0 1.5px var(--navy),3px 3px 0 0 var(--purple)}
-  .z-text{width:auto;right:0;bottom:auto;height:var(--text-zone)}
-  .z-video{left:0;top:var(--text-zone)}
-  .z-cards{display:none}
-  /* Phone variation: beats 4 and 6 put the text in the bottom half, video action moves to the top half */
-  .beats.pos-bl,.beats.pos-bottom{top:auto;bottom:0;height:var(--text-zone);align-items:end;padding-top:0;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 24px)}
-  .pos-bl .beat,.pos-bottom .beat{align-content:end}
-  .stage[data-beat="3"] .z-text,.stage[data-beat="5"] .z-text{top:auto;bottom:0}
-  .stage[data-beat="3"] .z-video,.stage[data-beat="5"] .z-video{top:0;bottom:var(--text-zone)}
-  .zone-toggle{display:none}
-  .zone-menu{display:inline-flex;align-self:flex-start;margin-bottom:16px;background:rgba(255,255,255,.1)}
-  .bento{gap:12px}
-  .c-admin,.c-content{grid-column:1/13}
-  .week{gap:4px}
-  .day{min-height:70px;padding:6px 4px}
-  .process-grid,.faq-grid{grid-template-columns:minmax(0,1fr)}
-  .process-head,.faq-head{position:static}
-  .steps-wrap{--x:19px}
-  .step{grid-template-columns:40px minmax(0,1fr);gap:16px}
-  .step .num{width:40px;height:40px;font-size:.9375rem}
-  .band .wrap{grid-template-columns:minmax(0,1fr)}
-  .band .pin{justify-self:start}
-  .foot{grid-template-columns:minmax(0,1fr)}
-  .wa-bar{display:flex}
-  .logo-ph{width:140px;height:68px}
+  :root{--nav-h:56px}
+  .nav{padding-left:14px;gap:8px}
+  .nav .brand img{height:22px}
+  .nav .btn{--t-btn:.875rem;min-height:44px;padding:4px 4px 4px 14px;gap:8px}
+  .nav .btn .knob{width:34px;height:34px}
 }
-@media (max-width:767px) and (max-height:700px){
-  .beat-3 p,.beat-4 p{display:none}
-  .beat h1{font-size:1.75rem}
-  .beat h2{font-size:1.45rem}
-  .beat-1 p,.beat-4 p{font-size:.9rem}
-  .beat{gap:12px}
-}
-@media (max-height:640px) and (min-width:768px){
-  .beat p{font-size:1rem}
-  .rail{display:none}
+@media (max-width:420px){
+  .nav .brand img{height:20px}
+  .nav .btn .knob{display:none}
+  .nav .btn{padding:4px 16px}
 }
 
+/* ---------- Portrait: 9:16 footage, same elements re-placed ---------- */
+@media (orientation:portrait){
+  .frame{
+    --t-h1:clamp(26px,6.9cqw,40px);
+    --t-h2:clamp(21px,5.4cqw,32px);
+    --t-h3:clamp(15px,3.9cqw,19px);
+    --t-body:clamp(13.5px,3.4cqw,17px);
+    --t-small:clamp(12.5px,3.1cqw,15.5px);
+    --t-kick:clamp(10.5px,2.5cqw,13px);
+    --t-btn:clamp(14px,3.5cqw,16px);
+    --pad:clamp(14px,4.2cqw,28px);
+  }
+  .film .frame{width:max(100cqw,calc(100cqh * 9 / 16));height:max(100cqh,calc(100cqw * 16 / 9))}
+  .film .pc{--x:var(--mx);--y:var(--my);--w:var(--mw);--b:var(--mb)}
+  .film .rail,.zone-toggle:not(.zone-menu){display:none}
+  .zone-menu{display:inline-flex}
+  .z-safe{left:10%;right:10%;top:5%;bottom:5%}
+
+  .aframe{--leg:clamp(40px,7cqh,90px)}
+  .easel{--leg:clamp(12px,1.6cqh,22px)}
+  .af-slate .cta-row{width:100%}
+  .panels{grid-template-columns:minmax(0,1fr)}
+  .panel{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:.85em;row-gap:.25em;align-items:start;padding:.75em .5em}
+  .panel:nth-child(odd){background:linear-gradient(180deg,rgba(255,255,255,.6),rgba(60,40,20,.045))}
+  .panel:nth-child(even){background:linear-gradient(180deg,rgba(60,40,20,.08),rgba(60,40,20,0) 60%)}
+  .panel > .ic{grid-row:1/4}
+  .panel + .panel{box-shadow:inset 0 1px 0 rgba(60,40,20,.12)}
+  .panel .soon{margin-top:.3em}
+  .tabs{gap:3px;padding-left:10px}
+  .tab{padding:.75em .7em .65em;font-size:var(--t-kick)}
+  .page{padding:var(--pad) var(--pad) var(--pad) calc(var(--pad) * 1.8)}
+  .bd-rings{left:calc(var(--pad) * .25);width:calc(var(--pad) * 1.2)}
+  .uses{grid-template-columns:minmax(0,1fr);gap:.6em}
+  .flags{grid-template-columns:minmax(0,1fr)}
+  .film .flags .flag{grid-area:1/1}
+  .film .flags .flag:not(:first-child){opacity:0}
+  .film .unroll{--u:0%;--roll:0}
+  .film .panel{transform:scaleY(.06);transform-origin:50% 0}
+  .flag::before{bottom:-30%}
+  .film .polas{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;gap:14px;
+    padding:calc(var(--pad) * 1.1) calc(var(--crop-x,0px) + var(--vis-w,100cqw) * .11);scroll-padding-inline:calc(var(--crop-x,0px) + var(--vis-w,100cqw) * .11);border-radius:0}
+  .film .polas::-webkit-scrollbar{display:none}
+  .film .pola{flex:0 0 calc(var(--vis-w,100cqw) * .78);scroll-snap-align:center}
+  .mags{grid-template-columns:minmax(0,1fr)}
+  /* phone: the rack becomes a swipe row, the next magazine peeking in */
+  .film .mags{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:0 0 calc(var(--lip) * .7)}
+  .film .mags::-webkit-scrollbar{display:none}
+  .film .mags li{flex:0 0 calc(var(--vis-w,100cqw) * .62);scroll-snap-align:start}
+  .notes{grid-template-columns:minmax(0,1fr);gap:7px}
+  .note{--nr:0deg!important;rotate:calc(var(--nr) * .25)}
+  .notes .note-q{padding:.75em .95em;min-height:44px}
+  .notes-help{border-radius:18px}
+  .facts{grid-template-columns:minmax(0,1fr)}
+  .sheet .cta-row .btn{width:100%;justify-content:space-between}
+  .sheet .cta-row .btn-line{justify-content:center}
+  .foot{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.1em 1.2em}
+  .f-brand,.f-follow{grid-column:1/-1}
+  .f-follow{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  .f-follow h3{display:none}
+  .social{margin:0}
+}
+
+/* ---------- Without motion: the same elements as ordinary stacked sections ---------- */
+html:not(.film) .scene,html:not(.film) .zones,html:not(.film) .hud,html:not(.film) .zone-toggle,html:not(.film) .lit{display:none}
+html:not(.film) .frame{container-type:inline-size}
+html:not(.film) .sf{
+  display:grid;gap:28px;justify-items:center;background:var(--band,#F4F2FA);
+  padding-block:calc(var(--nav-h) + 48px) 64px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+html:not(.film) .pc{width:min(100%,960px)}
+html:not(.film) .aframe,html:not(.film) .plaque,html:not(.film) .strip,html:not(.film) .sign,html:not(.film) .woodboard{width:min(100%,640px)}
+html:not(.film) .aframe{margin-bottom:var(--leg)}
+html:not(.film) .flags{margin-top:40px}
+html:not(.film) .polas{overflow-x:auto}
+html:not(.film) .cloth{animation:none}
+html:not(.film) #beranda{--band:#FBE7D3}
+html:not(.film) #layanan{--band:#EEF0F7}
+html:not(.film) #use-case{--band:#F3EFE6}
+html:not(.film) #cara-kerja{--band:#E3F0FA}
+html:not(.film) #testimoni{--band:#F5F2FD}
+html:not(.film) #artikel{--band:#F1ECF8}
+html:not(.film) #faq{--band:#EDF4F8}
+html:not(.film) #tentang{--band:#FBE6C4}
+html:not(.film) #praktik{--band:#FBEEDC}
+html:not(.film) #kontak{--band:#F8EADF}
+html:not(.film) #footer{--band:var(--navy-3)}
 @media (prefers-reduced-motion:reduce){
-  .story{height:auto}
-  .stage{position:relative;height:auto;overflow:visible;padding:calc(var(--nav-h) + 56px) 0 72px}
-  .beats{position:static;width:auto!important;height:auto!important;padding:0 var(--gut)!important;display:flex;flex-direction:column;gap:64px;margin-bottom:64px}
-  .js .beat:not(.beat-1){opacity:1;visibility:visible}
-  .rail,.zones,.zone-toggle{display:none}
-  .cards{position:static;width:auto;height:auto;display:flex;flex-wrap:wrap;gap:20px;padding:40px var(--gut) 0}
-  .pcard{position:relative;left:auto;top:auto}
-  .beat-1 p,.beat-2 p{display:block}
-  .mini li{opacity:1!important}
-  .beat-1 .cta-row{display:flex}
-  .js .pcard{visibility:visible}
-  .pcard-inner{transform:rotateY(180deg)}
-  .stage-bg{background:var(--warm)}
-  .marquee{animation:none;flex-wrap:wrap;width:auto}
-  .logos[aria-hidden]{display:none}
-  .logos{flex-wrap:wrap}
-  .is-live .flow .wire::after,.typing i{animation:none}
-  .pre{opacity:1;transform:none}
-  .btn,.btn .knob,.rv,.swap,.menu li{transition:none}
+  .btn,.btn .knob,.menu li,.tab,.mag,.uses.swap{transition:none}
+  .note.open,.cloth{animation:none}
 }
 </style>
 
 {{SPRITE}}
+<div class="probe" aria-hidden="true"></div>
 
-<header class="nav" id="top">
-  <a class="brand" href="#beranda" aria-label="Kreatekno, ke awal halaman"><img src="{{LOGO}}" alt="Kreatekno" width="280" height="48"></a>
+<header class="nav">
+  <a class="brand" href="#beranda" data-jump="1" aria-label="Kreatekno, ke awal halaman" data-i18n-aria="nav.home"><img src="{{LOGO}}" alt="Kreatekno" width="280" height="48"></a>
   <ul class="nav-links">
-    <li><a href="#layanan" data-i18n="nav.services">Layanan</a></li>
-    <li class="opt"><a href="#cara-kerja" data-i18n="nav.how">Cara kerja</a></li>
-    <li><a href="#" data-soon data-i18n="nav.portfolio">Portofolio</a></li>
-    <li><a href="#" data-soon data-i18n="nav.articles">Artikel</a></li>
-    <li><a href="#" data-soon data-i18n="nav.about">Tentang</a></li>
+    <li><a href="#layanan" data-jump="3" data-i18n="nav.services">Layanan</a></li>
+    <li><a href="#cara-kerja" data-jump="5" data-i18n="nav.how">Cara kerja</a></li>
+    <li><a href="#artikel" data-jump="7" data-i18n="nav.articles">Artikel</a></li>
+    <li><a href="#tentang" data-jump="9" data-i18n="nav.about">Tentang</a></li>
   </ul>
   <div class="nav-end">
     <div class="lang" role="group" aria-label="Bahasa / Language">
       <button type="button" data-lang="id" aria-pressed="true">ID</button>
       <button type="button" data-lang="en" aria-pressed="false">EN</button>
     </div>
-    <a class="btn btn-wa" data-wa="chat" data-src="nav" href="#" target="_blank" rel="noopener"><span class="lbl" data-i18n="cta.chat">Chat WhatsApp</span><span class="knob"><svg class="ic"><use href="#i-whatsapp-logo"/></svg></span></a>
-    <button class="burger" type="button" aria-label="Buka menu" aria-controls="menu" aria-expanded="false"><svg class="ic"><use href="#i-list"/></svg></button>
+    <a class="btn btn-main" data-wa="chat" data-src="header" href="#" target="_blank" rel="noopener"><span data-i18n="cta.free">Konsultasi gratis</span><span class="knob"><svg class="ic"><use href="#i-chat-circle-dots"/></svg></span></a>
+    <button class="burger" type="button" aria-label="Buka menu" data-i18n-aria="nav.open" aria-controls="menu" aria-expanded="false"><svg class="ic"><use href="#i-list"/></svg></button>
   </div>
 </header>
 
 <div class="menu" id="menu" aria-hidden="true">
   <div class="menu-top">
     <img src="{{LOGO_WHITE}}" alt="Kreatekno" width="240" height="41">
-    <button class="menu-close" type="button" aria-label="Tutup menu"><svg class="ic"><use href="#i-x"/></svg></button>
+    <button class="menu-close" type="button" aria-label="Tutup menu" data-i18n-aria="nav.close"><svg class="ic"><use href="#i-x"/></svg></button>
   </div>
   <ul>
-    <li><a href="#layanan" data-i18n="nav.services">Layanan</a></li>
-    <li><a href="#cara-kerja" data-i18n="nav.how">Cara kerja</a></li>
-    <li><a href="#" data-soon data-i18n="nav.portfolio">Portofolio</a></li>
-    <li><a href="#" data-soon data-i18n="nav.articles">Artikel</a></li>
-    <li><a href="#" data-soon data-i18n="nav.about">Tentang</a></li>
+    <li><a href="#layanan" data-jump="3" data-i18n="nav.services">Layanan</a></li>
+    <li><a href="#cara-kerja" data-jump="5" data-i18n="nav.how">Cara kerja</a></li>
+    <li><a href="#artikel" data-jump="7" data-i18n="nav.articles">Artikel</a></li>
+    <li><a href="#tentang" data-jump="9" data-i18n="nav.about">Tentang</a></li>
   </ul>
   <div class="lang" role="group" aria-label="Bahasa / Language">
     <button type="button" data-lang="id" aria-pressed="true">ID</button>
     <button type="button" data-lang="en" aria-pressed="false">EN</button>
   </div>
   <button class="zone-toggle zone-menu" type="button" aria-pressed="false"><i></i><span data-i18n="zone.menu">Tampilkan area video</span></button>
-  <a class="btn btn-wa" data-wa="chat" data-src="menu" href="#" target="_blank" rel="noopener"><span data-i18n="cta.chat">Chat WhatsApp</span><span class="knob"><svg class="ic"><use href="#i-whatsapp-logo"/></svg></span></a>
+  <a class="btn btn-main" data-wa="chat" data-src="menu" href="#" target="_blank" rel="noopener"><span data-i18n="cta.free">Konsultasi gratis</span><span class="knob"><svg class="ic"><use href="#i-chat-circle-dots"/></svg></span></a>
 </div>
 
-<main>
-  <!-- STORY STAGE: Hero -> Problem -> How AI helps -> Resolution. Scroll video gets stitched behind .beats later. -->
-  <section class="story" id="beranda" aria-label="Kreatekno">
-    <div class="stage" data-beat="0">
-      <div class="stage-bg" aria-hidden="true"></div>
+<div class="reel">
+  <div class="stage">
+    <div class="frame">
+      <!-- Placeholder for the one-take footage: sky + ground plane following the light of each keyframe -->
+      <div class="scene" aria-hidden="true"></div>
 
-      <div class="zones" aria-hidden="true">
-        <div class="zone z-text"><span data-i18n="zone.text">Teks dan tombol (HTML)</span></div>
-        <div class="zone z-video"><span class="zv-d" data-i18n="zone.video">Aksi karakter (video)</span></div>
-        <div class="zone z-cards"><span data-i18n="zone.cards">Kartu (HTML)</span></div>
-        <div class="zone z-text z-text2"><span data-i18n="zone.text">Teks dan tombol (HTML)</span></div>
-      </div>
-
-      <div class="beats pos-left">
-        <div class="beat beat-1">
-          <h1><span class="kick" data-i18n="b1.k">Asisten AI dan otomasi WhatsApp untuk UMKM</span><span class="big" data-i18n="b1.h">Tim terbaik Anda terjebak di pekerjaan berulang.</span></h1>
-          <p data-i18n="b1.p">Membalas pertanyaan yang sama, menyalin pesanan ke Excel, mencari ide konten setiap hari. Jam kerja habis sebelum tim sempat memikirkan pelanggan.</p>
-          <div class="cta-row">
-            <a class="btn btn-wa" data-wa="chat" data-src="hero" href="#" target="_blank" rel="noopener"><span data-i18n="cta.chat">Chat WhatsApp</span><span class="knob"><svg class="ic"><use href="#i-whatsapp-logo"/></svg></span></a>
-          </div>
-        </div>
-      </div>
-      <div class="beats is-right pos-right">
-        <div class="beat beat-2">
-          <h2 data-i18n="b2.h">Kenalkan asisten AI yang bekerja 24 jam untuk bisnis Anda.</h2>
-          <p data-i18n="b2.p">Ia mengambil alih pekerjaan berulang langsung dari WhatsApp dan aplikasi yang sudah Anda pakai. Kalau ada pertanyaan yang tidak bisa ia jawab, pertanyaan itu langsung diteruskan ke admin Anda.</p>
-          <div class="cta-row">
-            <a class="btn btn-ghost" href="#layanan" data-src="story-beat2"><span data-i18n="cta.services">Lihat layanan</span><svg class="ic"><use href="#i-arrow-up-right"/></svg></a>
-          </div>
-        </div>
-      </div>
-      <div class="beats pos-top">
-        <div class="beat beat-3">
-          <h2 data-i18n="b3.h">Tim Anda fokus ke <em>pelanggan, strategi, dan ide baru.</em></h2>
-          <p data-i18n="b3.p">Waktu yang dulu habis untuk membalas chat dan menyalin data, sekarang dipakai untuk melayani pelanggan dan mengembangkan usaha.</p>
-          <div class="cta-row">
-            <a class="btn btn-ghost" href="#" data-soon data-src="story-beat3"><span data-i18n="cta.portfolio">Lihat portofolio</span><svg class="ic"><use href="#i-arrow-up-right"/></svg></a>
-          </div>
-        </div>
-      </div>
-      <div class="beats pos-bl">
-        <div class="beat beat-4">
-          <h2 data-i18n="b4.h">Tim kecil dari Pekanbaru yang bekerja di samping Anda.</h2>
-          <p data-i18n="b4.p">Kantor kami dekat dengan Anda. Kita bisa duduk satu meja, membahas alur kerja Anda, lalu membangun solusinya bersama.</p>
-          <div class="cta-row">
-            <a class="btn btn-ghost" href="#" data-soon data-src="story-beat4"><span data-i18n="cta.about">Tentang kami</span><svg class="ic"><use href="#i-arrow-up-right"/></svg></a>
-          </div>
-        </div>
-      </div>
-      <div class="beats pos-split">
-        <div class="beat beat-5" id="cara-kerja">
-          <h2 data-i18n="b5.h">Kami dampingi di setiap langkah, dari ngobrol sampai sistem berjalan.</h2>
-          <ol class="mini">
-            <li><span class="n">1</span><span class="t"><b data-i18n="m1.h">Ngobrol</b><small data-i18n="m1.p">Gratis, tatap muka atau online</small></span></li>
-            <li><span class="n">2</span><span class="t"><b data-i18n="m2.h">Petakan</b><small data-i18n="m2.p">Cari pekerjaan yang paling layak diotomatiskan</small></span></li>
-            <li><span class="n">3</span><span class="t"><b data-i18n="m3.h">Bangun dan uji</b><small data-i18n="m3.p">Dicoba dengan data bisnis Anda sendiri</small></span></li>
-            <li><span class="n">4</span><span class="t"><b data-i18n="m4.h">Luncurkan</b><small data-i18n="m4.p">Tim Anda dilatih sampai nyaman memakainya</small></span></li>
-            <li><span class="n">5</span><span class="t"><b data-i18n="m5.h">Dampingi</b><small data-i18n="m5.p">Dipantau dan diperbaiki terus</small></span></li>
-          </ol>
-        </div>
-      </div>
-      <div class="beats pos-bottom">
-        <div class="beat beat-6">
-          <h2 data-i18n="b6.h">AI membantu tim Anda naik kelas, bukan menggantikan mereka.</h2>
-          <p data-i18n="b6.p">Ceritakan pekerjaan yang paling menyita waktu tim Anda. Kami bantu petakan solusinya, gratis.</p>
-          <div class="cta-row">
-            <a class="btn btn-wa" data-wa="chat" data-src="story-end" href="#" target="_blank" rel="noopener"><span data-i18n="cta.chat">Chat WhatsApp</span><span class="knob"><svg class="ic"><use href="#i-whatsapp-logo"/></svg></span></a>
-            <a class="btn btn-ghost" data-wa="meet" data-src="story-end" href="#" target="_blank" rel="noopener"><svg class="ic"><use href="#i-handshake"/></svg><span data-i18n="cta.meet">Ketemu langsung</span></a>
-          </div>
-        </div>
-      </div>
-
-      <div class="cards" aria-hidden="true">
-        <div class="pcard"><div class="pcard-inner">
-          <div class="face front"><span class="tile"><svg class="ic"><use href="#i-chat-circle-dots"/></svg></span><span><b><span class="tl" data-i18n="c1.f">“Kak, masih buka?”</span><span class="ts" data-i18n="c1.fs">Chat menumpuk</span></b><small data-i18n="c1.fm">Pesan yang sama, sudah 12 kali hari ini</small></span></div>
-          <div class="face back"><span class="tile"><svg class="ic"><use href="#i-check-circle"/></svg></span><span><b><span class="tl" data-i18n="c1.b">Chat dibalas otomatis</span><span class="ts" data-i18n="c1.bs">Chat dibalas</span></b><small data-i18n="c1.bm">Dibalas dalam hitungan detik, aktif 24 jam</small></span></div>
-        </div></div>
-        <div class="pcard"><div class="pcard-inner">
-          <div class="face front"><span class="tile"><svg class="ic"><use href="#i-table"/></svg></span><span><b><span class="tl" data-i18n="c2.f">Rekap penjualan hari ini</span><span class="ts" data-i18n="c2.fs">Rekap manual</span></b><small data-i18n="c2.fm">Masih disalin manual ke Excel</small></span></div>
-          <div class="face back"><span class="tile"><svg class="ic"><use href="#i-check-circle"/></svg></span><span><b><span class="tl" data-i18n="c2.b">Rekap siap tiap pagi</span><span class="ts" data-i18n="c2.bs">Rekap siap</span></b><small data-i18n="c2.bm">Langsung masuk Google Sheets</small></span></div>
-        </div></div>
-        <div class="pcard"><div class="pcard-inner">
-          <div class="face front"><span class="tile"><svg class="ic"><use href="#i-calendar-dots"/></svg></span><span><b><span class="tl" data-i18n="c3.f">Konten hari ini belum diposting</span><span class="ts" data-i18n="c3.fs">Konten telat</span></b><small data-i18n="c3.fm">Ide habis, jadwal molor</small></span></div>
-          <div class="face back"><span class="tile"><svg class="ic"><use href="#i-check-circle"/></svg></span><span><b><span class="tl" data-i18n="c3.b">Konten sudah terjadwal</span><span class="ts" data-i18n="c3.bs">Konten terjadwal</span></b><small data-i18n="c3.bm">Riset tren dan draf disiapkan otomatis</small></span></div>
-        </div></div>
-      </div>
-
-      <ol class="rail" aria-hidden="true">
-        <li class="on"><span class="node"></span><span class="lbl" data-i18n="rail.1">Masalah</span></li>
-        <li><span class="node"></span><span class="lbl" data-i18n="rail.2">Bantuan AI</span></li>
-        <li><span class="node"></span><span class="lbl" data-i18n="rail.3">Fokus</span></li>
-        <li><span class="node"></span><span class="lbl" data-i18n="rail.4">Tim kami</span></li>
-        <li><span class="node"></span><span class="lbl" data-i18n="rail.5">Cara kerja</span></li>
-        <li><span class="node"></span><span class="lbl" data-i18n="rail.6">Tumbuh</span></li>
-      </ol>
-    </div>
-  </section>
-
-  <!-- CAPABILITIES -->
-  <section class="caps on-navy" id="layanan">
-    <div class="wrap">
-      <h2 class="rv" data-i18n="caps.h">Apa yang bisa dikerjakan asisten AI Anda</h2>
-      <p class="lede rv" data-i18n="caps.p">Pilih jenis usaha Anda untuk melihat contohnya.</p>
-      <div class="tabs rv" role="tablist" aria-label="Jenis usaha">
-        <button class="tab" role="tab" type="button" id="tab-retail" data-ind="retail" aria-selected="true"><svg class="ic"><use href="#i-storefront"/></svg><span data-i18n="ind.retail">Retail &amp; F&amp;B</span></button>
-        <button class="tab" role="tab" type="button" id="tab-clinic" data-ind="clinic" aria-selected="false" tabindex="-1"><svg class="ic"><use href="#i-first-aid"/></svg><span data-i18n="ind.clinic">Klinik</span></button>
-        <button class="tab" role="tab" type="button" id="tab-property" data-ind="property" aria-selected="false" tabindex="-1"><svg class="ic"><use href="#i-buildings"/></svg><span data-i18n="ind.property">Properti</span></button>
-        <button class="tab" role="tab" type="button" id="tab-logistics" data-ind="logistics" aria-selected="false" tabindex="-1"><svg class="ic"><use href="#i-truck"/></svg><span data-i18n="ind.logistics">Logistik</span></button>
-      </div>
-
-      <div class="bento" role="tabpanel" aria-live="polite">
-        <article class="shell c-wa rv"><div class="core">
-          <h3><svg class="ic"><use href="#i-whatsapp-logo"/></svg><span data-i18n="wa.h">Agen AI WhatsApp</span></h3>
-          <p class="desc" data-i18n="wa.p">Menjawab pertanyaan, menerima pesanan dan booking, lalu meneruskan ke admin saat perlu.</p>
-          <div class="chat swap" id="chat">
-            <div class="bub in" data-x="q"></div>
-            <div class="typing" aria-hidden="true"><i></i><i></i><i></i></div>
-            <div class="bub out" data-x="a"></div>
-            <div class="bub-meta"><svg class="ic"><use href="#i-sparkle"/></svg><span data-i18n="wa.meta">Dibalas asisten AI yang aktif 24 jam</span></div>
-          </div>
-        </div></article>
-
-        <article class="shell c-admin rv"><div class="core">
-          <h3><svg class="ic"><use href="#i-receipt"/></svg><span data-i18n="ad.h">Otomasi admin</span></h3>
-          <p class="desc" data-i18n="ad.p">Invoice, rekap penjualan, dan pengingat tagihan dibuat dan dikirim otomatis.</p>
-          <div>
-            <div class="flow" aria-hidden="true">
-              <span class="n"><svg class="ic"><use href="#i-whatsapp-logo"/></svg></span><span class="wire"></span>
-              <span class="n ai"><svg class="ic"><use href="#i-sparkle"/></svg></span><span class="wire"></span>
-              <span class="n"><svg class="ic"><use href="#i-table"/></svg></span><span class="wire"></span>
-              <span class="n"><svg class="ic"><use href="#i-users"/></svg></span>
+      <main class="layer">
+        <!-- Beat 1 · Hero · A-frame chalkboard standing on the pavement in front of Dapur Dewi (K1) -->
+        <section class="sf" id="beranda" data-beat="1" aria-labelledby="h-hero">
+          <div class="pc aframe" data-prop="Papan kapur A-frame di trotoar" style="--dx:9;--dy:17;--dw:30;--mx:7;--my:14;--mw:86">
+            <span class="af-stand deco" aria-hidden="true"><i class="af-leg bl wood-tex"></i><i class="af-leg br wood-tex"></i><i class="af-leg l wood-tex"></i><i class="af-leg r wood-tex"></i><i class="af-shadow"></i></span>
+            <div class="af-wood wood-tex surf">
+              <div class="af-slate">
+                <h1 id="h-hero"><span class="kick chalk" data-i18n="hero.k">Asisten AI dan otomasi untuk UMKM</span><span class="chalk" data-i18n="hero.h">AI mengurus pekerjaan berulang. Tim Anda naik kelas.</span></h1>
+                <svg class="doodle chalk" viewBox="0 0 300 16" aria-hidden="true"><path d="M3 11 C 40 4, 80 13, 120 8 S 200 3, 240 9 S 285 11, 297 6" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/></svg>
+                <p class="chalk" data-i18n="hero.p">Kreatekno membangun asisten AI dan sistem otomasi untuk usaha Anda, lalu melatih tim Anda sampai mahir memakainya.</p>
+                <div class="cta-row">
+                  <a class="btn btn-main" data-wa="chat" data-src="hero" href="#" target="_blank" rel="noopener"><span data-i18n="cta.free">Konsultasi gratis</span><span class="knob"><svg class="ic"><use href="#i-chat-circle-dots"/></svg></span></a>
+                  <a class="btn btn-line chalk" href="#layanan" data-jump="3"><span data-i18n="cta.services">Lihat layanan</span><svg class="ic"><use href="#i-arrow-right"/></svg></a>
+                </div>
+              </div>
+              <span class="af-ledge deco" aria-hidden="true"><i></i><i></i></span>
+              <i class="af-hinge l deco" aria-hidden="true"></i><i class="af-hinge r deco" aria-hidden="true"></i>
             </div>
-            <div class="flow-labels" aria-hidden="true"><span>WhatsApp</span><span>AI</span><span>Sheets</span><span data-i18n="ad.team">Tim</span></div>
           </div>
-          <p class="ex swap" data-x="admin"><svg class="ic"><use href="#i-lightning"/></svg><span></span></p>
-        </div></article>
+        </section>
 
-        <article class="shell c-content rv"><div class="core">
-          <h3><svg class="ic"><use href="#i-calendar-dots"/></svg><span data-i18n="ct.h">Otomasi konten</span></h3>
-          <p class="desc" data-i18n="ct.p">Riset tren, draf caption, dan jadwal posting disiapkan untuk tim Anda.</p>
-          <div class="week swap" id="week" aria-hidden="true"></div>
-        </div></article>
+        <!-- Beat 2 · Transisi masalah · no copy (empty scroll) -->
 
-        <article class="shell c-know rv"><div class="core">
-          <div>
-            <h3><svg class="ic"><use href="#i-books"/></svg><span data-i18n="kn.h">Asisten pengetahuan</span></h3>
-            <p class="desc" style="margin-top:12px" data-i18n="kn.p">Tim bertanya soal SOP dan produk, asisten menjawab dari dokumen Anda. Karyawan baru cepat paham tanpa harus bertanya berulang kali ke seniornya.</p>
+        <!-- Beat 3 · Layanan · four-panel leaflet spread on the till (K3) -->
+        <section class="sf" id="layanan" data-beat="3" aria-labelledby="h-svc">
+          <div class="pc leaflet" data-prop="Leaflet 4 panel di meja kasir" data-blur="0" style="--dx:33;--dy:25;--dw:58;--mx:5;--my:13;--mw:90">
+            <div class="lf-paper surf">
+              <h2 id="h-svc" data-i18n="svc.h">Empat cara kami membantu usaha Anda</h2>
+              <ul class="panels">
+                <li class="panel"><svg class="ic"><use href="#i-sparkle"/></svg><h3 data-i18n="svc.1h">Asisten AI &amp; otomasi</h3><p data-i18n="svc.1p">Asisten yang melayani pelanggan, membuat rekap dan tagihan, serta menjawab pertanyaan tim dari SOP Anda.</p></li>
+                <li class="panel"><svg class="ic"><use href="#i-compass"/></svg><h3 data-i18n="svc.2h">Konsultasi strategi AI</h3><p data-i18n="svc.2p">Kami petakan pekerjaan yang paling layak diotomatiskan, lalu menyusun rencana yang sesuai anggaran Anda.</p></li>
+                <li class="panel"><svg class="ic"><use href="#i-palette"/></svg><h3 data-i18n="svc.3h">Konten &amp; desain</h3><p data-i18n="svc.3p">Desain grafis, konten media sosial, iklan berbayar, serta video dan animasi untuk brand Anda.</p></li>
+                <li class="panel"><svg class="ic"><use href="#i-chalkboard-teacher"/></svg><h3 data-i18n="svc.4h">Pelatihan AI &amp; digital</h3><p data-i18n="svc.4p">Pelatihan AI, media sosial, dan marketing untuk tim Anda, di tempat Anda atau di kelas umum.</p><span class="soon" data-i18n="svc.4t">E-course segera hadir</span></li>
+              </ul>
+            </div>
           </div>
-          <div class="qa swap" id="qa">
-            <div class="q" data-x="q"></div>
-            <div class="a" data-x="a"></div>
-            <div class="src"><svg class="ic"><use href="#i-file-text"/></svg><span data-x="src"></span></div>
+        </section>
+
+        <!-- Beat 4 · Use case · open ring binder with coloured tabs (K4) -->
+        <section class="sf" id="use-case" data-beat="4" aria-labelledby="h-uc">
+          <div class="pc binder" data-prop="Binder bertab di meja kasir" data-blur="0" data-ind="retail" style="--dx:10;--dy:19;--dw:42;--mx:6;--my:11;--mw:90">
+            <i class="bd-cover deco" aria-hidden="true"></i>
+            <div class="tabs" role="tablist" aria-label="Jenis usaha" data-i18n-aria="uc.tabs">
+              <button class="tab t-y" role="tab" type="button" id="tab-retail" data-ind="retail" aria-controls="uc-panel" aria-selected="true"><span data-i18n="ind.retail">Retail &amp; F&amp;B</span></button>
+              <button class="tab t-c" role="tab" type="button" id="tab-clinic" data-ind="clinic" aria-controls="uc-panel" aria-selected="false" tabindex="-1"><span data-i18n="ind.clinic">Klinik</span></button>
+              <button class="tab t-p" role="tab" type="button" id="tab-property" data-ind="property" aria-controls="uc-panel" aria-selected="false" tabindex="-1"><span data-i18n="ind.property">Properti</span></button>
+              <button class="tab t-l" role="tab" type="button" id="tab-logistics" data-ind="logistics" aria-controls="uc-panel" aria-selected="false" tabindex="-1"><span data-i18n="ind.logistics">Logistik</span></button>
+            </div>
+            <div class="page surf">
+              <span class="bd-rings deco" aria-hidden="true"><i></i><i></i><i></i></span>
+              <h2 id="h-uc" data-i18n="uc.h">Apa yang bisa dikerjakan AI di usaha Anda</h2>
+              <p class="intro" data-i18n="uc.p">Pilih jenis usaha Anda untuk melihat contohnya.</p>
+              <ul class="uses swap" id="uc-panel" role="tabpanel" aria-labelledby="tab-retail" aria-live="polite">
+                <li><span class="lbl"><svg class="ic"><use href="#i-users"/></svg><span data-x="l0">Pelanggan</span></span><p data-x="t0">Pertanyaan menu, stok, dan pesanan dijawab otomatis, siang maupun malam.</p></li>
+                <li><span class="lbl"><svg class="ic"><use href="#i-receipt"/></svg><span data-x="l1">Admin &amp; keuangan</span></span><p data-x="t1">Pesanan tercatat sendiri, rekap harian sampai ke pemilik setiap pukul 21.00.</p></li>
+                <li><span class="lbl"><svg class="ic"><use href="#i-calendar-dots"/></svg><span data-x="l2">Konten</span></span><p data-x="t2">Ide promo, draf caption, dan jadwal posting mingguan disiapkan untuk tim.</p></li>
+                <li><span class="lbl"><svg class="ic"><use href="#i-books"/></svg><span data-x="l3">Pengetahuan tim</span></span><p data-x="t3">Karyawan baru bertanya takaran resep, asisten menjawab dari SOP dapur.</p></li>
+              </ul>
+              <div class="page-cta">
+                <a class="btn btn-main" data-wa="chat" data-src="use-case" href="#" target="_blank" rel="noopener"><span data-i18n="cta.free">Konsultasi gratis</span><span class="knob"><svg class="ic"><use href="#i-chat-circle-dots"/></svg></span></a>
+                <small data-i18n="uc.note">Ceritakan pekerjaan yang ingin Anda otomatiskan.</small>
+              </div>
+            </div>
           </div>
-        </div></article>
-      </div>
-    </div>
-  </section>
+        </section>
 
-  <!-- CLIENT LOGOS -->
-  <section class="clients" aria-labelledby="clients-h">
-    <div class="wrap"><h2 id="clients-h" data-i18n="cl.h">Dipercaya bisnis di Pekanbaru</h2></div>
-    <div class="marquee">
-      <div class="logos">
-        <div class="logo-ph" data-i18n="cl.ph">Logo klien</div><div class="logo-ph" data-i18n="cl.ph">Logo klien</div><div class="logo-ph" data-i18n="cl.ph">Logo klien</div><div class="logo-ph" data-i18n="cl.ph">Logo klien</div><div class="logo-ph" data-i18n="cl.ph">Logo klien</div><div class="logo-ph" data-i18n="cl.ph">Logo klien</div><div class="logo-ph" data-i18n="cl.ph">Logo klien</div><div class="logo-ph" data-i18n="cl.ph">Logo klien</div>
-      </div>
-      <div class="logos" aria-hidden="true">
-        <div class="logo-ph" data-i18n="cl.ph">Logo klien</div><div class="logo-ph" data-i18n="cl.ph">Logo klien</div><div class="logo-ph" data-i18n="cl.ph">Logo klien</div><div class="logo-ph" data-i18n="cl.ph">Logo klien</div><div class="logo-ph" data-i18n="cl.ph">Logo klien</div><div class="logo-ph" data-i18n="cl.ph">Logo klien</div><div class="logo-ph" data-i18n="cl.ph">Logo klien</div><div class="logo-ph" data-i18n="cl.ph">Logo klien</div>
-      </div>
-    </div>
-  </section>
+        <!-- Beat 5 · Customer journey · green street sign on its arm + four bamboo banners, the last one an arrow (K5) -->
+        <section class="sf" id="cara-kerja" data-beat="5" aria-labelledby="h-jr">
+          <div class="pc sign surf" data-prop="Papan petunjuk jalan" data-depth=".55" style="--dx:29;--dy:13;--dw:42;--mx:6;--my:11;--mw:88">
+            <i class="sign-arm deco" aria-hidden="true"></i><i class="sign-clip l deco" aria-hidden="true"></i><i class="sign-clip r deco" aria-hidden="true"></i>
+            <span class="kick" data-i18n="jr.k">Cara kerja</span>
+            <h2 id="h-jr" data-i18n="jr.h">Dari ngobrol sampai tim Anda mahir</h2>
+          </div>
+          <ol class="pc flags" data-prop="4 umbul-umbul di trotoar" style="--dx:9;--dy:37;--dw:82;--mx:16;--my:33;--mw:68">
+            <li class="flag f1"><div class="unroll"><div class="cloth surf"><span class="no" aria-hidden="true">1</span><h3 data-i18n="jr.1h">Ngobrol</h3><p data-i18n="jr.1p">Gratis, tatap muka di Pekanbaru atau online. Ceritakan pekerjaan yang paling menyita waktu.</p></div></div></li>
+            <li class="flag f2"><div class="unroll"><div class="cloth surf"><span class="no" aria-hidden="true">2</span><h3 data-i18n="jr.2h">Petakan dan rancang</h3><p data-i18n="jr.2p">Kami pilih pekerjaan yang paling layak diotomatiskan, lalu Anda menerima penawaran yang jelas.</p></div></div></li>
+            <li class="flag f3"><div class="unroll"><div class="cloth surf"><span class="no" aria-hidden="true">3</span><h3 data-i18n="jr.3h">Bangun dan uji</h3><p data-i18n="jr.3p">Sistem dicoba dengan data usaha Anda sendiri sebelum dipakai.</p></div></div></li>
+            <li class="flag arrow"><div class="unroll"><div class="cloth surf"><span class="no" aria-hidden="true">4</span><h3 data-i18n="jr.4h">Luncurkan, latih, dampingi</h3><p data-i18n="jr.4p">Tim Anda dilatih sampai nyaman, dan sistem terus kami pantau.</p>
+              <a class="btn btn-main" data-wa="chat" data-src="journey" href="#" target="_blank" rel="noopener"><span data-i18n="cta.free">Konsultasi gratis</span><span class="knob"><svg class="ic"><use href="#i-chat-circle-dots"/></svg></span></a></div></div></li>
+          </ol>
+        </section>
 
-  <!-- FAQ -->
-  <section class="faq" id="faq">
-    <div class="wrap faq-grid">
-      <div class="faq-head rv">
-        <h2 data-i18n="fq.h">Pertanyaan yang sering muncul</h2>
-        <p data-i18n="fq.p">Belum terjawab? Tanya langsung, kami balas di jam kerja.</p>
-        <div class="cta-row"><a class="btn btn-wa" data-wa="chat" data-src="faq" href="#" target="_blank" rel="noopener"><span data-i18n="cta.chat">Chat WhatsApp</span><span class="knob"><svg class="ic"><use href="#i-whatsapp-logo"/></svg></span></a></div>
-      </div>
-      <div class="qs rv">
-        <details><summary><span data-i18n="q1">Apakah saya harus paham teknologi?</span><svg class="ic"><use href="#i-plus"/></svg></summary><p class="ans" data-i18n="a1">Tidak. Anda cukup menjelaskan pekerjaannya. Kami yang membangun dan mengujinya, lalu melatih tim Anda memakainya.</p></details>
-        <details><summary><span data-i18n="q2">Apakah AI akan menggantikan staf saya?</span><svg class="ic"><use href="#i-plus"/></svg></summary><p class="ans" data-i18n="a2">Tidak. Asisten mengambil pekerjaan berulang seperti membalas pertanyaan umum dan membuat rekap. Staf Anda tetap mengambil keputusan, melayani pelanggan penting, dan mengerjakan hal yang butuh sentuhan manusia.</p></details>
-        <details><summary><span data-i18n="q3">Seberapa andal AI-nya? Kalau jawabannya salah bagaimana?</span><svg class="ic"><use href="#i-plus"/></svg></summary><p class="ans" data-i18n="a3">Asisten hanya menjawab dari data dan dokumen yang Anda setujui. Kalau ragu, ia meneruskan percakapan ke admin. Sebelum sistem berjalan, kami mengujinya dengan pertanyaan nyata dari pelanggan Anda, lalu terus memantaunya setelah itu.</p></details>
-        <details><summary><span data-i18n="q4">Bisa pakai nomor WhatsApp yang sudah ada?</span><svg class="ic"><use href="#i-plus"/></svg></summary><p class="ans" data-i18n="a4">Bisa, lewat WhatsApp Business API. Kami bantu proses pendaftaran dan verifikasinya.</p></details>
-        <details><summary><span data-i18n="q5">Berapa lama sampai asisten jalan?</span><svg class="ic"><use href="#i-plus"/></svg></summary><p class="ans" data-i18n="a5">Untuk alur sederhana, sekitar satu minggu sejak konsultasi, selama data dan akses dari Anda sudah siap. Untuk alur yang lebih rumit, perkiraan waktunya kami berikan setelah sesi ngobrol pertama.</p></details>
-        <details><summary><span data-i18n="q6">Berapa biayanya?</span><svg class="ic"><use href="#i-plus"/></svg></summary><p class="ans" data-i18n="a6">Harga fleksibel dan disesuaikan dengan kebutuhan. Setelah sesi ngobrol gratis, Anda menerima penawaran yang jelas sebelum kami mulai membangun.</p></details>
-        <details><summary><span data-i18n="q7">Apakah data bisnis saya aman?</span><svg class="ic"><use href="#i-plus"/></svg></summary><p class="ans" data-i18n="a7">Data hanya dipakai untuk menjalankan asisten Anda. Akses dibatasi, dan Anda tetap pemilik datanya. Detailnya ada di kebijakan privasi kami.</p></details>
-        <details><summary><span data-i18n="q8">Bisa ketemu langsung?</span><svg class="ic"><use href="#i-plus"/></svg></summary><p class="ans" data-i18n="a8">Bisa. Kami berbasis di Pekanbaru dan senang datang ke tempat usaha Anda, atau bertemu di kantor kami.</p></details>
-      </div>
-    </div>
-  </section>
+        <!-- Beat 6 · Testimoni · paper strip + polaroids on the lobby corkboard (K6) -->
+        <section class="sf" id="testimoni" data-beat="6" aria-labelledby="h-ts">
+          <div class="pc strip surf" data-prop="Strip kertas" style="--dx:31;--dy:11;--dw:38;--mx:6;--my:12;--mw:88">
+            <i class="pin3d l deco" aria-hidden="true"></i><i class="pin3d r deco" aria-hidden="true"></i>
+            <h2 id="h-ts" data-i18n="ts.h">Kata mereka yang sudah bekerja bersama kami</h2>
+          </div>
+          <div class="pc polas surf" data-prop="Dinding gabus + kartu polaroid" data-full-x style="--dx:15;--dy:27;--dw:70;--mx:0;--my:27;--mw:100">
+            <figure class="pola"><i class="pin3d deco" aria-hidden="true"></i><span class="stamp" data-i18n="ts.stamp">CONTOH</span><div class="photo"><svg class="ic"><use href="#i-image"/></svg><span data-i18n="ts.photo">[Foto]</span></div><blockquote data-i18n="ts.q">“[Kutipan klien nyata, 1 sampai 3 kalimat]”</blockquote><figcaption><b data-i18n="ts.n">[Nama], [peran]</b><span data-i18n="ts.b">[Nama usaha], [kota]</span></figcaption></figure>
+            <figure class="pola"><i class="pin3d deco" aria-hidden="true"></i><span class="stamp" data-i18n="ts.stamp">CONTOH</span><div class="photo"><svg class="ic"><use href="#i-image"/></svg><span data-i18n="ts.photo">[Foto]</span></div><blockquote data-i18n="ts.q">“[Kutipan klien nyata, 1 sampai 3 kalimat]”</blockquote><figcaption><b data-i18n="ts.n">[Nama], [peran]</b><span data-i18n="ts.b">[Nama usaha], [kota]</span></figcaption></figure>
+            <figure class="pola"><i class="pin3d deco" aria-hidden="true"></i><span class="stamp" data-i18n="ts.stamp">CONTOH</span><div class="photo"><svg class="ic"><use href="#i-image"/></svg><span data-i18n="ts.photo">[Foto]</span></div><blockquote data-i18n="ts.q">“[Kutipan klien nyata, 1 sampai 3 kalimat]”</blockquote><figcaption><b data-i18n="ts.n">[Nama], [peran]</b><span data-i18n="ts.b">[Nama usaha], [kota]</span></figcaption></figure>
+          </div>
+        </section>
 
-  <!-- FINAL CTA -->
-  <section class="final on-navy" id="kontak">
-    <img class="mark" src="{{MARK}}" alt="" aria-hidden="true">
-    <div class="wrap">
-      <h2 class="rv" data-i18n="fn.h">Yuk, ceritakan satu pekerjaan yang paling ingin Anda otomatiskan.</h2>
-      <p class="rv" data-i18n="fn.p">Kami bantu petakan solusinya, gratis. Lewat chat, atau ketemu langsung di Pekanbaru.</p>
-      <div class="cta-row rv">
-        <a class="btn btn-wa" data-wa="chat" data-src="final" href="#" target="_blank" rel="noopener"><span data-i18n="cta.chat">Chat WhatsApp</span><span class="knob"><svg class="ic"><use href="#i-whatsapp-logo"/></svg></span></a>
-        <a class="btn btn-ghost" data-wa="meet" data-src="final" href="#" target="_blank" rel="noopener"><svg class="ic"><use href="#i-handshake"/></svg><span data-i18n="cta.meet">Ketemu langsung</span></a>
-      </div>
-    </div>
-  </section>
-</main>
+        <!-- Beat 7 · Artikel · small wooden sign + three magazines standing on the shelf (K7) -->
+        <section class="sf" id="artikel" data-beat="7" aria-labelledby="h-ar">
+          <div class="pc woodboard wood-tex surf" data-prop="Papan kayu kecil" data-depth=".9" style="--dx:37;--dy:12;--dw:26;--mx:12;--my:11;--mw:76">
+            <h2 id="h-ar" data-i18n="ar.h">Bacaan untuk pemilik usaha</h2>
+          </div>
+          <ul class="pc mags" data-prop="Rak + 3 sampul majalah" style="--dx:22;--dy:25;--dw:56;--mx:6;--my:21;--mw:88">
+            <li><a class="mag m1" href="#" data-soon><span class="mast"><span class="sr-only" data-i18n="ar.catl">Kategori:</span> <span data-i18n="ar.1c">Otomasi</span></span><span class="art deco" aria-hidden="true"><svg class="ic"><use href="#i-receipt"/></svg></span><h3 data-i18n="ar.1t">5 pekerjaan admin UMKM yang bisa diotomatiskan</h3><span class="read"><span data-i18n="ar.read">Baca artikel</span><svg class="ic"><use href="#i-arrow-right"/></svg></span></a></li>
+            <li><a class="mag m2" href="#" data-soon><span class="mast"><span class="sr-only" data-i18n="ar.catl">Kategori:</span> <span data-i18n="ar.2c">AI</span></span><span class="art deco" aria-hidden="true"><svg class="ic"><use href="#i-sparkle"/></svg></span><h3 data-i18n="ar.2t">Asisten AI untuk layanan pelanggan: kapan perlu, kapan belum</h3><span class="read"><span data-i18n="ar.read">Baca artikel</span><svg class="ic"><use href="#i-arrow-right"/></svg></span></a></li>
+            <li><a class="mag m3" href="#" data-soon><span class="mast"><span class="sr-only" data-i18n="ar.catl">Kategori:</span> <span data-i18n="ar.3c">Tim</span></span><span class="art deco" aria-hidden="true"><svg class="ic"><use href="#i-users"/></svg></span><h3 data-i18n="ar.3t">Cara menyiapkan tim Anda bekerja bersama AI</h3><span class="read"><span data-i18n="ar.read">Baca artikel</span><svg class="ic"><use href="#i-arrow-right"/></svg></span></a></li>
+          </ul>
+          <div class="pc more" data-prop="Tombol di bawah rak" data-depth="1.1" style="--dx:38;--dy:74;--dw:24;--mx:15;--my:63;--mw:70">
+            <a class="btn btn-paper" href="#" data-soon><span data-i18n="ar.all">Lihat semua artikel</span><svg class="ic"><use href="#i-arrow-right"/></svg></a>
+          </div>
+        </section>
 
-<footer>
-  <div class="wrap">
-    <div class="foot">
-      <div>
-        <img src="{{LOGO_WHITE}}" alt="Kreatekno" width="240" height="41">
-        <p class="tag" data-i18n="ft.tag">Asisten AI dan otomasi untuk UMKM.</p>
-      </div>
-      <div>
-        <h3 data-i18n="ft.pages">Halaman</h3>
-        <ul>
-          <li><a href="#beranda" data-i18n="ft.home">Beranda</a></li>
-          <li><a href="#" data-soon data-i18n="nav.portfolio">Portofolio</a></li>
-          <li><a href="#" data-soon data-i18n="nav.articles">Artikel</a></li>
-          <li><a href="#" data-soon data-i18n="nav.about">Tentang</a></li>
-          <li><a href="#" data-soon data-i18n="ft.privacy">Kebijakan Privasi</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3 data-i18n="ft.contact">Kontak</h3>
-        <ul>
-          <li class="addr"><svg class="ic"><use href="#i-map-pin"/></svg><span>Pekanbaru, Riau, Indonesia<br><small data-i18n="ft.addr">Alamat lengkap menyusul</small></span></li>
-          <li class="addr"><svg class="ic"><use href="#i-whatsapp-logo"/></svg><a data-wa="chat" data-src="footer" href="#" target="_blank" rel="noopener" data-i18n="ft.wa">WhatsApp (nomor menyusul)</a></li>
-          <li class="addr"><svg class="ic"><use href="#i-instagram-logo"/></svg><a href="#" data-soon>Instagram</a></li>
-        </ul>
-      </div>
+        <!-- Beat 8 · FAQ · vinyl title on the meeting-room glass, one sticky note per question (K8) -->
+        <section class="sf" id="faq" data-beat="8" aria-labelledby="h-fq">
+          <div class="pc glass-title surf" data-prop="Kaca: judul" style="--dx:9;--dy:27;--dw:25;--mx:6;--my:10;--mw:88">
+            <h2 id="h-fq" data-i18n="fq.h">Pertanyaan yang sering muncul</h2>
+          </div>
+          <div class="pc notes-wrap" data-prop="Kaca: 8 sticky note" style="--dx:37;--dy:19;--dw:54;--mx:5;--my:21;--mw:90">
+            <ul class="notes">
+              <li class="note"><button class="note-q" type="button" id="q1" aria-expanded="false" aria-controls="a1" data-i18n="q1">Apakah AI akan menggantikan staf saya?</button><div class="note-a" id="a1" role="region" aria-labelledby="q1" hidden><p data-i18n="a1">Tidak. AI mengambil pekerjaan berulang. Staf Anda tetap mengambil keputusan dan melayani hal yang butuh sentuhan manusia.</p></div></li>
+              <li class="note"><button class="note-q" type="button" id="q2" aria-expanded="false" aria-controls="a2" data-i18n="q2">Seberapa andal AI-nya?</button><div class="note-a" id="a2" role="region" aria-labelledby="q2" hidden><p data-i18n="a2">Asisten hanya menjawab dari data yang Anda setujui. Kalau ragu, pekerjaan diteruskan ke tim Anda. Sebelum dipakai, sistem diuji dengan data usaha Anda.</p></div></li>
+              <li class="note"><button class="note-q" type="button" id="q3" aria-expanded="false" aria-controls="a3" data-i18n="q3">Apakah saya harus paham teknologi?</button><div class="note-a" id="a3" role="region" aria-labelledby="q3" hidden><p data-i18n="a3">Tidak. Anda cukup menjelaskan pekerjaannya. Kami yang membangun, menguji, dan melatih tim Anda.</p></div></li>
+              <li class="note"><button class="note-q" type="button" id="q4" aria-expanded="false" aria-controls="a4" data-i18n="q4">Apakah tim saya dilatih?</button><div class="note-a" id="a4" role="region" aria-labelledby="q4" hidden><p data-i18n="a4">Ya. Tim Anda dilatih sampai nyaman memakai sistemnya. Pelatihan lanjutan untuk AI, media sosial, dan marketing juga tersedia.</p></div></li>
+              <li class="note"><button class="note-q" type="button" id="q5" aria-expanded="false" aria-controls="a5" data-i18n="q5">Bisa memakai nomor dan aplikasi yang sudah kami pakai?</button><div class="note-a" id="a5" role="region" aria-labelledby="q5" hidden><p data-i18n="a5">Bisa. Kami hubungkan asisten ke nomor dan aplikasi yang sudah dipakai tim Anda, termasuk mengurus verifikasinya.</p></div></li>
+              <li class="note"><button class="note-q" type="button" id="q6" aria-expanded="false" aria-controls="a6" data-i18n="q6">Berapa biayanya?</button><div class="note-a" id="a6" role="region" aria-labelledby="q6" hidden><p data-i18n="a6">Fleksibel dan disesuaikan dengan kebutuhan. Anda menerima penawaran yang jelas setelah konsultasi gratis.</p></div></li>
+              <li class="note"><button class="note-q" type="button" id="q7" aria-expanded="false" aria-controls="a7" data-i18n="q7">Apakah data usaha saya aman?</button><div class="note-a" id="a7" role="region" aria-labelledby="q7" hidden><p data-i18n="a7">Data hanya dipakai untuk menjalankan sistem Anda. Akses dibatasi, dan Anda tetap pemilik datanya.</p></div></li>
+              <li class="note"><button class="note-q" type="button" id="q8" aria-expanded="false" aria-controls="a8" data-i18n="q8">Bisa ketemu langsung?</button><div class="note-a" id="a8" role="region" aria-labelledby="q8" hidden><p data-i18n="a8">Bisa. Kami berbasis di Pekanbaru dan senang datang ke tempat usaha Anda.</p></div></li>
+            </ul>
+            <div class="notes-help">
+              <p data-i18n="fq.help">Belum terjawab? Tanya langsung.</p>
+              <a class="btn btn-main" data-wa="chat" data-src="faq" href="#" target="_blank" rel="noopener"><span data-i18n="cta.free">Konsultasi gratis</span><span class="knob"><svg class="ic"><use href="#i-chat-circle-dots"/></svg></span></a>
+            </div>
+          </div>
+        </section>
+
+        <!-- Beat 9 · Tentang kami · wooden plaque beside the office door at golden hour (K9) -->
+        <section class="sf" id="tentang" data-beat="9" aria-labelledby="h-ab">
+          <div class="pc plaque surf" data-prop="Plakat kayu" style="--dx:10;--dy:21;--dw:36;--mx:6;--my:13;--mw:88">
+            <i class="lamp-glow deco" aria-hidden="true"></i>
+            <h2 id="h-ab" data-i18n="ab.h">Tentang Kreatekno</h2>
+            <p data-i18n="ab.p">Kreatekno adalah tim teknologi dari Pekanbaru yang membantu UMKM bekerja lebih cerdas dengan AI. Kami percaya teknologi seharusnya membuat tim naik kelas, bukan menggantikan mereka. Karena itu kami membangun, melatih, dan mendampingi, seperti rekan kerja yang duduk di samping Anda.</p>
+            <ul class="facts">
+              <li><svg class="ic"><use href="#i-seal-check"/></svg><span data-i18n="ab.f1">PT Kreatekno Kreatif Teknologi, badan usaha resmi</span></li>
+              <li><svg class="ic"><use href="#i-map-pin"/></svg><span data-i18n="ab.f2">Berbasis di Pekanbaru, melayani seluruh Indonesia</span></li>
+              <li><svg class="ic"><use href="#i-handshake"/></svg><span data-i18n="ab.f3">Konsultasi dan pemetaan gratis</span></li>
+              <li><svg class="ic"><use href="#i-receipt"/></svg><span data-i18n="ab.f4">Pembayaran fleksibel</span></li>
+            </ul>
+            <a class="link" href="#" data-soon><span data-i18n="ab.link">Kenali kami lebih jauh</span><svg class="ic"><use href="#i-arrow-right"/></svg></a>
+          </div>
+        </section>
+
+        <!-- Beats 10, 11, 12 · sky up, sky down, training · no copy (empty scroll) -->
+
+        <!-- Beat 13 · Praktik naik kelas · small tabletop chalkboard on the till (K13), optional copy -->
+        <section class="sf" id="praktik" data-beat="13" aria-label="Praktik naik kelas" data-i18n-aria="pr.aria">
+          <div class="pc b aframe easel" data-prop="Papan kapur kecil di kasir" style="--dx:36;--db:11;--dw:28;--mx:11;--mb:11;--mw:78">
+            <span class="af-stand deco" aria-hidden="true"><i class="af-leg bl wood-tex"></i><i class="af-leg br wood-tex"></i><i class="af-leg l wood-tex"></i><i class="af-leg r wood-tex"></i><i class="af-shadow"></i></span>
+            <div class="af-wood wood-tex surf">
+              <div class="af-slate"><p class="chalk" data-i18n="pr.p">Pekerjaan berulang berpindah tangan. Tim pindah ke pekerjaan yang lebih bernilai.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Beat 14 · CTA · white paper inside the open purple folder on Bu Dewi's desk (K14) -->
+        <section class="sf" id="kontak" data-beat="14" aria-labelledby="h-cta">
+          <div class="pc b folder surf" data-prop="Map ungu + kertas putih di meja" style="--dx:27;--db:5;--dw:46;--mx:4;--mb:3;--mw:92">
+            <i class="clip deco" aria-hidden="true"></i>
+            <div class="sheet">
+              <h2 id="h-cta" data-i18n="ct.h">Yuk, ceritakan satu pekerjaan yang paling ingin Anda otomatiskan.</h2>
+              <p data-i18n="ct.p">Kami bantu petakan solusinya, gratis. Lewat chat, atau duduk satu meja dengan kami di Pekanbaru.</p>
+              <div class="cta-row">
+                <a class="btn btn-main" data-wa="chat" data-src="cta" href="#" target="_blank" rel="noopener"><span data-i18n="cta.free">Konsultasi gratis</span><span class="knob"><svg class="ic"><use href="#i-chat-circle-dots"/></svg></span></a>
+                <a class="btn btn-line" data-wa="meet" data-src="cta" href="#" target="_blank" rel="noopener"><svg class="ic"><use href="#i-handshake"/></svg><span data-i18n="cta.meet">Ketemu langsung</span></a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Beat 15 · Footer, keluar · no copy (empty scroll) -->
+      </main>
+
+      <!-- Beat 16 · Footer · dark road in the lower third of the night frame (K16) -->
+      <footer class="sf" id="footer" data-beat="16">
+        <div class="pc b road" data-prop="Pita gelap jalan" style="--dx:7;--db:3;--dw:86;--mx:5;--mb:2;--mw:90">
+          <div class="foot">
+            <div class="f-brand">
+              <img src="{{LOGO_WHITE}}" alt="Kreatekno" width="240" height="41">
+              <p class="epi" data-i18n="ft.epi">Toko sudah tutup. Asistennya masih merapikan pekerjaan untuk besok.</p>
+              <p class="f-tag" data-i18n="ft.tag">Asisten AI, otomasi, dan pelatihan untuk UMKM.</p>
+            </div>
+            <nav class="f-col" aria-labelledby="f-pages">
+              <h3 id="f-pages" data-i18n="ft.pages">Halaman</h3>
+              <ul>
+                <li><a href="#layanan" data-jump="3" data-i18n="nav.services">Layanan</a></li>
+                <li><a href="#cara-kerja" data-jump="5" data-i18n="nav.how">Cara kerja</a></li>
+                <li><a href="#artikel" data-jump="7" data-i18n="nav.articles">Artikel</a></li>
+                <li><a href="#tentang" data-jump="9" data-i18n="nav.about">Tentang</a></li>
+                <li><a href="#" data-soon data-i18n="ft.privacy">Kebijakan Privasi</a></li>
+              </ul>
+            </nav>
+            <div class="f-col">
+              <h3 data-i18n="ft.contact">Kontak</h3>
+              <ul>
+                <li>Pekanbaru, Riau, Indonesia</li>
+                <li data-i18n="ft.addr">[Alamat lengkap]</li>
+                <li><a data-wa="chat" data-src="footer" href="#" target="_blank" rel="noopener" data-i18n="cta.free">Konsultasi gratis</a></li>
+              </ul>
+            </div>
+            <div class="f-col f-follow">
+              <h3 data-i18n="ft.follow">Ikuti kami</h3>
+              <ul class="social">
+                <li><a href="#" data-soon aria-label="Instagram"><svg class="ic"><use href="#i-instagram-logo"/></svg></a></li>
+                <li><a href="#" data-soon aria-label="LinkedIn"><svg class="ic"><use href="#i-linkedin-logo"/></svg></a></li>
+                <li><a href="#" data-soon aria-label="TikTok"><svg class="ic"><use href="#i-tiktok-logo"/></svg></a></li>
+              </ul>
+              <div class="lang" role="group" aria-label="Bahasa / Language">
+                <button type="button" data-lang="id" aria-pressed="true">ID</button>
+                <button type="button" data-lang="en" aria-pressed="false">EN</button>
+              </div>
+            </div>
+          </div>
+          <p class="copy">© 2026 PT Kreatekno Kreatif Teknologi. Automate You.</p>
+        </div>
+      </footer>
+
+      <div class="zones" aria-hidden="true"><div class="z-safe"><span data-i18n="zone.safe">Zona aman (wajah, tangan, permukaan)</span></div></div>
     </div>
-    <div class="foot-bottom">
-      <span>© 2026 Kreatekno. Automate You.</span>
-      <div class="lang" role="group" aria-label="Bahasa / Language">
-        <button type="button" data-lang="id" aria-pressed="true">ID</button>
-        <button type="button" data-lang="en" aria-pressed="false">EN</button>
-      </div>
-    </div>
+
+    <ol class="rail" aria-hidden="true"></ol>
+    <div class="hud" aria-live="off"></div>
   </div>
-</footer>
-
-<div class="wa-bar" aria-hidden="true">
-  <span data-i18n="bar.t">Konsultasi gratis lewat WhatsApp</span>
-  <a class="btn btn-wa" data-wa="chat" data-src="mobile-bar" href="#" target="_blank" rel="noopener" tabindex="-1"><span>Chat</span><span class="knob"><svg class="ic"><use href="#i-whatsapp-logo"/></svg></span></a>
 </div>
 
-<button class="zone-toggle" type="button" aria-pressed="false"><i></i><span data-i18n="zone.btn">Area video</span><small>prototype</small></button>
+<button class="zone-toggle" type="button" aria-pressed="false"><i></i><span data-i18n="zone.btn">Area video</span><span class="bt"></span></button>
 <div class="toast" role="status" aria-live="polite"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
 <script>
 (() => {
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const root = document.documentElement;
   const hasGsap = !!(window.gsap && window.ScrollTrigger);
-  if (!hasGsap) document.documentElement.classList.remove('js');
+  if (!hasGsap) root.classList.remove('film');
+  const film = () => root.classList.contains('film');
 
-  /* ---------- Copy (Indonesian lives in the HTML; English here) ---------- */
+  /* ---------- Keyframe light: sky, ground plane, horizon, light on the props ---------- */
+  const K = [
+    { sa:'#F4B58A', sb:'#FBDDC2', ga:'#B7A08E', gb:'#8E7766', hz:70, hi:'rgba(255,214,170,.55)', lo:'rgba(60,40,70,.35)',  sun:120 }, // K0 dawn rooftops
+    { sa:'#F7D2AE', sb:'#FCEBDB', ga:'#CBBFAF', gb:'#A59684', hz:64, hi:'rgba(255,222,180,.6)',  lo:'rgba(40,40,80,.3)',   sun:115 }, // K1 pavement, morning
+    { sa:'#D3DFF0', sb:'#EAF0F8', ga:'#C9C2B6', gb:'#A79F92', hz:72, hi:'rgba(210,228,255,.5)',  lo:'rgba(30,40,80,.3)',   sun:160 }, // K2 inside, pale blue
+    { sa:'#DCE2F0', sb:'#F0EDE6', ga:'#A0704A', gb:'#6E4528', hz:32, hi:'rgba(255,236,205,.5)',  lo:'rgba(40,30,30,.32)',  sun:150 }, // K3 till, over the shoulder
+    { sa:'#E2E3EF', sb:'#F3EEE4', ga:'#A0704A', gb:'#6E4528', hz:30, hi:'rgba(255,236,205,.5)',  lo:'rgba(40,30,30,.32)',  sun:150 }, // K4 binder
+    { sa:'#8EC7F4', sb:'#DCEEFB', ga:'#BDB7AE', gb:'#8F8A82', hz:74, hi:'rgba(255,250,235,.6)',  lo:'rgba(20,40,80,.32)',  sun:90  }, // K5 street, midday
+    { sa:'#EEE8FB', sb:'#FBF9FF', ga:'#D9D3E6', gb:'#BDB5CE', hz:88, hi:'rgba(255,255,255,.5)',  lo:'rgba(60,50,110,.25)', sun:135 }, // K6 lobby
+    { sa:'#E9E2F6', sb:'#F7F3FC', ga:'#D5CDE2', gb:'#B9B0CA', hz:90, hi:'rgba(255,255,255,.5)',  lo:'rgba(60,50,110,.25)', sun:135 }, // K7 waiting corner
+    { sa:'#D6E8F2', sb:'#F1F7FA', ga:'#C9D6DF', gb:'#A9B8C4', hz:92, hi:'rgba(230,245,255,.5)',  lo:'rgba(30,50,80,.25)',  sun:135 }, // K8 glass wall
+    { sa:'#F2B967', sb:'#FBDDB0', ga:'#B98E6A', gb:'#8A6446', hz:84, hi:'rgba(255,200,120,.65)', lo:'rgba(80,30,40,.35)',  sun:250 }, // K9 golden hour
+    { sa:'#EC8E50', sb:'#F6BE87', ga:'#8E6A63', gb:'#5E4549', hz:76, hi:'rgba(255,180,110,.6)',  lo:'rgba(70,25,40,.4)',   sun:250 }, // K10 rooftops, orange sky
+    { sa:'#F0AE72', sb:'#F8D9B2', ga:'#B39276', gb:'#83644E', hz:70, hi:'rgba(255,195,130,.6)',  lo:'rgba(70,30,30,.35)',  sun:240 }, // K11 shop window
+    { sa:'#F0CFA6', sb:'#F8E7CF', ga:'#A88466', gb:'#7A5C45', hz:78, hi:'rgba(255,205,150,.55)', lo:'rgba(70,35,30,.32)',  sun:230 }, // K12 back room
+    { sa:'#F2D3AA', sb:'#FAEDDA', ga:'#9A6844', gb:'#6A4226', hz:72, hi:'rgba(255,205,140,.6)',  lo:'rgba(70,35,30,.32)',  sun:230 }, // K13 front of the shop, afternoon
+    { sa:'#EED2B9', sb:'#F7E8DC', ga:'#8C5E3C', gb:'#5E3B22', hz:54, hi:'rgba(255,210,160,.55)', lo:'rgba(70,35,30,.35)',  sun:210 }, // K14 Bu Dewi's desk, POV
+    { sa:'#262B63', sb:'#13173E', ga:'#1A1C33', gb:'#0E0F1F', hz:70, hi:'rgba(255,190,120,.35)', lo:'rgba(5,8,30,.5)',     sun:200 }, // K15 night outside
+    { sa:'#0B0F3A', sb:'#141A52', ga:'#10122A', gb:'#07081A', hz:66, hi:'rgba(120,140,255,.25)', lo:'rgba(0,0,10,.5)',     sun:180 }  // K16 night sky
+  ];
+  const lightVars = k => ({ '--sky-a':k.sa, '--sky-b':k.sb, '--gr-a':k.ga, '--gr-b':k.gb, '--hz':k.hz + '%', '--lt-hi':k.hi, '--lt-lo':k.lo, '--sun':k.sun + 'deg' });
+
+  /* ---------- The one take: 16 beats, timed in screens of scroll ----------
+     move = camera move (the footage scrubs from the previous keyframe to this one); hold = the keyframe is held while the copy is read.
+     lead = the first camera move of the beat (it carries the previous props out of frame),
+     tail = the last camera move (it carries this beat's props into place). Beats without copy only have a move. */
+  const BEATS = [
+    { n:1,  id:'beranda',    name:'Hero',               cam:'Crane Down → Eye Level',           lead:'craneDown',  tail:'craneDown',  move:0,   hold:.9,  kf:'Setinggi mata di trotoar. Papan kapur A-frame kosong frontal di sepertiga kiri, kaki-kakinya berdiri di trotoar, pintu kaca toko terbuka di belakangnya.' },
+    { n:2,                   name:'Transisi masalah',   cam:'Through Object In (pintu toko)',   lead:'throughIn',  tail:'throughIn',  move:1.2, hold:0,   kf:'Dalam toko, pagi biru pucat. Empat meja kacau di kiri frame, Raka di ambang pintu belakang di kanan.' },
+    { n:3,  id:'layanan',    name:'Layanan',            cam:'Arc → Over-the-Shoulder',          lead:'arc',        tail:'arc',        move:.8,  hold:1.2, kf:'Dari belakang bahu kanan Bu Dewi. Leaflet empat panel kosong terbentang di meja kasir, Raka di seberang meja.' },
+    { n:4,  id:'use-case',   name:'Use case',           cam:'Dolly In',                         lead:'dollyIn',    tail:'dollyIn',    move:.5,  hold:1.5, kf:'Leaflet tergeser ke tepi. Binder bertab kuning, cyan, pink, lila terbuka frontal, halaman krem kosong. Bu Dewi mengangguk.' },
+    { n:5,  id:'cara-kerja', name:'Customer journey',   cam:'Through Object Out → Truck Right', lead:'throughOut', tail:'truckRight', move:1.1, hold:2.0, kf:'Siang. Bu Dewi dan Raka di pintu kantor Kreatekno. Umbul-umbul keempat berbentuk panah, papan jalan hijau di atas.', desk:'Desktop: kain umbul-umbul terbentang satu per satu saat di-scroll. Di video cukup empat tiang bambu dengan kain tergulung di atas.', phone:'HP: satu umbul-umbul per layar. Kamera truck right dan berhenti sebentar di tiap umbul-umbul selama tahan.' },
+    { n:6,  id:'testimoni',  name:'Testimoni',          cam:'Through Object In (pintu kaca)',   lead:'throughIn',  tail:'throughIn',  move:.8,  hold:1.2, kf:'Lobi kantor. Dinding gabus besar frontal, Bu Dewi tersenyum di kanan.', phone:'HP: kartu digeser ke samping, dinding gabus selebar frame.' },
+    { n:7,  id:'artikel',    name:'Artikel',            cam:'Truck Left',                       lead:'truckLeft',  tail:'truckLeft',  move:.6,  hold:1.1, kf:'Pojok tunggu. Rak kayu, tiga majalah bersampul kosong (ungu, navy, teal), papan kayu kecil di atas.' },
+    { n:8,  id:'faq',        name:'FAQ',                cam:'Truck Left',                       lead:'truckLeft',  tail:'truckLeft',  move:.6,  hold:1.7, kf:'Dinding kaca ruang rapat. Area sticky note di dua pertiga kanan, Laras dan Dimas bekerja di baliknya.' },
+    { n:9,  id:'tentang',    name:'Tentang kami',       cam:'Through Object Out → Arc',         lead:'throughOut', tail:'arc',        move:.9,  hold:1.2, kf:'Luar kantor, golden hour. Plakat kayu krem frontal di samping pintu kaca, lampu dinding kuningan menyala.' },
+    { n:10,                  name:'Langit, naik',       cam:'Crane Up + Hyperlapse',            lead:'craneUp',    tail:'craneUp',    move:1.0, hold:0,   kf:'Atap ruko dari ketinggian, langit jingga sore. Dapur Dewi di kejauhan kanan.' },
+    { n:11,                  name:'Langit, turun',      cam:'Crane Down',                       lead:'craneDown',  tail:'craneDown',  move:.9,  hold:0,   kf:'Setinggi jendela depan Dapur Dewi yang terbuka lebar, sore hari.' },
+    { n:12,                  name:'Pelatihan',          cam:'Through Object In (jendela)',      lead:'throughIn',  tail:'throughIn',  move:1.1, hold:0,   kf:'Ruang belakang toko jadi kelas kecil. Laras menunjuk layar, empat staf mencatat dan tertawa.' },
+    { n:13, id:'praktik',    name:'Praktik naik kelas', cam:'Truck Right (kebalikan beat 2)',   lead:'truckRight', tail:'truckRight', move:1.1, hold:.7,  kf:'Ruang depan toko, sore. Meja rapi, cahaya cyan kecil, papan kapur kecil berdiri di meja kasir.' },
+    { n:14, id:'kontak',     name:'CTA',                cam:'Dolly In → POV',                   lead:'dollyIn',    tail:'pov',        move:.7,  hold:1.3, kf:'POV dari kursi kosong. Map ungu terbuka di meja, setengah bawah frame. Bu Dewi dan Raka tersenyum di atas.' },
+    { n:15,                  name:'Footer, keluar',     cam:'Through Object Out (jendela)',     lead:'throughOut', tail:'throughOut', move:.9,  hold:0,   kf:'Luar toko, malam baru turun. Jendela menyala hangat, cahaya cyan berkedip di dalam.' },
+    { n:16, id:'footer',     name:'Footer',             cam:'Crane Up',                         lead:'craneUp',    tail:'craneUp',    move:.9,  hold:.5,  kf:'Langit malam berbintang. Dapur Dewi di sepertiga atas, jalan gelap di bawah untuk footer.', phone:'HP: jalan gelap mengisi setengah bawah frame.' }
+  ];
+  const ENTER = .6, EXIT = .55; // share of the camera move that carries props in / out
+  let TOTAL = 0;
+  BEATS.forEach(b => { b.t0 = TOTAL; b.t1 = TOTAL + b.move; b.t2 = b.t1 + b.hold; TOTAL = b.t2; b.el = b.id ? document.getElementById(b.id) : null; });
+  const KEY = n => 'K' + (n - 1) + ' → K' + n;
+
+  /* ---------- Copy: Indonesian lives in the HTML, English here ---------- */
   const EN = {
-    'nav.services':'Services','nav.how':'How it works','nav.portfolio':'Portfolio','nav.articles':'Articles','nav.about':'About',
-    'cta.chat':'Chat on WhatsApp','cta.meet':'Meet in person','cta.portfolio':'View portfolio','cta.services':'See services','cta.about':'About us',
-    'zone.text':'Text and buttons (HTML)','zone.video':'Character action (video)','zone.btn':'Video zones',
-    'b1.k':'AI assistants and WhatsApp automation for SMEs',
-    'b1.h':'Your best people are stuck in repetitive work.',
-    'b1.p':'Answering the same questions, copying orders into Excel, hunting for content ideas every day. The day is gone before the team gets to think about customers.',
-    'b2.h':'Meet the AI assistant that works around the clock for your business.',
-    'b2.p':'It takes over the repetitive work right inside WhatsApp and the apps you already use. Anything it can\'t answer goes straight to your admin.',
-    'b3.h':'Your team focuses on <em>customers, strategy and new ideas.</em>',
-    'b3.p':'Time that used to go into answering chats and copying data now goes into serving customers and growing the business.',
-    'b4.h':'A small team from Pekanbaru that works alongside you.',
-    'b4.p':'Our office is close to you. We can sit at the same table, go through how you work, then build the solution together.',
-    'b5.h':'We are with you at every step, from the first chat to a running system.',
-    'm1.h':'Talk','m1.p':'Free, in person or online','m2.h':'Map','m2.p':'Find the work most worth automating','m3.h':'Build and test','m3.p':'Tested on your own business data',
-    'm4.h':'Launch','m4.p':'Your team is trained until they are comfortable','m5.h':'Support','m5.p':'Monitored and improved continuously',
-    'b6.h':'AI that helps your team level up instead of replacing them.',
-    'b6.p':'Tell us which work takes the most time. We\'ll map a solution with you, free.',
-    'c1.f':'“Hi, are you still open?”','c1.fm':'Same question, 12th time today','c1.b':'Chats answered automatically','c1.bm':'Within seconds, around the clock',
-    'c2.f':'Today\'s sales recap','c2.fm':'Still copied into Excel by hand','c2.b':'Recap ready every morning','c2.bm':'Straight into Google Sheets',
-    'c3.f':'Today\'s post isn\'t up yet','c3.fm':'Out of ideas, schedule slipping','c3.b':'Posts already scheduled','c3.bm':'Trend research and drafts prepared for you',
-    'c1.fs':'Chats piling up','c1.bs':'Chats answered','c2.fs':'Manual recap','c2.bs':'Recap ready','c3.fs':'Posts running late','c3.bs':'Posts scheduled',
-    'zone.cards':'Cards (HTML)','zone.menu':'Show video zones',
-    'rail.1':'Problem','rail.2':'AI steps in','rail.3':'Focus','rail.4':'Our team','rail.5':'How we work','rail.6':'Growth',
-    'caps.h':'What your AI assistant can do','caps.p':'Pick your type of business to see examples.',
+    'nav.home':'Kreatekno, back to the top','nav.open':'Open menu','nav.close':'Close menu',
+    'nav.services':'Services','nav.how':'How it works','nav.articles':'Articles','nav.about':'About',
+    'cta.free':'Free consultation','cta.services':'See services','cta.meet':'Meet in person',
+    'hero.k':'AI assistants and automation for SMEs',
+    'hero.h':'AI handles the repetitive work. Your team levels up.',
+    'hero.p':'Kreatekno builds AI assistants and automation systems for your business, then trains your team until they\'re confident using them.',
+    'svc.h':'Four ways we help your business',
+    'svc.1h':'AI assistants &amp; automation','svc.1p':'Assistants that serve your customers, prepare recaps and invoices, and answer your team\'s questions from your SOPs.',
+    'svc.2h':'AI strategy consulting','svc.2p':'We map the work most worth automating, then build a plan that fits your budget.',
+    'svc.3h':'Content &amp; design','svc.3p':'Graphic design, social media content, paid ads, plus video and animation for your brand.',
+    'svc.4h':'AI &amp; digital training','svc.4p':'AI, social media and marketing training for your team, at your place or in public classes.','svc.4t':'E-courses coming soon',
+    'uc.h':'What AI can do for your business','uc.p':'Pick your type of business to see examples.','uc.note':'Tell us which work you\'d like to automate.','uc.tabs':'Type of business',
     'ind.retail':'Retail &amp; F&amp;B','ind.clinic':'Clinics','ind.property':'Property','ind.logistics':'Logistics',
-    'wa.h':'WhatsApp AI agent','wa.p':'Answers questions, takes orders and bookings, and hands off to your admin when needed.','wa.meta':'Answered by an AI assistant that works 24/7',
-    'ad.h':'Admin automation','ad.p':'Invoices, sales recaps and payment reminders are created and sent automatically.','ad.team':'Team',
-    'ct.h':'Content automation','ct.p':'Trend research, caption drafts and a posting schedule, prepared for your team.',
-    'kn.h':'Knowledge assistant','kn.p':'Your team asks about SOPs and products, and the assistant answers from your documents. New hires get up to speed without asking the same things twice.',
-    'pr.h':'From first chat to a running system in about a week.','pr.p':'Timing depends on how quickly your data and access are ready. After launch, we stay with you.',
-    's1.h':'Talk','s1.p':'Free. In person in Pekanbaru or online. Tell us which work takes up most of your team\'s time.','s1.c':'Day one',
-    's2.h':'Map','s2.p':'We find the parts most worth automating, then explain the impact on your team in plain language.','s2.c':'1-2 days',
-    's3.h':'Build and test','s3.p':'The assistant is built and tested on your own business data until the answers are right.','s3.c':'About 1 week',
-    's4.h':'Launch','s4.p':'It goes live in WhatsApp and your apps. We train your team until they\'re comfortable using it.','s4.c':'Once it passes testing',
-    's5.h':'Support','s5.p':'We monitor, fix and add new abilities as your business grows.','s5.c':'Ongoing',
-    'cl.h':'Trusted by businesses in Pekanbaru','cl.ph':'Client logo',
-    'fq.h':'Frequently asked questions','fq.p':'Didn\'t find your answer? Ask us directly. We reply during working hours.',
-    'q1':'Do I need to understand technology?','a1':'No. You just explain the work. We build it, test it and train your team to use it.',
-    'q2':'Will AI replace my staff?','a2':'No. The assistant takes the repetitive work, like answering common questions and building recaps. Your staff keep the decisions, the important customers and the work that needs a human touch.',
-    'q3':'How reliable is the AI? What if it answers wrong?','a3':'The assistant only answers from data and documents you approve. When it isn\'t sure, it hands the conversation to your admin. Before launch we test it with real questions from your customers, and we keep monitoring afterwards.',
-    'q4':'Can I keep my existing WhatsApp number?','a4':'Yes, through the WhatsApp Business API. We help with registration and verification.',
-    'q5':'How long until the assistant is running?','a5':'For a simple workflow, about one week from the consultation, as long as your data and access are ready. For more complex workflows we give an estimate after the first chat.',
-    'q6':'How much does it cost?','a6':'Pricing is flexible and based on what you need. After the free consultation you get a clear quote before we start building.',
-    'q7':'Is my business data safe?','a7':'Your data is only used to run your assistant. Access is restricted, and you remain the owner of your data. Details are in our privacy policy.',
-    'q8':'Can we meet in person?','a8':'Yes. We\'re based in Pekanbaru and happy to visit your business or meet at our office.',
-    'fn.h':'Tell us the one task you\'d most like to automate.','fn.p':'We\'ll map a solution with you for free, over chat or in person in Pekanbaru.',
-    'ft.tag':'AI assistants and automation for SMEs.','ft.pages':'Pages','ft.home':'Home','ft.privacy':'Privacy Policy','ft.contact':'Contact','ft.addr':'Full address coming soon','ft.wa':'WhatsApp (number coming soon)',
-    'bar.t':'Free consultation on WhatsApp'
+    'jr.k':'How it works','jr.h':'From the first chat to a confident team',
+    'jr.1h':'Talk','jr.1p':'Free, in person in Pekanbaru or online. Tell us which work takes the most time.',
+    'jr.2h':'Map and plan','jr.2p':'We pick the work most worth automating, then you get a clear quote.',
+    'jr.3h':'Build and test','jr.3p':'The system is tested on your own business data before you use it.',
+    'jr.4h':'Launch, train, support','jr.4p':'Your team is trained until they\'re comfortable, and we keep monitoring the system.',
+    'ts.h':'What our clients say','ts.stamp':'SAMPLE','ts.photo':'[Photo]','ts.q':'“[Real client quote, 1 to 3 sentences]”','ts.n':'[Name], [role]','ts.b':'[Business], [city]',
+    'ar.h':'Reading for business owners','ar.catl':'Category:','ar.read':'Read article','ar.all':'See all articles',
+    'ar.1c':'Automation','ar.1t':'5 SME admin tasks you can automate',
+    'ar.2c':'AI','ar.2t':'AI assistants for customer service: when you need one, and when you don\'t',
+    'ar.3c':'Team','ar.3t':'How to prepare your team to work with AI',
+    'fq.h':'Frequently asked questions','fq.help':'Still have questions? Ask us directly.',
+    'q1':'Will AI replace my staff?','a1':'No. AI takes the repetitive work. Your staff keep the decisions and handle everything that needs a human touch.',
+    'q2':'How reliable is the AI?','a2':'The assistant only answers from data you approve. When it isn\'t sure, the work goes to your team. Before launch, the system is tested on your business data.',
+    'q3':'Do I need to understand technology?','a3':'No. You just explain the work. We build it, test it and train your team.',
+    'q4':'Will my team be trained?','a4':'Yes. Your team is trained until they\'re comfortable with the system. Further training in AI, social media and marketing is also available.',
+    'q5':'Can we keep the numbers and apps we already use?','a5':'Yes. We connect the assistant to the numbers and apps your team already uses, and we handle the verification.',
+    'q6':'How much does it cost?','a6':'Flexible and based on your needs. You get a clear quote after the free consultation.',
+    'q7':'Is my business data safe?','a7':'Your data is only used to run your system. Access is restricted, and you remain the owner of your data.',
+    'q8':'Can we meet in person?','a8':'Yes. We\'re based in Pekanbaru and happy to visit your business.',
+    'ab.h':'About Kreatekno',
+    'ab.p':'Kreatekno is a technology team from Pekanbaru that helps SMEs work smarter with AI. We believe technology should help teams level up, not replace them. That\'s why we build, train and support, like a colleague sitting next to you.',
+    'ab.f1':'PT Kreatekno Kreatif Teknologi, a registered company','ab.f2':'Based in Pekanbaru, serving all of Indonesia','ab.f3':'Free consultation and mapping','ab.f4':'Flexible payment','ab.link':'Get to know us',
+    'pr.p':'The repetitive work changes hands. Your team moves on to work that matters more.','pr.aria':'Team levelling up',
+    'ct.h':'Tell us the one task you\'d most like to automate.','ct.p':'We\'ll map a solution with you for free, over chat or at the same table in Pekanbaru.',
+    'ft.epi':'The shop is closed. Its assistant is still tidying up tomorrow\'s work.','ft.tag':'AI assistants, automation and training for SMEs.',
+    'ft.pages':'Pages','ft.privacy':'Privacy Policy','ft.contact':'Contact','ft.addr':'[Full address]','ft.follow':'Follow us',
+    'zone.btn':'Video zones','zone.menu':'Show video zones','zone.safe':'Safe zone (faces, hands, surfaces)'
   };
 
   const IND = {
     id: {
-      retail: {
-        q:'Kak, paket keluarga masih ada untuk malam ini?',
-        a:'Masih ada, Kak. Paket Keluarga Rp185.000 untuk 4 orang. Mau saya catat untuk jam berapa?',
-        admin:'Pesanan dari WhatsApp langsung tercatat, rekap harian dikirim ke pemilik setiap jam 21.00.',
-        posts:[[0,'Promo'],[2,'Menu baru',2],[4,'Testimoni',3],[5,'Di balik dapur']],
-        kq:'Takaran gula aren untuk es kopi susu berapa?', ka:'2 sendok makan untuk ukuran reguler, 3 untuk large.', ks:'SOP Bar.pdf, hal. 4'
-      },
-      clinic: {
-        q:'Dokter gigi praktik hari Sabtu?',
-        a:'Praktik Sabtu jam 09.00-13.00. Slot yang masih kosong 10.30 dan 11.15. Mau saya bookingkan?',
-        admin:'Pengingat jadwal kontrol dikirim ke pasien sehari sebelumnya, lengkap dengan link konfirmasi.',
-        posts:[[0,'Edukasi'],[2,'Jadwal dokter',2],[3,'Tips sehat',3],[5,'Testimoni']],
-        kq:'Pasien BPJS perlu bawa dokumen apa?', ka:'Kartu BPJS, KTP, dan surat rujukan dari faskes pertama.', ks:'SOP Pendaftaran.pdf, hal. 2'
-      },
-      property: {
-        q:'Unit tipe 45 di Panam masih ada?',
-        a:'Masih tersedia 3 unit, Kak. Mau saya kirim brosur dan jadwalkan survei lokasi?',
-        admin:'Data calon pembeli masuk ke spreadsheet, tim sales langsung dapat notifikasi.',
-        posts:[[0,'Listing baru'],[1,'Tips KPR',2],[3,'Video unit',3],[5,'Promo']],
-        kq:'DP minimal untuk tipe 45 berapa?', ka:'Mulai 10% dari harga unit, bisa dicicil 6 kali.', ks:'Price list Oktober.pdf, hal. 1'
-      },
-      logistics: {
-        q:'Paket resi PKU2391 sudah sampai mana?',
-        a:'Paket sedang di gudang Pekanbaru, dijadwalkan diantar besok siang.',
-        admin:'Status pengiriman dan tagihan direkap otomatis setiap sore.',
-        posts:[[0,'Promo ongkir'],[2,'Tips packing',2],[4,'Info rute',3],[6,'Testimoni']],
-        kq:'Barang pecah belah wajib dikemas dengan apa?', ka:'Bubble wrap dua lapis. Untuk barang di atas 5 kg, tambah peti kayu.', ks:'SOP Gudang.pdf, hal. 7'
-      }
+      retail:    { l:['Pelanggan','Admin &amp; keuangan','Konten','Pengetahuan tim'], t:['Pertanyaan menu, stok, dan pesanan dijawab otomatis, siang maupun malam.','Pesanan tercatat sendiri, rekap harian sampai ke pemilik setiap pukul 21.00.','Ide promo, draf caption, dan jadwal posting mingguan disiapkan untuk tim.','Karyawan baru bertanya takaran resep, asisten menjawab dari SOP dapur.'] },
+      clinic:    { l:['Pasien','Admin &amp; keuangan','Konten','Pengetahuan tim'], t:['Pertanyaan jadwal dokter dan booking dijawab otomatis, termasuk di luar jam praktik.','Pengingat jadwal kontrol dikirim ke pasien sehari sebelumnya, lengkap dengan tautan konfirmasi.','Edukasi kesehatan dan jadwal dokter mingguan disiapkan untuk tim.','Staf baru bertanya syarat pendaftaran pasien BPJS, asisten menjawab dari SOP pendaftaran.'] },
+      property:  { l:['Calon pembeli','Admin &amp; keuangan','Konten','Pengetahuan tim'], t:['Pertanyaan unit, harga, dan jadwal survei lokasi dijawab kapan saja.','Data calon pembeli masuk ke spreadsheet, dan tim sales langsung diberi tahu.','Listing baru, tips KPR, dan jadwal posting disiapkan setiap minggu.','Sales baru bertanya DP minimal, asisten menjawab dari price list terbaru.'] },
+      logistics: { l:['Pelanggan','Admin &amp; keuangan','Konten','Pengetahuan tim'], t:['Pertanyaan status kiriman dijawab otomatis dari data resi.','Status pengiriman dan tagihan direkap otomatis setiap sore.','Info rute, promo ongkir, dan tips packing disiapkan untuk tim.','Kurir baru bertanya cara mengemas barang pecah belah, asisten menjawab dari SOP gudang.'] }
     },
     en: {
-      retail: {
-        q:'Hi, is the family set still available tonight?',
-        a:'Yes it is. The Family Set is Rp185,000 for 4 people. What time should I put you down for?',
-        admin:'WhatsApp orders are logged automatically, and the owner gets a daily recap at 9 pm.',
-        posts:[[0,'Promo'],[2,'New menu',2],[4,'Review',3],[5,'Kitchen story']],
-        kq:'How much palm sugar goes in the iced coffee latte?', ka:'2 tablespoons for regular, 3 for large.', ks:'Bar SOP.pdf, p. 4'
-      },
-      clinic: {
-        q:'Is the dentist in on Saturday?',
-        a:'Saturday hours are 9 am to 1 pm. Open slots are 10:30 and 11:15. Shall I book one for you?',
-        admin:'Check-up reminders go to patients the day before, with a confirmation link.',
-        posts:[[0,'Health tip'],[2,'Doctor hours',2],[3,'Wellness',3],[5,'Review']],
-        kq:'What documents do BPJS patients need?', ka:'Their BPJS card, ID card and a referral letter from their primary clinic.', ks:'Registration SOP.pdf, p. 2'
-      },
-      property: {
-        q:'Is the type 45 unit in Panam still available?',
-        a:'3 units are still available. Shall I send the brochure and schedule a site visit?',
-        admin:'Buyer leads land in a spreadsheet and the sales team is notified right away.',
-        posts:[[0,'New listing'],[1,'Mortgage tip',2],[3,'Unit video',3],[5,'Promo']],
-        kq:'What is the minimum down payment for type 45?', ka:'From 10% of the unit price, payable in 6 installments.', ks:'October price list.pdf, p. 1'
-      },
-      logistics: {
-        q:'Where is my parcel with tracking number PKU2391?',
-        a:'It\'s at the Pekanbaru warehouse and scheduled for delivery tomorrow afternoon.',
-        admin:'Delivery status and invoices are summarised automatically every afternoon.',
-        posts:[[0,'Shipping deal'],[2,'Packing tip',2],[4,'Route update',3],[6,'Review']],
-        kq:'How must fragile items be packed?', ka:'Two layers of bubble wrap, plus a wooden crate for anything over 5 kg.', ks:'Warehouse SOP.pdf, p. 7'
-      }
+      retail:    { l:['Customers','Admin &amp; finance','Content','Team knowledge'], t:['Questions about the menu, stock and orders are answered automatically, day and night.','Orders log themselves, and the owner gets a daily recap at 9 pm.','Promo ideas, caption drafts and a weekly posting schedule, prepared for your team.','A new hire asks about recipe measurements, and the assistant answers from the kitchen SOP.'] },
+      clinic:    { l:['Patients','Admin &amp; finance','Content','Team knowledge'], t:['Questions about doctor schedules and bookings are answered automatically, even outside clinic hours.','Check-up reminders go to patients the day before, with a confirmation link.','Health tips and the weekly doctor schedule, prepared for your team.','New staff ask what BPJS patients need to register, and the assistant answers from the registration SOP.'] },
+      property:  { l:['Buyers','Admin &amp; finance','Content','Team knowledge'], t:['Questions about units, prices and site visits are answered any time.','Buyer leads land in a spreadsheet, and the sales team is notified right away.','New listings, mortgage tips and a posting schedule, prepared every week.','A new salesperson asks about the minimum down payment, and the assistant answers from the latest price list.'] },
+      logistics: { l:['Customers','Admin &amp; finance','Content','Team knowledge'], t:['Shipment status questions are answered automatically from tracking data.','Delivery status and invoices are summarised automatically every afternoon.','Route updates, shipping deals and packing tips, prepared for your team.','A new courier asks how to pack fragile items, and the assistant answers from the warehouse SOP.'] }
     }
   };
-  const DAYS = { id:['Sen','Sel','Rab','Kam','Jum','Sab','Min'], en:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] };
   const WA = {
     id:{ chat:'Halo Kreatekno, saya mau konsultasi otomasi untuk bisnis saya.', meet:'Halo Kreatekno, saya mau jadwalkan ketemu langsung di Pekanbaru.' },
     en:{ chat:"Hi Kreatekno, I'd like a consultation about automating my business.", meet:"Hi Kreatekno, I'd like to schedule an in-person meeting in Pekanbaru." }
@@ -1021,101 +1020,92 @@ footer{background:var(--navy-3);color:var(--on-navy-muted);padding-block:64px ca
   const WA_NUMBER = ''; // TODO: business number, e.g. '62812xxxxxxx'
   const SOON = { id:'Halaman ini dibangun di tahap berikutnya.', en:'This page comes in the next build step.' };
 
-  const ID = {};
+  const ID = {}, IDA = {};
   $$('[data-i18n]').forEach(el => { const k = el.dataset.i18n; if (!(k in ID)) ID[k] = el.innerHTML; });
+  $$('[data-i18n-aria]').forEach(el => { const k = el.dataset.i18nAria; if (!(k in IDA)) IDA[k] = el.getAttribute('aria-label'); });
 
-  let lang = 'id';
-  let stReady = false;
-  let industry = 'retail';
+  let lang = 'id', industry = 'retail';
   try { if (localStorage.getItem('kt-lang') === 'en') lang = 'en'; } catch (e) {}
 
   function setWaLinks() {
-    $$('[data-wa]').forEach(a => {
-      const msg = WA[lang][a.dataset.wa] || WA[lang].chat;
-      a.href = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg);
-    });
+    $$('[data-wa]').forEach(a => { a.href = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(WA[lang][a.dataset.wa] || WA[lang].chat); });
   }
-
   function setLang(l, save) {
     lang = l;
-    document.documentElement.lang = l;
-    $$('[data-i18n]').forEach(el => {
-      const k = el.dataset.i18n;
-      el.innerHTML = l === 'en' ? (EN[k] ?? ID[k]) : ID[k];
-    });
+    root.lang = l;
+    $$('[data-i18n]').forEach(el => { const k = el.dataset.i18n; el.innerHTML = l === 'en' ? (EN[k] ?? ID[k]) : ID[k]; });
+    $$('[data-i18n-aria]').forEach(el => { const k = el.dataset.i18nAria; el.setAttribute('aria-label', l === 'en' ? (EN[k] ?? IDA[k]) : IDA[k]); });
     $$('[data-lang]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === l)));
-    $('.burger').setAttribute('aria-label', l === 'en' ? 'Open menu' : 'Buka menu');
-    $('.menu-close').setAttribute('aria-label', l === 'en' ? 'Close menu' : 'Tutup menu');
+    $$('.note-x').forEach(b => b.setAttribute('aria-label', l === 'en' ? 'Close' : 'Tutup'));
     setWaLinks();
-    renderIndustry(false);
+    fillUses();
     if (save) { try { localStorage.setItem('kt-lang', l); } catch (e) {} }
-    if (stReady) ScrollTrigger.refresh();
+    requestAnimationFrame(fit);
   }
   $$('[data-lang]').forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang, true)));
 
-  /* ---------- Industry switcher ---------- */
-  const chat = $('#chat'), week = $('#week'), qa = $('#qa'), adminEx = $('[data-x="admin"]');
-  function fill() {
+  /* ---------- Binder tabs (industry switcher) ---------- */
+  const binder = $('.binder'), uses = $('#uc-panel'), tabs = $$('.tab');
+  function fillUses() {
     const d = IND[lang][industry];
-    chat.querySelector('[data-x="q"]').textContent = d.q;
-    chat.querySelector('[data-x="a"]').textContent = d.a;
-    adminEx.querySelector('span').textContent = d.admin;
-    const slots = DAYS[lang].map(n => '<div class="day"><span>' + n + '</span></div>');
-    week.innerHTML = slots.join('');
-    const dayEls = week.querySelectorAll('.day');
-    d.posts.forEach(([i, label, v]) => {
-      const p = document.createElement('div');
-      p.className = 'post' + (v ? ' p' + v : '');
-      p.textContent = label;
-      dayEls[i].appendChild(p);
-    });
-    qa.querySelector('[data-x="q"]').textContent = d.kq;
-    qa.querySelector('[data-x="a"]').textContent = d.ka;
-    qa.querySelector('[data-x="src"]').textContent = d.ks;
+    d.l.forEach((v, i) => { uses.querySelector('[data-x="l' + i + '"]').innerHTML = v; uses.querySelector('[data-x="t' + i + '"]').textContent = d.t[i]; });
   }
-  let swapTimer;
-  function renderIndustry(animate) {
-    const parts = [chat, week, qa, adminEx];
-    clearTimeout(swapTimer);
-    if (!animate || reduce) { fill(); return; }
-    parts.forEach(p => p.classList.add('out'));
-    swapTimer = setTimeout(() => {
-      fill();
-      const typing = chat.querySelector('.typing'), ans = chat.querySelector('[data-x="a"]');
-      typing.style.display = 'flex'; ans.style.display = 'none';
-      parts.forEach(p => p.classList.remove('out'));
-      swapTimer = setTimeout(() => { typing.style.display = 'none'; ans.style.display = ''; }, 650);
-    }, 200);
-  }
-  const tabs = $$('.tab');
+  let swapT;
   function selectTab(t, focus) {
     tabs.forEach(x => { const on = x === t; x.setAttribute('aria-selected', String(on)); x.tabIndex = on ? 0 : -1; });
     if (focus) t.focus();
     industry = t.dataset.ind;
-    renderIndustry(true);
+    binder.dataset.ind = industry;
+    uses.setAttribute('aria-labelledby', t.id);
+    clearTimeout(swapT);
+    uses.classList.add('out');
+    swapT = setTimeout(() => { fillUses(); uses.classList.remove('out'); fit(); }, 180);
   }
   tabs.forEach((t, i) => {
     t.addEventListener('click', () => selectTab(t));
     t.addEventListener('keydown', e => {
       if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
       e.preventDefault();
-      const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
-      selectTab(n, true);
+      selectTab(tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length], true);
     });
   });
 
+  /* ---------- Sticky notes: the answer opens on a lifted note ---------- */
+  const notesEl = $('.notes');
+  function closeNotes() {
+    $$('.note.open').forEach(n => { n.classList.remove('open'); n.querySelector('.note-q').setAttribute('aria-expanded', 'false'); n.querySelector('.note-a').hidden = true; });
+    notesEl.classList.remove('has-open');
+  }
+  $$('.note').forEach(n => {
+    const q = n.querySelector('.note-q'), a = n.querySelector('.note-a');
+    const x = document.createElement('button');
+    x.type = 'button'; x.className = 'note-x'; x.setAttribute('aria-label', 'Tutup');
+    x.innerHTML = '<svg class="ic"><use href="#i-x"/></svg>';
+    a.appendChild(x);
+    x.addEventListener('click', () => { closeNotes(); q.focus(); });
+    q.addEventListener('click', () => {
+      const wasOpen = n.classList.contains('open');
+      closeNotes();
+      if (wasOpen) return;
+      n.classList.add('open'); q.setAttribute('aria-expanded', 'true'); a.hidden = false;
+      notesEl.classList.add('has-open');
+    });
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && notesEl.classList.contains('has-open')) closeNotes(); });
+
   /* ---------- Menu ---------- */
+  let lenis = null;
   const menu = $('#menu'), burger = $('.burger');
   function setMenu(open) {
     menu.classList.toggle('open', open);
     menu.setAttribute('aria-hidden', String(!open));
     burger.setAttribute('aria-expanded', String(open));
     document.body.style.overflow = open ? 'hidden' : '';
+    if (lenis) { if (open) lenis.stop(); else lenis.start(); }
     if (open) $('.menu-close').focus(); else burger.focus({ preventScroll: true });
   }
   burger.addEventListener('click', () => setMenu(true));
   $('.menu-close').addEventListener('click', () => setMenu(false));
-  $$('#menu a[href^="#"]:not([data-soon])').forEach(a => a.addEventListener('click', () => setMenu(false)));
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && menu.classList.contains('open')) setMenu(false); });
 
   /* ---------- Toast for pages not built yet ---------- */
@@ -1127,129 +1117,278 @@ footer{background:var(--navy-3);color:var(--on-navy-muted);padding-block:64px ca
     clearTimeout(toastT); toastT = setTimeout(() => toast.classList.remove('on'), 2200);
   }));
 
-  /* ---------- Video zone overlay ---------- */
-  const zts = $$('.zone-toggle');
-  zts.forEach(zt => zt.addEventListener('click', () => {
-    const on = !document.body.classList.contains('show-zones');
-    zts.forEach(b => b.setAttribute('aria-pressed', String(on)));
-    document.body.classList.toggle('show-zones', on);
-    if (menu.classList.contains('open')) setMenu(false);
-    if (on) window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
-  }));
+  /* ---------- Light layer on every surface ---------- */
+  $$('.surf').forEach(s => { const l = document.createElement('i'); l.className = 'lit'; l.setAttribute('aria-hidden', 'true'); s.appendChild(l); });
 
-  /* ---------- Reveal on enter (content below the first screen only) ---------- */
-  if (!reduce && 'IntersectionObserver' in window) {
-    const io = new IntersectionObserver(es => es.forEach(en => {
-      if (en.isIntersecting) { en.target.classList.remove('pre'); io.unobserve(en.target); }
-    }), { rootMargin: '0px 0px -8% 0px', threshold: .12 });
-    $$('.rv').forEach(el => {
-      if (el.getBoundingClientRect().top > innerHeight) { el.classList.add('pre'); io.observe(el); }
+  /* ---------- Keep every piece readable: shift it inside the visible part of the frame ---------- */
+  const stage = $('.stage'), frame = $('.frame'), nav = $('.nav'), probe = $('.probe');
+  const pieces = $$('.pc'), zones = $('.zones');
+  pieces.forEach(pc => {
+    const box = document.createElement('div');
+    box.className = 'z-box'; box.dataset.beat = pc.closest('.sf').dataset.beat;
+    box.appendChild(document.createElement('span'));
+    zones.appendChild(box); pc._zone = box;
+  });
+  const pct = v => Math.round(v * 10) / 10;
+  function fit() {
+    if (!film()) return;
+    const sw = stage.clientWidth, sh = stage.clientHeight, fw = frame.offsetWidth, fh = frame.offsetHeight;
+    const ox = (fw - sw) / 2, oy = (fh - sh) / 2;
+    const ps = getComputedStyle(probe);
+    const padL = Math.max(16, parseFloat(ps.paddingLeft) || 0), padR = Math.max(16, parseFloat(ps.paddingRight) || 0);
+    const top = nav.getBoundingClientRect().bottom + 12, bottom = sh - 14 - (parseFloat(ps.paddingBottom) || 0);
+    frame.style.setProperty('--crop-x', ox + 'px');
+    frame.style.setProperty('--vis-w', sw + 'px');
+    const avail = sw - padL - padR;
+    // 1) measure every piece at its frame position (narrowed to the visible width when the frame is cropped)
+    const m = pieces.map(pc => {
+      pc.style.setProperty('--cx', '0px'); pc.style.setProperty('--cy', '0px'); pc.style.removeProperty('--wmax');
+      if (!('fullX' in pc.dataset) && pc.offsetWidth > avail) pc.style.setProperty('--wmax', avail + 'px');
+      return { pc, x: pc.offsetLeft - ox, y: pc.offsetTop - oy, w: pc.offsetWidth, h: pc.offsetHeight, sf: pc.closest('.sf') };
     });
-    const live = new IntersectionObserver(es => es.forEach(en => en.target.classList.toggle('is-live', en.isIntersecting)), { threshold: .3 });
-    live.observe($('.c-admin'));
+    // 2) horizontal: each piece on its own; vertical: the pieces of one beat move together so they never stack on each other
+    const groups = new Map();
+    m.forEach(r => { if (!groups.has(r.sf)) groups.set(r.sf, []); groups.get(r.sf).push(r); });
+    groups.forEach(list => {
+      const gTop = Math.min(...list.map(r => r.y)), gBot = Math.max(...list.map(r => r.y + r.h));
+      let gdy = 0;
+      if (gBot - gTop > bottom - top || gTop < top) gdy = top - gTop;
+      else if (gBot > bottom) gdy = bottom - gBot;
+      list.forEach(r => {
+        let dx = 0;
+        if (!('fullX' in r.pc.dataset)) {
+          if (r.w >= avail || r.x < padL) dx = padL - r.x;
+          else if (r.x + r.w > sw - padR) dx = sw - padR - (r.x + r.w);
+        }
+        r.dx = dx; r.dy = gdy;
+      });
+    });
+    m.forEach(({ pc, w, h, dx, dy }) => {
+      pc.style.setProperty('--cx', dx + 'px'); pc.style.setProperty('--cy', dy + 'px');
+      const shifted = Math.abs(dx) > 1 || Math.abs(dy) > 1;
+      const L = pc.offsetLeft / fw * 100, T = pc.offsetTop / fh * 100, W = w / fw * 100, H = h / fh * 100;
+      const z = pc._zone;
+      z.style.cssText = 'left:' + L + '%;top:' + T + '%;width:' + W + '%;height:' + H + '%';
+      z.classList.toggle('shifted', shifted);
+      z.firstChild.textContent = pc.dataset.prop + ' · x ' + pct(L) + '–' + pct(L + W) + '% · y ' + pct(T) + '–' + pct(T + H) + '%' + (shifted ? ' · digeser agar terbaca' : '');
+    });
   }
 
-  setLang(lang, false);
-
-  if (!hasGsap) return;
-  gsap.registerPlugin(ScrollTrigger);
-  stReady = true;
-
-  /* ---------- Mobile WhatsApp bar ---------- */
-  const bar = $('.wa-bar');
-  ScrollTrigger.create({
-    trigger: '.story', start: 'bottom bottom',
-    endTrigger: '.final', end: 'top bottom',
-    onToggle: self => { bar.classList.toggle('on', self.isActive); bar.setAttribute('aria-hidden', String(!self.isActive)); bar.querySelector('a').tabIndex = self.isActive ? 0 : -1; }
-  });
-
-  if (reduce) return;
-
-  /* ---------- Story stage timeline ---------- */
-  let storyST = null;
-  // "Cara kerja" lives inside the pinned story: jump to that point of the scroll
-  $$('a[href="#cara-kerja"]').forEach(a => a.addEventListener('click', e => {
-    if (!storyST) return;
-    e.preventDefault();
+  /* ---------- Video zones toggle + beat readout ---------- */
+  const zts = $$('.zone-toggle'), hud = $('.hud'), bt = $('.zone-toggle .bt');
+  zts.forEach(zt => zt.addEventListener('click', () => {
+    const on = !root.classList.contains('show-zones');
+    zts.forEach(b => b.setAttribute('aria-pressed', String(on)));
+    root.classList.toggle('show-zones', on);
     if (menu.classList.contains('open')) setMenu(false);
-    const y = storyST.start + (storyST.end - storyST.start) * (13.2 / 18.2);
-    window.scrollTo({ top: y, behavior: 'smooth' });
+    fit(); paint(true);
   }));
-  const mm = gsap.matchMedia();
-  mm.add({ desk: '(min-width: 768px)', mob: '(max-width: 767px)' }, ctx => {
-    const { desk } = ctx.conditions;
-    const cards = $$('.pcard'), inners = $$('.pcard-inner');
-    const messy = desk
-      ? [{ x: -70, y: -118, rotation: -7 }, { x: 54, y: -6, rotation: 5 }, { x: -26, y: 112, rotation: -3 }]
-      : [{ x: -100, y: 6, rotation: -7 }, { x: 2, y: -6, rotation: 5 }, { x: 104, y: 8, rotation: -4 }];
-    const neat = desk
-      ? [{ x: -50, y: -112, rotation: 0 }, { x: -50, y: 0, rotation: 0 }, { x: -50, y: 112, rotation: 0 }]
-      : [{ x: -112, y: 0, rotation: 0 }, { x: 0, y: 0, rotation: 0 }, { x: 112, y: 0, rotation: 0 }];
-    const enter = desk ? { x: 360, y: 60, rotation: 16 } : { x: 0, y: 90, rotation: 8 };
 
-    // Phone: park the chip row just under the tallest of the beat 1/2 headlines, inside the text half
-    const placeChips = () => {
-      const box = $('.cards');
-      if (desk) { box.style.top = ''; return; }
-      const bottom = Math.max(...['.beat-1 h1', '.beat-2 .cta-row'].map(sel => { const h = $(sel); return h.offsetParent.offsetTop + h.offsetTop + h.offsetHeight; }));
-      box.style.top = (bottom + 22 + 29) + 'px';
-    };
-    placeChips();
-    ScrollTrigger.addEventListener('refresh', placeChips);
+  setLang(lang, false);
+  if (!hasGsap || !film()) return;
+  gsap.registerPlugin(ScrollTrigger);
 
-    gsap.set(cards, { ...enter, autoAlpha: 0 });
-    const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
-    const beat = n => '.beat-' + n;
+  /* Smooth wheel scrolling (touch keeps the native feel), synced to ScrollTrigger */
+  if (window.Lenis) {
+    lenis = new Lenis({ lerp: .09, smoothWheel: true });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(t => lenis.raf(t * 1000));
+    gsap.ticker.lagSmoothing(0);
+  }
 
-    // 1a Problem headline alone
-    tl.to({}, { duration: 1.2 });
-    // 1b The problem cards pile in and stay a while
-    cards.forEach((c, i) => tl.to(c, { ...messy[i], autoAlpha: 1, duration: 1.1, ease: 'back.out(1.4)' }, 1.2 + i * .35));
-    tl.to({}, { duration: 1.4 }, 2.6);
+  const reel = $('.reel');
+  reel.style.setProperty('--screens', TOTAL + 1);
 
-    // 2 AI steps in: cards flip to ✓ and line up
-    tl.to(beat(1), { autoAlpha: 0, y: -28, duration: .8, ease: 'power2.in' }, 4.0)
-      .fromTo(beat(2), { autoAlpha: 0, y: 28, x: desk ? 40 : 0 }, { autoAlpha: 1, y: 0, x: 0, duration: .8 }, 4.4);
-    inners.forEach((c, i) => tl.to(c, { rotationY: 180, duration: .9, ease: 'power2.inOut' }, 4.5 + i * .22));
-    cards.forEach((c, i) => tl.to(c, { ...neat[i], duration: 1.1, ease: 'power3.inOut' }, 4.7 + i * .12));
+  /* Rail: one dot per beat that carries copy */
+  const railBeats = BEATS.filter(b => b.el && b.n !== 13);
+  const rail = $('.rail');
+  railBeats.forEach(() => rail.appendChild(document.createElement('li')).appendChild(document.createElement('i')));
 
-    // 3 Team focuses on what matters (cards leave, light warms)
-    tl.to(cards, { autoAlpha: 0, y: desk ? '-=48' : '-=24', duration: .7, stagger: .1, ease: 'power2.in' }, 7.0)
-      .to(beat(2), { autoAlpha: 0, y: -28, duration: .8, ease: 'power2.in' }, 7.0)
-      .fromTo(beat(3), { autoAlpha: 0, y: -24 }, { autoAlpha: 1, y: 0, duration: .8 }, 7.4)
-      .to('.stage-bg', { backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--warm').trim(), duration: 2.6, ease: 'none' }, 7.0);
+  let time = 0, introOn = false, lastBeat = -1;
+  const portrait = () => matchMedia('(orientation: portrait)').matches;
+  function beatAt(t) { let i = 0; BEATS.forEach((b, k) => { if (t >= b.t0 - 1e-6) i = k; }); return i; }
+  function paint(force) {
+    const i = beatAt(time), b = BEATS[i];
+    // a beat's props take clicks only while they stand in the frame
+    BEATS.forEach(x => { if (!x.el) return; const live = time >= (x.n === 1 ? -1 : x.t1 - .04) && time <= x.t2 + .04; x.el.classList.toggle('live', live); });
+    const ri = railBeats.reduce((acc, x, k) => (time >= x.t1 - .1 ? k : acc), 0);
+    $$('li', rail).forEach((li, k) => { li.classList.toggle('on', k === ri); li.classList.toggle('done', k < ri); });
+    bt.textContent = 'Beat ' + b.n + '/16 · ' + b.name;
+    if (i !== lastBeat || force) {
+      lastBeat = i;
+      $$('.z-box').forEach(z => z.classList.toggle('on', +z.dataset.beat === b.n));
+    }
+    if (!root.classList.contains('show-zones')) return;
+    const moving = time < b.t1 && b.move > 0;
+    const p = moving ? (time - b.t0) / b.move : 1;
+    const phase = introOn ? 'Autoplay saat halaman dibuka' : moving ? 'Gerak kamera ' + Math.round(p * 100) + '%' : 'Tahan di K' + b.n + (b.el ? ' · copy tampil' : ' · tanpa copy');
+    const port = portrait();
+    const cropX = Math.round((frame.offsetWidth - stage.clientWidth) / 2);
+    hud.innerHTML =
+      '<b>Beat ' + b.n + '/16 · ' + b.name + '</b>' +
+      '<span>' + b.cam + ' · ' + KEY(b.n) + '</span>' +
+      '<div class="bar"><i style="width:' + Math.round(p * 100) + '%"></i></div>' +
+      '<span>' + phase + '</span>' +
+      '<span class="dim">' + b.kf + '</span>' +
+      (port && b.phone ? '<span class="dim">' + b.phone + '</span>' : '') +
+      (!port && b.desk ? '<span class="dim">' + b.desk + '</span>' : '') +
+      '<span class="dim">Video ' + (port ? '9:16' : '16:9') + ' · ' + frame.offsetWidth + '×' + frame.offsetHeight + ' px · terpotong ' + (cropX > 0 ? cropX + ' px kiri dan kanan' : Math.round((frame.offsetHeight - stage.clientHeight) / 2) + ' px atas dan bawah') + '</span>';
+  }
 
-    // 4 The Kreatekno team sits down beside the client
-    tl.to(beat(3), { autoAlpha: 0, y: -28, duration: .8, ease: 'power2.in' }, 9.6)
-      .fromTo(beat(4), { autoAlpha: 0, x: desk ? -40 : 0, y: desk ? 0 : 28 }, { autoAlpha: 1, x: 0, y: 0, duration: .8 }, 10.0);
+  /* ---------- Props move with the camera ----------
+     REST = how each prop sits in its held keyframe (the leaflet lies on the counter, the sign is seen from below...).
+     cam() = where the prop is in the frame while the camera is still on its way (in) or already moving on (out). */
+  const REST = {
+    aframe:{}, leaflet:{ rx:16, oy:'100%' }, binder:{ rx:9, oy:'100%' }, sign:{ rx:-6 }, flags:{}, strip:{ rz:-1.2 }, polas:{},
+    woodboard:{}, mags:{ rx:-2 }, more:{}, 'glass-title':{}, 'notes-wrap':{}, plaque:{ ry:-7 }, easel:{ rx:4, oy:'100%' }, folder:{ rx:18, oy:'100%' }, road:{}
+  };
+  const kind = pc => Object.keys(REST).reverse().find(k => pc.classList.contains(k)) || '';
+  const blurs = pc => pc.dataset.blur !== '0';
+  function rest(pc) {
+    const r = REST[kind(pc)] || {};
+    const v = { x: 0, y: 0, scale: 1, rotationX: r.rx || 0, rotationY: r.ry || 0, rotation: r.rz || 0, transformOrigin: (r.ox || '50%') + ' ' + (r.oy || '50%') };
+    if (blurs(pc)) v.filter = 'blur(0px)';
+    return v;
+  }
+  const FW = () => frame.offsetWidth, FH = () => frame.offsetHeight;
+  const side = pc => (pc.offsetLeft + pc.offsetWidth / 2 - FW() / 2) >= 0 ? 1 : -1;
+  const sideY = pc => (pc.offsetTop + pc.offsetHeight / 2 - FH() / 2) >= 0 ? 1 : -1;
+  function cam(pc, type, dir) {
+    const R = rest(pc), d = +(pc.dataset.depth || 1);
+    const blur = px => (blurs(pc) ? { filter: 'blur(' + px + 'px)' } : {});
+    const v = obj => Object.assign({}, R, obj);
+    switch (type) {
+      case 'craneDown': // camera comes down to eye level: the prop rises into place, first seen from above
+        return dir === 'in' ? v({ y: () => FH() * .42, rotationX: R.rotationX - 26, scale: .8, ...blur(2) })
+                            : v({ y: () => -FH() * .55, rotationX: R.rotationX + 18, ...blur(3) });
+      case 'craneUp':   // camera rises: the ground and its props sink out of the frame
+        return dir === 'in' ? v({ y: () => FH() * .3, ...blur(2) })
+                            : v({ y: () => FH() * .85, rotationX: R.rotationX + 16, ...blur(3) });
+      case 'throughIn': // camera flies forward through a door or window
+        return dir === 'in' ? v({ scale: .55, y: () => -FH() * .04, ...blur(5) })
+                            : v({ scale: 2.3, x: () => side(pc) * FW() * .55, y: () => sideY(pc) * FH() * .22, ...blur(12) });
+      case 'throughOut': // camera backs out through a door or window
+        return dir === 'in' ? v({ scale: 1.9, x: () => side(pc) * FW() * .35, ...blur(10) })
+                            : v({ scale: .5, x: () => -side(pc) * FW() * .1, ...blur(4) });
+      case 'dollyIn':
+        return dir === 'in' ? v({ scale: .74, ...blur(3) })
+                            : v({ scale: 1.75, x: () => side(pc) * FW() * .45, y: () => sideY(pc) * FH() * .2, ...blur(10) });
+      case 'pov':       // dolly in, then the camera tilts down to the desk from the empty chair
+        return v({ y: () => FH() * .32, rotationX: R.rotationX + 30, scale: .86, ...blur(3) });
+      case 'arc':       // camera orbits around the prop
+        return dir === 'in' ? v({ x: () => FW() * .3 * d, rotationY: R.rotationY - 38, ...blur(3) })
+                            : v({ x: () => -FW() * .3 * d, rotationY: R.rotationY + 38, ...blur(3) });
+      case 'truckRight': // camera slides right: the scene slides left, nearer props faster
+        return v({ x: () => (dir === 'in' ? 1 : -1) * FW() * .85 * d, ...blur(4) });
+      case 'truckLeft':
+        return v({ x: () => (dir === 'in' ? -1 : 1) * FW() * .85 * d, ...blur(4) });
+    }
+    return R;
+  }
 
-    // 5 How we work: the five steps light up one by one
-    const minis = $$('.mini li'), nums = $$('.mini .n');
-    tl.to(beat(4), { autoAlpha: 0, y: -28, duration: .8, ease: 'power2.in' }, 12.0)
-      .fromTo(beat(5), { autoAlpha: 0, y: 28 }, { autoAlpha: 1, y: 0, duration: .8 }, 12.4)
-      .fromTo('.mini', { y: 40 }, { y: 0, duration: 1 }, 12.4)
-      .fromTo(minis, { opacity: .4 }, { opacity: 1, duration: .3, stagger: .4, ease: 'none' }, 12.8)
-      .fromTo(nums, { backgroundColor: '#ffffff', color: '#565B81' }, { backgroundColor: '#9F0ED6', color: '#ffffff', duration: .3, stagger: .4, ease: 'none' }, 12.8);
-
-    // 6 Growing together + CTA
-    tl.to(beat(5), { autoAlpha: 0, y: -28, duration: .8, ease: 'power2.in' }, 15.4)
-      .fromTo(beat(6), { autoAlpha: 0, y: 40, scale: .98 }, { autoAlpha: 1, y: 0, scale: 1, duration: .9 }, 15.8)
-      .to({}, { duration: 1.6 }, 16.6);
-
-    const railItems = $$('.rail li'), stage = $('.stage');
-    const TOTAL = 18.2, marks = [0, 4.4, 7.4, 10.0, 12.4, 15.8].map(t => t / TOTAL);
-    storyST = ScrollTrigger.create({
-      trigger: '.story', start: 'top top', end: 'bottom bottom', scrub: .6, animation: tl,
-      onUpdate: self => {
-        const p = self.progress;
-        let idx = 0; marks.forEach((m, i) => { if (p >= m) idx = i; });
-        railItems.forEach((li, i) => { li.classList.toggle('on', i === idx); li.classList.toggle('done', i < idx); });
-        stage.dataset.beat = idx;
+  /* Small actions inside a shot, timed to the end of the camera move */
+  const ACT = {
+    // Raka spreads the leaflet out on the counter, panel by panel
+    'layanan': (tl, sf, b, port) => {
+      const panels = $$('.panel', sf), at = b.t1 - b.move * .45;
+      tl.fromTo(panels, port ? { scaleY: .06, transformOrigin: '50% 0%' } : { scaleX: .06, transformOrigin: '0% 50%' }, port ? { scaleY: 1, duration: .16, stagger: .07, ease: 'power2.out', immediateRender: false } : { scaleX: 1, duration: .16, stagger: .07, ease: 'power2.out', immediateRender: false }, at);
+    },
+    // Raka opens the binder: the page swings over from the rings
+    'use-case': (tl, sf, b) => {
+      const page = $('.page', sf);
+      tl.fromTo(page, { rotationY: -100, transformOrigin: '0% 50%', transformPerspective: 1400 }, { rotationY: 0, duration: b.move * .5, ease: 'power2.out', immediateRender: false }, b.t1 - b.move * .5);
+    },
+    // Desktop: the poles arrive with the camera, then each banner unrolls on its own scroll step.
+    // Phone: one banner per screen, the camera trucks right past them during the hold
+    'cara-kerja': (tl, sf, b, port) => {
+      if (!port) {
+        const rolls = $$('.unroll', sf), seg = .38;
+        rolls.forEach((r, k) => {
+          const at = b.t1 - .05 + seg * k;
+          tl.fromTo(r, { '--u': '100%' }, { '--u': '0%', duration: .3, ease: 'power2.out', immediateRender: false }, at)
+            .fromTo(r, { '--roll': 1 }, { '--roll': 0, duration: .06, immediateRender: false }, at + .26);
+        });
+        return;
       }
+      const flags = $$('.flag', sf), seg = (b.hold * .86) / flags.length;
+      flags.forEach((f, k) => {
+        if (k === 0) return;
+        const at = b.t1 + seg * k;
+        // x stays 0: the waiting banners are hidden by CSS opacity, not by a CSS transform GSAP would read as an extra offset
+        tl.fromTo(flags[k - 1], { x: 0, xPercent: 0, opacity: 1 }, { xPercent: -125, duration: .3, ease: 'power1.inOut', immediateRender: false }, at)
+          .fromTo(f, { x: 0, xPercent: 125, opacity: 1 }, { xPercent: 0, duration: .3, ease: 'power1.inOut', immediateRender: false }, at);
+      });
+    }
+  };
+
+  let st = null;
+  const mm = gsap.matchMedia();
+  mm.add({ port: '(orientation: portrait)', land: '(orientation: landscape)' }, ctx => {
+    const port = ctx.conditions.port;
+    const tl = gsap.timeline({ defaults: { ease: 'none' } });
+    BEATS.forEach((b, i) => {
+      // the light of the footage follows the camera from keyframe to keyframe
+      if (b.move) tl.fromTo(frame, lightVars(K[b.n - 1]), Object.assign(lightVars(K[b.n]), { duration: b.move, ease: 'power1.inOut', immediateRender: false }), b.t0);
+      if (!b.el) return;
+      const next = BEATS[i + 1];
+      $$('.pc', b.el).forEach(pc => {
+        const R = rest(pc);
+        if (b.n !== 1) {
+          const d = b.move * ENTER, at = b.t1 - d, from = cam(pc, b.tail, 'in');
+          gsap.set(pc, Object.assign({}, from, { opacity: 0 }));
+          tl.fromTo(pc, from, Object.assign({}, R, { duration: d, ease: 'power2.out', immediateRender: false }), at)
+            .fromTo(pc, { opacity: 0 }, { opacity: 1, duration: d * .4, immediateRender: false }, at);
+        }
+        if (next) {
+          const d = Math.max(.3, next.move * EXIT);
+          tl.fromTo(pc, R, Object.assign({}, cam(pc, next.lead, 'out'), { duration: d, ease: 'power2.in', immediateRender: false }), b.t2)
+            .fromTo(pc, { opacity: 1 }, { opacity: 0, duration: d * .4, immediateRender: false }, b.t2 + d * .6);
+        }
+      });
+      if (ACT[b.id]) ACT[b.id](tl, b.el, b, port);
     });
-    return () => { ScrollTrigger.removeEventListener('refresh', placeChips); $('.cards').style.top = ''; };
+    tl.set({}, {}, TOTAL);
+    tl.eventCallback('onUpdate', () => { time = tl.time(); paint(); });
+    st = ScrollTrigger.create({ trigger: reel, start: 'top top', end: 'bottom bottom', scrub: .45, animation: tl, invalidateOnRefresh: true });
+    fit(); time = tl.time(); paint(true);
+    return () => { st = null; };
   });
 
-  addEventListener('load', () => ScrollTrigger.refresh());
+  /* Hero: beat 1 (crane down K0 → K1) plays by itself once when the page opens; the board rises with the camera */
+  const heroPc = $('#beranda .pc');
+  let intro = null;
+  if (scrollY < 10) {
+    introOn = true;
+    const from = cam(heroPc, 'craneDown', 'in');
+    intro = gsap.timeline({ onComplete: () => { introOn = false; intro = null; paint(); } })
+      .fromTo(frame, lightVars(K[0]), Object.assign(lightVars(K[1]), { duration: 2, ease: 'power2.inOut' }), 0)
+      .fromTo(heroPc, Object.assign({}, from, { opacity: 0 }), Object.assign(rest(heroPc), { opacity: 1, duration: 1.7, ease: 'power3.out' }), .3);
+    addEventListener('scroll', () => { if (intro) intro.progress(1); }, { once: true, passive: true });
+  } else {
+    gsap.set(frame, lightVars(K[1]));
+    gsap.set(heroPc, Object.assign(rest(heroPc), { opacity: 1 }));
+  }
+
+  /* Jump links: scroll to the moment a beat's props have settled */
+  function scrollToBeat(n, smooth) {
+    if (!st) return false;
+    const b = BEATS.find(x => x.n === n);
+    const t = n === 1 ? 0 : b.t1 + Math.min(.15, b.hold * .3);
+    const y = st.start + (t / TOTAL) * (st.end - st.start);
+    if (lenis) lenis.scrollTo(y, smooth ? { duration: 1.6 } : { immediate: true });
+    else window.scrollTo({ top: y, behavior: smooth ? 'smooth' : 'auto' });
+    return true;
+  }
+  $$('[data-jump]').forEach(a => a.addEventListener('click', e => {
+    if (menu.classList.contains('open')) setMenu(false);
+    if (scrollToBeat(+a.dataset.jump, true)) e.preventDefault();
+  }));
+  // keyboard: tabbing into copy that is off screen brings its beat on screen
+  $$('.sf').forEach(sf => sf.addEventListener('focusin', () => { if (!sf.classList.contains('live')) scrollToBeat(+sf.dataset.beat, false); }));
+
+  let rz;
+  addEventListener('resize', () => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => { fit(); paint(true); }); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { fit(); ScrollTrigger.refresh(); });
+  addEventListener('load', () => { fit(); ScrollTrigger.refresh(); });
 })();
 </script>
