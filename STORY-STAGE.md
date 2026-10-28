@@ -1,6 +1,6 @@
 # Kreatekno Home: Story Stage (web and video)
 
-_Last updated: 2026-10-27. Source: the team's document "Kreatekno · Cerita & Copy Home (one take) · Revisi" (@Kreatekno, 2026-10-25), which follows the locked location masters in "Kreatekno · Prompt Master Lokasi". The stage lives in the Next.js app (`site/components/story/`); the older prototype in `prototype/` still shows the 16-beat version of 14 Oct._
+_Last updated: 2026-10-28. Source: the team's document "Kreatekno · Cerita & Copy Home (one take) · Revisi" (@Kreatekno, 2026-10-25), which follows the locked location masters in "Kreatekno · Prompt Master Lokasi". The stage lives in the Next.js app (`site/components/story/`); the older prototype in `prototype/` still shows the 16-beat version of 14 Oct._
 
 This file is the handoff between the website and the video team: how the Home stage works, where every piece of copy sits in the frame, what the HTML draws and what the footage has to provide. The story, the keyframe descriptions and the copy live in the team's document.
 
@@ -29,11 +29,12 @@ This file is the handoff between the website and the video team: how the Home st
 
 The sky, ground and vignette on the stage are **placeholders**. They get replaced by the video frames, and every prop stays above the footage in the same place.
 
-**Footage in the stage so far** (27 Oct): beat 1, K0 → K1, both versions.
+**Footage in the stage so far** (28 Oct): beats 1 and 2, K0 → K2, both versions. Source files are in `Assets/footage/desktop/` and `Assets/footage/mobile/`, one per camera move, named after its keyframes (`k1 - k2.mp4`).
 
 - Each clip plays as a WebP image sequence on a `<canvas>` under the props, scrubbed by the same timeline. The clips and their data are in `site/components/story/footage.ts`; the frames are in `site/public/footage/`.
-- The still frames at the start and end of a clip are left out, because the web holds the keyframe itself. Beat 1 uses frames 22–104 of the 16:9 clip and 19–94 of the 9:16 clip.
-- Frame 0 shows from the moment the camera reaches the clip's first keyframe; the last frame shows until the end of its hold. Where the next move has no clip yet, the footage fades into the placeholder over a quarter of a screen.
+- The still frames at the start and end of a clip are left out, because the web holds the keyframe itself. Beat 1 uses frames 22–104 (16:9) and 19–94 (9:16); beat 2 uses frames 14–94 (16:9) and 17–106 (9:16).
+- 16:9 frames go on the web at 1280×720, so consecutive clips match in sharpness. Beat 2 arrived in 1920×1080 and was scaled down.
+- Frame 0 shows from the moment the camera reaches the clip's first keyframe; the last frame shows until the end of its hold. One clip hands over to the next directly. Where the next move has no clip yet, the footage fades into the placeholder over a quarter of a screen.
 - Copy printed on a surface that moves in the clip follows that surface, measured frame by frame (the `tracks` in `footage.ts`). The billboard is the first one.
 
 Until the footage exists, the placeholder fixes two things.
@@ -201,3 +202,7 @@ Open Home with `?zones=1` in the URL. A switch appears at the bottom right. It s
    - In the 16:9 first frame the birds fly under the header bar at the top right. Keep them below 12% of the height from the top.
    - Both clips are 1280 px on the long side. Check on a large screen whether that is sharp enough, or send 1920.
    - The light is a low warm sun from the left, not from the right as section 2 first assumed. Later keyframes that follow on from K1 should keep it.
+8. **Beat 2 footage** (received 28 Oct, now in the stage):
+   - It joins beat 1 without a jump and ends on K2 as described.
+   - The 16:9 clip came in 1920×1080, beat 1 in 1280×720. Please send every clip in one size, preferably 1920×1080 (the web scales them down), so beat 1 can be re-exported if large screens need more sharpness.
+   - 9:16 K2: on phones taller than 9:16 (most of them, e.g. 375×812) about 9% of the width is cropped on each side, which cuts off the staff at the far left and right desks. Keep faces between 10% and 90% of the width (section 5).

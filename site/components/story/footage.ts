@@ -3,8 +3,9 @@
  * (a <video> scrubs badly on Safari). One clip per camera move, keyed by the keyframe the move ends on,
  * in a 16:9 and a 9:16 version. Steps without a clip keep the placeholder scene.
  *
- * Frames are exported from Assets/footage with ffmpeg (WebP, quality 72); the still frames at the start
- * and end of each source clip are left out, since the web holds the keyframe itself.
+ * Frames are exported from Assets/footage/{desktop,mobile}/"kA - kB.mp4" with ffmpeg (WebP, quality 72,
+ * 16:9 at 1280×720); the still frames at the start and end of each source clip are left out, since the
+ * web holds the keyframe itself.
  */
 
 import { FILM_QUERY } from "./beats";
@@ -24,8 +25,8 @@ export type Clip = {
 };
 
 export const FOOTAGE: Record<string, { land: Clip; port: Clip }> = {
-  // Beat 1, K0 → K1: crane down from the billboard to the door (Assets/footage/B1 desktop.mp4 frames
-  // 22–104, B1 mobile.mp4 frames 19–94). The billboard face leaves the top of the frame on the way down.
+  // Beat 1, K0 → K1: crane down from the billboard to the door ("k0 - k1.mp4": desktop frames 22–104,
+  // mobile frames 19–94). The billboard face leaves the top of the frame on the way down.
   K1: {
     land: {
       dir: "/footage/b1/desk",
@@ -90,6 +91,12 @@ export const FOOTAGE: Record<string, { land: Clip; port: Clip }> = {
       },
     },
   },
+  // Beat 2, K1 → K2: Heru opens the door and the camera follows him into the shop ("k1 - k2.mp4": desktop
+  // frames 14–94, scaled down from 1920×1080; mobile frames 17–106). No copy rides on it.
+  K2: {
+    land: { dir: "/footage/b2/desk", frames: 81, width: 1280, height: 720 },
+    port: { dir: "/footage/b2/phone", frames: 90, width: 720, height: 1280 },
+  },
 };
 
 /** Frame 0 of the clip the page opens on (the K0 hold), per orientation, for a preload with the page. */
@@ -106,8 +113,9 @@ const FADE = 0.25;
 
 /**
  * Draws the footage frame for a time of the take. Frame 0 shows from the moment the camera reaches the
- * clip's first keyframe, the last frame until the end of its own hold. Frames load in passes (first and
- * last, then every 8th, 4th, 2nd, all), and the nearest loaded frame stands in until the right one arrives.
+ * clip's first keyframe, the last frame until the end of its own hold. Clips load one after another in the
+ * order of the take, each in passes (first and last, then every 8th, 4th, 2nd, all), and the nearest
+ * loaded frame stands in until the right one arrives.
  * `onShow` reports whether footage covers the frame, so the HTML can drop the parts the footage draws.
  */
 export function createReel(canvas: HTMLCanvasElement, steps: Step[], port: boolean, onShow: (on: boolean) => void) {
@@ -123,30 +131,31 @@ export function createReel(canvas: HTMLCanvasElement, steps: Step[], port: boole
   let drawn: HTMLImageElement | null = null;
   let shown = false;
 
-  spans.forEach((sp) => {
+  // one queue for the whole take, a few requests at a time
+  const queue = spans.flatMap((sp) => {
     const n = sp.clip.frames;
     sp.frames = Array.from({ length: n }, () => null);
     const order = [...new Set([0, n - 1, ...[8, 4, 2, 1].flatMap((s) => range(0, n, s))])];
-    // a few requests at a time, in pass order
-    let next = 0;
-    const pump = () => {
-      if (!alive || next >= order.length) return;
-      const i = order[next++];
-      const img = new Image();
-      if (i === 0) img.fetchPriority = "high";
-      // `load`, not decode(): decode() waits for a rendering opportunity and can hang in some browsers
-      img.onload = () => {
-        if (alive) {
-          sp.frames[i] = img;
-          draw(time);
-        }
-        pump();
-      };
-      img.onerror = pump;
-      img.src = `${sp.clip.dir}/${String(i).padStart(3, "0")}.webp`;
-    };
-    for (let k = 0; k < 4; k++) pump();
+    return order.map((i) => ({ sp, i }));
   });
+  let next = 0;
+  const pump = () => {
+    if (!alive || next >= queue.length) return;
+    const { sp, i } = queue[next++];
+    const img = new Image();
+    if (next === 1) img.fetchPriority = "high";
+    // `load`, not decode(): decode() waits for a rendering opportunity and can hang in some browsers
+    img.onload = () => {
+      if (alive) {
+        sp.frames[i] = img;
+        draw(time);
+      }
+      pump();
+    };
+    img.onerror = pump;
+    img.src = `${sp.clip.dir}/${String(i).padStart(3, "0")}.webp`;
+  };
+  for (let k = 0; k < 4; k++) pump();
 
   function show(on: boolean) {
     if (on === shown) return;
@@ -156,7 +165,9 @@ export function createReel(canvas: HTMLCanvasElement, steps: Step[], port: boole
 
   function draw(t: number) {
     time = t;
-    const sp = spans.find((s) => t >= s.from - 1e-6 && t <= s.t2 + FADE);
+    // a clip that covers this moment wins; otherwise the one whose hold just ended fades out
+    const sp =
+      spans.find((s) => t >= s.from - 1e-6 && t <= s.t2 + 1e-6) ?? spans.find((s) => t > s.t2 && t <= s.t2 + FADE);
     if (!sp || !ctx) {
       canvas.style.opacity = "0";
       show(false);

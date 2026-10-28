@@ -352,16 +352,17 @@ export const KEYFRAMES: Record<string, Light> = {
     lo: "rgba(40,40,80,.3)",
     sun: 110,
   },
-  // inside the shop, warm morning from the window
+  // inside the shop, sampled from the beat 2 footage (28 Oct): pinkish lavender walls and terrazzo floor,
+  // warm morning sun through the window on the left
   K2: {
-    sa: "#F3E3CC",
-    sb: "#FAF1E4",
-    ga: "#C9B39A",
-    gb: "#A08870",
-    hz: 70,
+    sa: "#D9C3CC",
+    sb: "#EEDFE5",
+    ga: "#E1C3C6",
+    gb: "#D4BBC6",
+    hz: 60,
     hi: "rgba(255,226,186,.55)",
     lo: "rgba(50,35,40,.3)",
-    sun: 200,
+    sun: 110,
   },
   // till counter, over Bu Dewi's shoulder
   K3: {

@@ -1,6 +1,6 @@
 # Kreatekno Website Rebuild: Plan
 
-_Last updated: 2026-10-27. The previous plan (including the old hero video and AI asset pipeline) is archived in `archive/PLAN.md`._
+_Last updated: 2026-10-28. The previous plan (including the old hero video and AI asset pipeline) is archived in `archive/PLAN.md`._
 
 ## Goal
 
@@ -51,12 +51,38 @@ _Status: ✅ Done · 🟡 In progress · ⬜ Not started · ⛔ Blocked_
 | M5 | Home build | Port the prototype into components; messages from `COPY.md`; analytics; reduced-motion version; Playwright beats | Claude | M2, M4 | 🟡 Stage moved to the 18-beat revision and checked; Playwright tests and analytics review still to do |
 | M6 | Workflow diagram | Sanitize script, story layer, animated SVG diagram from 1 real workflow | Claude | 1 n8n JSON | ⬜ |
 | M7 | Other pages | Portofolio list + detail, Artikel list + detail (3 starter articles), Tentang, Kebijakan Privasi | Claude + Kreatekno | M3, M4, M6, inputs | ⬜ |
-| M8 | Story media | Keyframes K0–K16 plus K5a and K9a, and footage in 16:9 and 9:16, following `STORY-STAGE.md`; then plug them into the stage, retune prop positions and light, switch off HTML parts the footage already has; check contrast and size budget on real phones | Kreatekno + Claude | Storyboard ✅, `STORY-STAGE.md` ✅ | 🟡 Beat 1 footage (16:9 and 9:16) in the stage since 2026-10-27; the other beats still on the placeholder |
+| M8 | Story media | Keyframes K0–K16 plus K5a and K9a, and footage in 16:9 and 9:16, following `STORY-STAGE.md`; then plug them into the stage, retune prop positions and light, switch off HTML parts the footage already has; check contrast and size budget on real phones | Kreatekno + Claude | Storyboard ✅, `STORY-STAGE.md` ✅ | 🟡 Footage for beats 1 and 2 (K0 → K2, 16:9 and 9:16) in the stage since 2026-10-28; beat 3 onwards still on the placeholder |
 | M9 | QA and launch | Impeccable audit and polish, motion review, Lighthouse, accessibility, analytics check, deploy, DNS | Claude + Kreatekno | M5, M7, M8 | ⬜ |
 
-Next up: answer the beat 1 points for the video team (`STORY-STAGE.md` section 7, point 7) and check the beat 1 frames on a real phone; then Playwright tests per beat and an analytics check to close M5, a Vercel preview to close M4 (needs Kreatekno's Vercel account), and M7 once copy (M3) and inputs arrive. The keyframes (M8) can start now from `STORY-STAGE.md`.
+Next up: answer the footage points for the video team (`STORY-STAGE.md` section 7, points 7 and 8) and check the beat 1 frames on a real phone; then Playwright tests per beat and an analytics check to close M5, a Vercel preview to close M4 (needs Kreatekno's Vercel account), and M7 once copy (M3) and inputs arrive. The keyframes (M8) can start now from `STORY-STAGE.md`.
 
 ## Progress log
+
+### 2026-10-28
+
+- The team reorganised `Assets/footage/` into `desktop/` and `mobile/`, with one file per camera move named after its keyframes (`k0 - k1.mp4`, `k1 - k2.mp4`). The beat 1 files are the same as before, only moved and renamed.
+- Footage for beat 2 received (K1 → K2: Heru opens the door, the camera follows him into the shop):
+
+  | File | Size | Length | Frames | Weight |
+  |---|---|---|---|---|
+  | `desktop/k1 - k2.mp4` | 1920×1080 | 5.08 s | 122 | 17.7 MB |
+  | `mobile/k1 - k2.mp4` | 720×1280 | 5.04 s | 121 | 4.3 MB |
+
+- Checked:
+  - The first frame continues the last frame of beat 1 without a jump.
+  - The last frame matches K2: Heru's head bottom centre, the orange till counter and Bu Dewi in the middle, four staff desks facing the camera.
+- Plugged into the stage as `FOOTAGE.K2` in `footage.ts`. Still frames at the start and end are left out: desktop frames 14–94, mobile frames 17–106.
+  - desktop: 81 WebP frames, 2.5 MB. Scaled down to 1280×720 to match beat 1 (decision of 28 Oct); at 1920 it would be 4.1 MB.
+  - phone: 90 frames, 2.7 MB.
+  - Footage now runs from the page opening (K0) to K2. It fades into the placeholder at the start of beat 3.
+- `footage.ts` changes:
+  - Where one clip hands over to the next, the next clip wins; the fade only plays where no clip follows.
+  - Frames load clip by clip in one queue, in the order of the take, so beat 2 doesn't compete with beat 1.
+- K2 light retuned from the footage: pinkish lavender walls, terrazzo floor, warm sun from the window on the left.
+- Checked at 1280×720 and 375×812 (Playwright): the handover from beat 1, the middle of beat 2, K2, and the fade into beat 3. No console errors; `tsc` and `eslint` pass.
+- Total footage weight so far: desktop 4.5 MB, phone 4.4 MB.
+- Not checked: `npm run build`, real phones.
+- Not committed yet.
 
 ### 2026-10-27
 
@@ -84,8 +110,8 @@ Next up: answer the beat 1 points for the video team (`STORY-STAGE.md` section 7
 
   | File | Size | Length | Frames | Weight |
   |---|---|---|---|---|
-  | `B1 desktop.mp4` | 1280×720 | 5.04 s | 121 | 3.5 MB |
-  | `B1 mobile.mp4` | 720×1280 | 4.04 s | 97 | 2.8 MB |
+  | `B1 desktop.mp4` (now `desktop/k0 - k1.mp4`) | 1280×720 | 5.04 s | 121 | 3.5 MB |
+  | `B1 mobile.mp4` (now `mobile/k0 - k1.mp4`) | 720×1280 | 4.04 s | 97 | 2.8 MB |
 
 - ffmpeg 9.0.2 is installed with winget. A terminal opened before the install doesn't find it on the PATH, and winget made no shim in `WinGet\Links`. Either open a new terminal, or call it by its full path: `C:\Users\wilda\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0.2-full_build\bin\ffmpeg.exe` (`ffprobe.exe` sits next to it).
 - Not looked at yet: the frames themselves.
