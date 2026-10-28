@@ -97,6 +97,18 @@ export const FOOTAGE: Record<string, { land: Clip; port: Clip }> = {
     land: { dir: "/footage/b2/desk", frames: 81, width: 1280, height: 720 },
     port: { dir: "/footage/b2/phone", frames: 90, width: 720, height: 1280 },
   },
+  // Beat 2, K2 → K2.1: closer and over to Sinta and Bayu on the left ("k2 - k2.1.mp4": desktop frames
+  // 3–72, mobile frames 19–58).
+  "K2.1": {
+    land: { dir: "/footage/b2a/desk", frames: 70, width: 1280, height: 720 },
+    port: { dir: "/footage/b2a/phone", frames: 40, width: 720, height: 1280 },
+  },
+  // Beat 2, K2.1 → K2.2: whip pan right past the counter to Nadia and Fajar ("k2.1 - k2.2.mp4": desktop
+  // frames 18–59, mobile frames 16–57).
+  "K2.2": {
+    land: { dir: "/footage/b2b/desk", frames: 42, width: 1280, height: 720 },
+    port: { dir: "/footage/b2b/phone", frames: 42, width: 720, height: 1280 },
+  },
 };
 
 /** Frame 0 of the clip the page opens on (the K0 hold), per orientation, for a preload with the page. */
@@ -178,12 +190,13 @@ export function createReel(canvas: HTMLCanvasElement, steps: Step[], port: boole
     const want = Math.round(Math.min(1, Math.max(0, p)) * (n - 1));
     let img: HTMLImageElement | null = null;
     for (let d = 0; d < n && !img; d++) img = sp.frames[want - d] ?? sp.frames[want + d] ?? null;
-    if (!img) {
+    if (!img && !drawn) {
       canvas.style.opacity = "0";
       show(false);
       return;
     }
-    if (img !== drawn) {
+    // a clip that hasn't loaded yet keeps the last frame drawn rather than flashing the placeholder
+    if (img && img !== drawn) {
       if (canvas.width !== sp.clip.width) canvas.width = sp.clip.width;
       if (canvas.height !== sp.clip.height) canvas.height = sp.clip.height;
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);

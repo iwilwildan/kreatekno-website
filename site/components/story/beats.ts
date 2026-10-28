@@ -1,13 +1,14 @@
 /*
- * The Home story: one camera take in 18 beats and 19 keyframes, K0 to K16 plus K5a and K9a
- * (STORY-STAGE.md, after the team's revision of 25 Oct 2026). Time is measured in screens of scroll.
+ * The Home story: one camera take in 18 beats and 21 keyframes, K0 to K16 plus K2.1, K2.2, K5a and K9a
+ * (STORY-STAGE.md, after the team's revision of 25 Oct 2026; K2.1 and K2.2 came with the footage of 29 Oct). Time is measured in screens of scroll.
  * Every step of the take runs from the previous step's keyframe to its own `k`: move = camera move (the
  * footage scrubs between the two keyframes); hold = `k` is held while the copy is read. lead = first
  * camera move of the step (carries the previous props out), tail = last camera move (carries this step's
  * props in). Steps without an id have no copy.
  *
  * Beat 1 takes two steps: the hero copy sits on the billboard in K0, the first frame, so the page opens on
- * that hold and the crane down to K1 only starts when the visitor scrolls.
+ * that hold and the crane down to K1 only starts when the visitor scrolls. Beat 2 takes three steps: into
+ * the shop (K2), then over to the staff on the left (K2.1) and on the right (K2.2), all without copy.
  */
 
 export type Cam =
@@ -76,6 +77,28 @@ export const BEATS: Beat[] = [
     move: 1.2,
     hold: 0,
     kf: "Dalam toko, pagi hangat. Kepala Heru di tengah bawah, konter kasir oranye dan Bu Dewi yang prihatin di tengah, empat meja staf kacau menghadap kamera.",
+  },
+  {
+    n: "2",
+    k: "K2.1",
+    name: "Transisi masalah, staf kiri",
+    cam: "Dolly In + Pan Left ke meja Sinta dan Bayu",
+    lead: "dollyIn",
+    tail: "dollyIn",
+    move: 0.8,
+    hold: 0,
+    kf: "Sinta (hijab kuning) menatap ponsel penuh notifikasi hijau di kiri, Bayu di balik monitor dan tumpukan slip pesanan di tengah, ujung kiri konter oranye di kanan. Cahaya pagi dari jendela kiri.",
+  },
+  {
+    n: "2",
+    k: "K2.2",
+    name: "Transisi masalah, staf kanan",
+    cam: "Whip Pan Right melewati konter",
+    lead: "truckRight",
+    tail: "truckRight",
+    move: 0.7,
+    hold: 0,
+    kf: "Nadia bertopang dagu di depan laptop di tengah, Fajar menggaruk kepala di samping baki file oranye di kanan, rak buku di antara mereka, ujung kanan konter di kiri.",
   },
   {
     n: "3",
@@ -276,7 +299,7 @@ export const BEATS: Beat[] = [
   },
 ];
 
-/** Number of beats in the team's document (beat 1 takes two steps here, 5 and 9 are split in a and b). */
+/** Number of beats in the team's document (beat 1 takes two steps here, beat 2 three, 5 and 9 are split in a and b). */
 export const BEAT_COUNT = 18;
 
 export type TimedBeat = Beat & { from: string; t0: number; t1: number; t2: number };
@@ -328,6 +351,19 @@ const DUSK_INSIDE: Light = {
   sun: 190,
 };
 
+// inside the shop, sampled from the beat 2 footage (28 Oct): pinkish lavender walls and terrazzo floor,
+// warm morning sun through the window on the left
+const K2_SHOP: Light = {
+  sa: "#D9C3CC",
+  sb: "#EEDFE5",
+  ga: "#E1C3C6",
+  gb: "#D4BBC6",
+  hz: 60,
+  hi: "rgba(255,226,186,.55)",
+  lo: "rgba(50,35,40,.3)",
+  sun: 110,
+};
+
 export const KEYFRAMES: Record<string, Light> = {
   // K0 and K1 are sampled from the beat 1 footage (27 Oct): low warm sun from the left.
   // morning sky over the lavender roof parapet of COMPANY
@@ -352,18 +388,10 @@ export const KEYFRAMES: Record<string, Light> = {
     lo: "rgba(40,40,80,.3)",
     sun: 110,
   },
-  // inside the shop, sampled from the beat 2 footage (28 Oct): pinkish lavender walls and terrazzo floor,
-  // warm morning sun through the window on the left
-  K2: {
-    sa: "#D9C3CC",
-    sb: "#EEDFE5",
-    ga: "#E1C3C6",
-    gb: "#D4BBC6",
-    hz: 60,
-    hi: "rgba(255,226,186,.55)",
-    lo: "rgba(50,35,40,.3)",
-    sun: 110,
-  },
+  K2: K2_SHOP,
+  // closer to the staff desks: the same room and light, the floor line drops as the camera moves in
+  "K2.1": { ...K2_SHOP, hz: 66 },
+  "K2.2": { ...K2_SHOP, hz: 66 },
   // till counter, over Bu Dewi's shoulder
   K3: {
     sa: "#F1E6D6",

@@ -1,6 +1,6 @@
 # Kreatekno Website Rebuild: Plan
 
-_Last updated: 2026-10-28. The previous plan (including the old hero video and AI asset pipeline) is archived in `archive/PLAN.md`._
+_Last updated: 2026-10-29. The previous plan (including the old hero video and AI asset pipeline) is archived in `archive/PLAN.md`._
 
 ## Goal
 
@@ -11,7 +11,7 @@ Rebuild kreatekno.com from scratch as a **mobile-first, scroll-story website** t
 | File | What it holds |
 |---|---|
 | `SITE-BRIEF.md` | What the site says and how it behaves: references, review preferences, audience, conversion, other pages, look and feel, SEO. Its Home sections (2, 4, 5) still describe the old 6-beat story; see `STORY-STAGE.md` until they are rewritten |
-| `STORY-STAGE.md` | The Home story stage, the handoff between web and video: the 18 beats and 19 keyframes, camera moves, empty-scroll beats, prop positions for desktop and phone (copy cards on phones), surface lines and light per keyframe, what the HTML draws vs what the footage draws |
+| `STORY-STAGE.md` | The Home story stage, the handoff between web and video: the 18 beats and 21 keyframes, camera moves, empty-scroll beats, prop positions for desktop and phone (copy cards on phones), surface lines and light per keyframe, what the HTML draws vs what the footage draws |
 | `PORTFOLIO.md` | Portfolio plan (proposal, 2026-10-25): two modes per project (Tonton motion graphic, Baca case study) from one data file, scene types, 3 sample projects, n8n → page pipeline, phases |
 | `COPY.md` | All copy in Indonesian and English, plus SEO titles and descriptions. Home copy still the old version; the current Home copy is in `site/messages/` (taken from the storyboard via the prototype) |
 | `STACK.md` | Libraries, folder structure, content model, routing, implementation notes, deploy |
@@ -51,12 +51,34 @@ _Status: ✅ Done · 🟡 In progress · ⬜ Not started · ⛔ Blocked_
 | M5 | Home build | Port the prototype into components; messages from `COPY.md`; analytics; reduced-motion version; Playwright beats | Claude | M2, M4 | 🟡 Stage moved to the 18-beat revision and checked; Playwright tests and analytics review still to do |
 | M6 | Workflow diagram | Sanitize script, story layer, animated SVG diagram from 1 real workflow | Claude | 1 n8n JSON | ⬜ |
 | M7 | Other pages | Portofolio list + detail, Artikel list + detail (3 starter articles), Tentang, Kebijakan Privasi | Claude + Kreatekno | M3, M4, M6, inputs | ⬜ |
-| M8 | Story media | Keyframes K0–K16 plus K5a and K9a, and footage in 16:9 and 9:16, following `STORY-STAGE.md`; then plug them into the stage, retune prop positions and light, switch off HTML parts the footage already has; check contrast and size budget on real phones | Kreatekno + Claude | Storyboard ✅, `STORY-STAGE.md` ✅ | 🟡 Footage for beats 1 and 2 (K0 → K2, 16:9 and 9:16) in the stage since 2026-10-28; beat 3 onwards still on the placeholder |
+| M8 | Story media | Keyframes K0–K16 plus K2.1, K2.2, K5a and K9a, and footage in 16:9 and 9:16, following `STORY-STAGE.md`; then plug them into the stage, retune prop positions and light, switch off HTML parts the footage already has; check contrast and size budget on real phones | Kreatekno + Claude | Storyboard ✅, `STORY-STAGE.md` ✅ | 🟡 Footage for beats 1 and 2 (K0 → K2.2, 16:9 and 9:16) in the stage since 2026-10-29; beat 3 onwards still on the placeholder |
 | M9 | QA and launch | Impeccable audit and polish, motion review, Lighthouse, accessibility, analytics check, deploy, DNS | Claude + Kreatekno | M5, M7, M8 | ⬜ |
 
-Next up: answer the footage points for the video team (`STORY-STAGE.md` section 7, points 7 and 8) and check the beat 1 frames on a real phone; then Playwright tests per beat and an analytics check to close M5, a Vercel preview to close M4 (needs Kreatekno's Vercel account), and M7 once copy (M3) and inputs arrive. The keyframes (M8) can start now from `STORY-STAGE.md`.
+Next up: answer the footage points for the video team (`STORY-STAGE.md` section 7, points 7 to 9) and check the beat 1 frames on a real phone; then Playwright tests per beat and an analytics check to close M5, a Vercel preview to close M4 (needs Kreatekno's Vercel account), and M7 once copy (M3) and inputs arrive. The keyframes (M8) can start now from `STORY-STAGE.md`.
 
 ## Progress log
+
+### 2026-10-29
+
+- Two more clips arrived, each in 16:9 and 9:16, 3 s and 73 frames. Desktop is back to 1280×720.
+  - `k2 - k2.1.mp4`: from K2 the camera moves in and pans left to Sinta (phone full of green notifications) and Bayu (stack of order slips).
+  - `k2.1 - k2.2.mp4`: a whip pan right past the till counter to Nadia (chin in hand at her laptop) and Fajar (scratching his head).
+- K2.1 and K2.2 are not in the team's document (revision of 25 Oct), where beat 3 starts from K2. The web adds them as two more steps of beat 2, without copy: 0.8 and 0.7 screens. Beat 3 now starts from K2.2.
+- Checked:
+  - The clips join each other and K2 with only a small jump (the characters keep moving slightly during the stills that are cut out).
+  - In the whip pan the till counter is empty: Bu Dewi is missing. Raised for the video team in `STORY-STAGE.md` section 7, point 9, together with adding K2.1 and K2.2 to the document.
+- Exported WebP frames, stills at both ends left out:
+
+  | Clip | Desktop frames | Desktop weight | Phone frames | Phone weight |
+  |---|---|---|---|---|
+  | K2 → K2.1 (`b2a/`) | 3–72 (70) | 2.1 MB | 19–58 (40) | 1.1 MB |
+  | K2.1 → K2.2 (`b2b/`) | 18–59 (42) | 0.6 MB | 16–57 (42) | 0.7 MB |
+
+- Total footage so far: desktop 7.3 MB, phone 6.2 MB. It is loaded progressively, clip by clip, after the page opens.
+- `footage.ts`: if the visitor scrolls into a clip before its frames have loaded, the last frame drawn stays on screen. Before, the placeholder flashed.
+- `beats.ts`: two new steps; K2.1 and K2.2 light the same as K2.
+- Checked at 1280×720 and 375×812 (Playwright): K2 → K2.1 → K2.2, and the fade into beat 3 with the leaflet coming in. No console errors; `tsc` and `eslint` pass.
+- Not committed yet.
 
 ### 2026-10-28
 

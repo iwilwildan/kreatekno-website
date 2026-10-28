@@ -1,6 +1,6 @@
 # Kreatekno Home: Story Stage (web and video)
 
-_Last updated: 2026-10-28. Source: the team's document "Kreatekno · Cerita & Copy Home (one take) · Revisi" (@Kreatekno, 2026-10-25), which follows the locked location masters in "Kreatekno · Prompt Master Lokasi". The stage lives in the Next.js app (`site/components/story/`); the older prototype in `prototype/` still shows the 16-beat version of 14 Oct._
+_Last updated: 2026-10-29. Source: the team's document "Kreatekno · Cerita & Copy Home (one take) · Revisi" (@Kreatekno, 2026-10-25), which follows the locked location masters in "Kreatekno · Prompt Master Lokasi". The stage lives in the Next.js app (`site/components/story/`); the older prototype in `prototype/` still shows the 16-beat version of 14 Oct._
 
 This file is the handoff between the website and the video team: how the Home stage works, where every piece of copy sits in the frame, what the HTML draws and what the footage has to provide. The story, the keyframe descriptions and the copy live in the team's document.
 
@@ -8,7 +8,7 @@ This file is the handoff between the website and the video team: how the Home st
 
 ## 1. How the stage works
 
-- **One take, 18 beats, 19 keyframes:** K0 to K16, plus K5a and K9a. The whole Home page is one sticky stage, and scrolling scrubs through the footage.
+- **One take, 18 beats, 21 keyframes:** K0 to K16, plus K2.1, K2.2, K5a and K9a. K2.1 and K2.2 came with the footage of 29 Oct and are not in the team's document yet. The whole Home page is one sticky stage, and scrolling scrubs through the footage.
 - **Each step = a camera move + a hold.**
   - During the move, the footage plays from the previous keyframe to the next one.
   - During the hold, the keyframe stays still while the copy is read.
@@ -29,10 +29,10 @@ This file is the handoff between the website and the video team: how the Home st
 
 The sky, ground and vignette on the stage are **placeholders**. They get replaced by the video frames, and every prop stays above the footage in the same place.
 
-**Footage in the stage so far** (28 Oct): beats 1 and 2, K0 → K2, both versions. Source files are in `Assets/footage/desktop/` and `Assets/footage/mobile/`, one per camera move, named after its keyframes (`k1 - k2.mp4`).
+**Footage in the stage so far** (29 Oct): beats 1 and 2, K0 → K2.2, both versions. Source files are in `Assets/footage/desktop/` and `Assets/footage/mobile/`, one per camera move, named after its keyframes (`k1 - k2.mp4`).
 
 - Each clip plays as a WebP image sequence on a `<canvas>` under the props, scrubbed by the same timeline. The clips and their data are in `site/components/story/footage.ts`; the frames are in `site/public/footage/`.
-- The still frames at the start and end of a clip are left out, because the web holds the keyframe itself. Beat 1 uses frames 22–104 (16:9) and 19–94 (9:16); beat 2 uses frames 14–94 (16:9) and 17–106 (9:16).
+- The still frames at the start and end of a clip are left out, because the web holds the keyframe itself. Beat 1 uses frames 22–104 (16:9) and 19–94 (9:16); beat 2 uses frames 14–94 (16:9) and 17–106 (9:16), then 3–72 and 19–58 for K2 → K2.1, and 18–59 and 16–57 for K2.1 → K2.2.
 - 16:9 frames go on the web at 1280×720, so consecutive clips match in sharpness. Beat 2 arrived in 1920×1080 and was scaled down.
 - Frame 0 shows from the moment the camera reaches the clip's first keyframe; the last frame shows until the end of its hold. One clip hands over to the next directly. Where the next move has no clip yet, the footage fades into the placeholder over a quarter of a screen.
 - Copy printed on a surface that moves in the clip follows that surface, measured frame by frame (the `tracks` in `footage.ts`). The billboard is the first one.
@@ -66,7 +66,7 @@ Scroll is measured in screens: move + hold.
 | Beat | Section | Camera | Scroll | Copy on (desktop) | Desktop 16:9 | Phone 9:16 |
 |---|---|---|---|---|---|---|
 | 1 | Hero | Hold on K0, then Crane Down → Eye Level | 0.9 hold + 1.0 | Billboard on the roof of COMPANY | face of the billboard in the footage: x 12, y 29.6, w 43.2, h 36.2 (body and buttons on its lower half) | headline on the face x 13.2, y 43.9, w 72.4, h 18.8; body and buttons card x 4, b 3, w 92 |
-| 2 | Transisi masalah | Follow Heru through the door | 1.2 | none | | |
+| 2 | Transisi masalah | Follow Heru through the door (K2), Dolly In + Pan Left to Sinta and Bayu (K2.1), Whip Pan Right past the counter to Nadia and Fajar (K2.2) | 1.2 + 0.8 + 0.7 | none | | |
 | 3 | Layanan | Arc ±120° → Over-the-Shoulder | 0.8 + 1.2 | Flat landscape leaflet standing in an acrylic stand | x 35, y 15, w 54 | card x 4, b 3, w 92; the four services swipe sideways |
 | 4 | Use case | Dolly In | 0.5 + 1.5 | Ring binder held up by Heru; its tabs are the industry tabs | x 40, y 12, w 46 | card x 4, b 3, w 92; the four examples swipe sideways |
 | 5a | Customer journey, keluar | Follow out of the door → Truck Right | 0.9 | none (the first shop panel arrives at the end) | | |
@@ -179,7 +179,7 @@ Open Home with `?zones=1` in the URL. A switch appears at the bottom right. It s
 
 - the safe zone
 - each prop's box with its % coordinates
-- the current beat, its camera move and keyframes (K5a and K9a included)
+- the current beat, its camera move and keyframes (K2.1, K2.2, K5a and K9a included)
 - move or hold progress
 - what the keyframe should show
 - the frame size and how much of it is cropped
@@ -206,3 +206,7 @@ Open Home with `?zones=1` in the URL. A switch appears at the bottom right. It s
    - It joins beat 1 without a jump and ends on K2 as described.
    - The 16:9 clip came in 1920×1080, beat 1 in 1280×720. Please send every clip in one size, preferably 1920×1080 (the web scales them down), so beat 1 can be re-exported if large screens need more sharpness.
    - 9:16 K2: on phones taller than 9:16 (most of them, e.g. 375×812) about 9% of the width is cropped on each side, which cuts off the staff at the far left and right desks. Keep faces between 10% and 90% of the width (section 5).
+9. **K2.1 and K2.2** (footage received 29 Oct, now in the stage):
+   - They are new: the team's document goes from K2 straight to beat 3. The web treats them as two more steps of beat 2, without copy. Please add them to the document, so beat 3 is planned from K2.2 (`k2.2 - k3.mp4`) and not from K2.
+   - In the whip pan to K2.2 the till counter is empty: Bu Dewi is missing, although she stands behind it in K2 and again in K3. Please put her back.
+   - Each clip ends on a still of about one second, and the next starts from a still. The web cuts those out. Per the document's rule, junctions without copy should keep moving.
