@@ -12,6 +12,7 @@ Rebuild kreatekno.com from scratch as a **mobile-first, scroll-story website** t
 |---|---|
 | `SITE-BRIEF.md` | What the site says and how it behaves: references, review preferences, audience, conversion, other pages, look and feel, SEO. Its Home sections (2, 4, 5) still describe the old 6-beat story; see `STORY-STAGE.md` until they are rewritten |
 | `STORY-STAGE.md` | The Home story stage, the handoff between web and video: the 18 beats and 21 keyframes, camera moves, empty-scroll beats, prop positions for desktop and phone (copy cards on phones), surface lines and light per keyframe, what the HTML draws vs what the footage draws |
+| `THREEJS.md` | Three.js as an option for the Home stage: limits, trade-offs against footage, risks on low-end Android, and the beat 2 PoC (`prototype/beat2-3d.html`) |
 | `PORTFOLIO.md` | Portfolio plan (proposal, 2026-10-25): two modes per project (Tonton motion graphic, Baca case study) from one data file, scene types, 3 sample projects, n8n → page pipeline, phases |
 | `COPY.md` | All copy in Indonesian and English, plus SEO titles and descriptions. Home copy still the old version; the current Home copy is in `site/messages/` (taken from the storyboard via the prototype) |
 | `STACK.md` | Libraries, folder structure, content model, routing, implementation notes, deploy |
@@ -58,7 +59,20 @@ Next up: answer the footage points for the video team (`STORY-STAGE.md` section 
 
 ## Progress log
 
-### 2026-10-29
+### 2026-10-29 (Three.js PoC)
+
+- Looked at the new reference folders `Assets/KARKATER/`, `Assets/Master Lokasi/` and `Assets/Properti/`. They hold PNG images only (character sheets, location masters, props), no 3D models.
+- Wrote `THREEJS.md`: what Three.js can't do, footage vs Three.js trade-offs, and the risks on low-end Android phones.
+- Built a Three.js proof of concept for beat 2 (K1 → K2) in `prototype/beat2-3d.html`, published at https://claude.ai/artifact/BaoivwaavvfCJUFMUD3Uaw.
+  - Everything is built in code, with no model files. The cast is "tier 2": shaped silhouettes, faces painted on a canvas texture, jointed arms and legs. It includes Heru, Bu Dewi, Sinta, Bayu, Nadia and Fajar, following the character sheets.
+  - Scroll drives the shot: Heru pushes the right door leaf open and walks in, the camera follows him through the door and ends on K2.
+  - Small actions run on their own: notifications pop from Sinta's phone, Bayu looks between his stack and his screen, Nadia rests her chin in her hand, Fajar scratches his head, and Bu Dewi looks up and smiles at K2.
+  - One scene for all screen sizes. Portrait screens get a wider lens and their own camera path.
+  - Parts are merged per joint and material: about 140–170 draw calls and 75–90 thousand triangles.
+  - The HUD shows FPS, draw calls, triangles and pixel ratio, and has a "Mode hemat" switch (pixel ratio 1).
+  - Weight: 12 KB page plus 178 KB for three.js and its helpers (gzip). The beat 2 footage frames are 2.5 MB desktop and 2.7 MB phone.
+- Checked at 1280×720 and 375×812 in the browser pane: K1, door opening, inside the door, and K2. No console errors.
+- Not checked: real phones. FPS in the browser pane says nothing about a phone GPU.
 
 - Two more clips arrived, each in 16:9 and 9:16, 3 s and 73 frames. Desktop is back to 1280×720.
   - `k2 - k2.1.mp4`: from K2 the camera moves in and pans left to Sinta (phone full of green notifications) and Bayu (stack of order slips).
