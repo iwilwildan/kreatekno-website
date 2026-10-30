@@ -59,6 +59,15 @@ Next up: answer the footage points for the video team (`STORY-STAGE.md` section 
 
 ## Progress log
 
+### 2026-10-30 (Three.js take K0 → K2, stages 1–2)
+
+- Rebuilt beats 1–2 (K0 → K2) in Three.js from the team's keyframes, location masters and character turnarounds (approved Drive files only, listed in `prototype/k0-k2/HANDOFF.md`).
+- Stage 1: cameras and world size solved from the keyframes (OpenCV + SciPy). Max error 0.55% of frame width outside, 0.89% K2 pc, 1.51% K2 hp. The 9:16 interior uses a narrower layout because K2 hp is a recomposition (approved).
+- Stage 2: exterior and interior sets in code, morning light with a street shadow, exposure adaptation inside, AO baked at load, grey stand-ins for the cast. Preview: https://claude.ai/artifact/TSFkWQ3P7p4mRcRd3VZwUi.
+- Decisions: Heru stays 1.8 m and the K2 camera is raised a little (option c); light approved as is.
+- Next: stage 3, vinyl-toy characters in code. Not pushed: this session has no push access to the repo.
+
+
 ### 2026-10-29 (Three.js PoC)
 
 - Looked at the new reference folders `Assets/KARKATER/`, `Assets/Master Lokasi/` and `Assets/Properti/`. They hold PNG images only (character sheets, location masters, props), no 3D models.
