@@ -59,3 +59,11 @@ Yang perlu dites: buka link di HP murah dan HP menengah, scroll pelan dari atas 
 1. **PoC eksterior tanpa karakter (1–2 hari):** deret ruko dari Master 1, 2 dan denah Master 8, crane K0, truck kanan. Diukur ukuran file dan fps di HP murah.
 2. **Tes satu karakter** (Bu Dewi) lewat Tripo atau Meshy dan auto-rig.
 3. Setelah itu baru diputuskan: Three.js penuh, **hybrid** (3D untuk eksterior, footage untuk interior yang penuh karakter), atau tetap footage.
+
+## Take K0 → K2 (30 Okt, tahap 1–2)
+
+`prototype/k0-k2-3d.html`, sumbernya di `prototype/k0-k2/`. Status, keputusan dan langkah berikutnya ada di `prototype/k0-k2/HANDOFF.md`.
+
+- Dibangun ulang dari keyframe tim (K0, K1, K2 versi pc dan hp). Kamera dan ukuran dunia dihitung dengan OpenCV dan SciPy; meleset ≤0,55% lebar layar di eksterior, ≤0,89% di K2 pc, ≤1,51% di K2 hp.
+- Lokasi dibuat dari kode: fasad COMPANY dengan huruf timbul Nunito ExtraBold, awning, billboard, ruko kuning dan mint, interior lengkap. AO dihitung saat load (three-mesh-bvh). Karakter masih placeholder.
+- three 0.186.1, dibundel dengan esbuild: 177 KB gzip, tanpa CDN. 34–108 draw call, 57–117 ribu segitiga.
